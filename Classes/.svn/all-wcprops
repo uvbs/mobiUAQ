@@ -1,0 +1,239 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes
+END
+ArchiveResource.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/ArchiveResource.h
+END
+NSDate+Formatting.m
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/NSDate+Formatting.m
+END
+BZModel+ZIP.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZModel+ZIP.h
+END
+BZWebViewController.mm
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebViewController.mm
+END
+BZAgentAppDelegate.m
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZAgentAppDelegate.m
+END
+BZModel+ZIP.m
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZModel+ZIP.m
+END
+BZWebInspectorFrontend.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebInspectorFrontend.h
+END
+BZInspectorClient.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZInspectorClient.h
+END
+BZModel+JSON.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZModel+JSON.h
+END
+WebViewPrivate.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/2/trunk/mobitest-agent/iOS/BZAgent/Classes/WebViewPrivate.h
+END
+BZIdleView.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZIdleView.h
+END
+BZModel+JSON.m
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZModel+JSON.m
+END
+BZWebViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebViewController.h
+END
+BZConstants.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZConstants.h
+END
+BZIdleView.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZIdleView.m
+END
+BZResult.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZResult.h
+END
+BZConstants.m
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZConstants.m
+END
+BZHTTPURLConnection.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZHTTPURLConnection.h
+END
+BZResult.m
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZResult.m
+END
+BZAgentController.mm
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZAgentController.mm
+END
+BZHTTPURLConnection.m
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZHTTPURLConnection.m
+END
+BZResource.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZResource.h
+END
+BZInspectorClient.mm
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZInspectorClient.mm
+END
+BZWebView.mm
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebView.mm
+END
+BZResource.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZResource.m
+END
+UIImage+Scaling.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/UIImage+Scaling.h
+END
+BZAgentController.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZAgentController.h
+END
+WebPreferences.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/WebPreferences.h
+END
+UIImage+Scaling.m
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/UIImage+Scaling.m
+END
+BZJobManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZJobManager.h
+END
+BZWebView.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebView.h
+END
+BZJobManager.m
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZJobManager.m
+END
+BZJob.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZJob.h
+END
+BZJob.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZJob.m
+END
+BZSession.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZSession.h
+END
+BZWebInspectorFrontend.mm
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZWebInspectorFrontend.mm
+END
+NSDate+Formatting.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/NSDate+Formatting.h
+END
+BZSession.m
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZSession.m
+END
+BZAgentAppDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/26/trunk/mobitest-agent/iOS/BZAgent/Classes/BZAgentAppDelegate.h
+END

@@ -1,0 +1,27 @@
+The iOS Agent has several dependencies. 
+
+A working copy is checked in to the repository.  You should not need to change it.
+
+ASI HTTP Request
+================
+Get it at https://github.com/pokeb/asi-http-request
+It is permissively licensed: https://github.com/pokeb/asi-http-request/blob/master/LICENSE
+
+TouchJSON
+=========
+Get it at https://github.com/schwa/touchcode (the TouchJSON variant is found at https://github.com/schwa/TouchJSON)
+TouchJSON is MIT licensed (https://github.com/schwa/TouchJSON/blob/master/LICENSE.txt)
+
+ZipKit
+======
+Get it at http://bitbucket.org/kolpanic/zipkit/wiki/Home
+ZipKit is offered under the BSD license.
+
+CocoaWithLove
+=============
+Get it at http://cocoawithlove.com/2009/06/base64-encoding-options-on-mac-and.html (direct link to download: http://projectswithlove.com/projects/NSData_Base64.zip)
+The .h and .m files should be placed under the CocoaWithLove subfolder of this Dependencies folder
+Permissively licensed.
+
+See the file README.mobitest in each dependency for more information.
+

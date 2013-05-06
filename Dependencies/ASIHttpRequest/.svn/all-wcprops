@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest/LICENSE
+END
+README.mobitest
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest/README.mobitest
+END
+DONORS
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest/DONORS
+END
+strict.xcconfig
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest/strict.xcconfig
+END
+README.textile
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/20/trunk/mobitest-agent/iOS/BZAgent/Dependencies/ASIHttpRequest/README.textile
+END

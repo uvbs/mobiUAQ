@@ -1,0 +1,251 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit
+END
+NSDictionary+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSDictionary+ZKAdditions.m
+END
+NSString+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSString+ZKAdditions.m
+END
+ZKDefs.m
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKDefs.m
+END
+README.mobitest
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/README.mobitest
+END
+COPYING.TXT
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/COPYING.TXT
+END
+Credits.html
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/Credits.html
+END
+.hg_archival.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/2/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/.hg_archival.txt
+END
+ZKLFHeader.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKLFHeader.h
+END
+ZKDataArchive.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKDataArchive.h
+END
+ZKLFHeader.m
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKLFHeader.m
+END
+ZKDataArchive.m
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKDataArchive.m
+END
+ZKLog.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKLog.h
+END
+ZKFileArchive.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKFileArchive.h
+END
+ZKArchive.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKArchive.h
+END
+ZKCDTrailer64.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer64.h
+END
+NSData+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSData+ZKAdditions.h
+END
+.hgignore
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/.hgignore
+END
+NSFileManager+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSFileManager+ZKAdditions.h
+END
+ZKFileArchive.m
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKFileArchive.m
+END
+ZKLog.m
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKLog.m
+END
+ZKArchive.m
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKArchive.m
+END
+ZKCDTrailer64.m
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer64.m
+END
+NSDate+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSDate+ZKAdditions.h
+END
+NSData+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSData+ZKAdditions.m
+END
+NSFileManager+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSFileManager+ZKAdditions.m
+END
+GMAppleDouble+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/GMAppleDouble+ZKAdditions.h
+END
+NSDate+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSDate+ZKAdditions.m
+END
+GMAppleDouble+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/GMAppleDouble+ZKAdditions.m
+END
+ZKCDHeader.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDHeader.h
+END
+ZipKitFW-Info.plist
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZipKitFW-Info.plist
+END
+ZKCDHeader.m
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDHeader.m
+END
+ZipKit_Prefix.pch
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZipKit_Prefix.pch
+END
+NSFileHandle+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSFileHandle+ZKAdditions.h
+END
+ZKCDTrailer64Locator.h
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer64Locator.h
+END
+ZKCDTrailer.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer.h
+END
+NSFileHandle+ZKAdditions.m
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSFileHandle+ZKAdditions.m
+END
+ZKCDTrailer64Locator.m
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer64Locator.m
+END
+ZKCDTrailer.m
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKCDTrailer.m
+END
+NSDictionary+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSDictionary+ZKAdditions.h
+END
+ZKDefs.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/ZKDefs.h
+END
+NSString+ZKAdditions.h
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/19/trunk/mobitest-agent/iOS/BZAgent/Dependencies/zipkit/NSString+ZKAdditions.h
+END
