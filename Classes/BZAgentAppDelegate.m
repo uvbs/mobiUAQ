@@ -15,7 +15,15 @@
 
 #import "UAQGuideViewController.h"
 
-@interface BZAgentAppDelegate ()
+#import "LoginViewController.h"
+#import "RegViewController.h"
+#import "VerifyViewController.h"
+#import "SapiSettings.h"
+#import "LoginSharedModel.h"
+#import "LoginShareAssistant.h"
+
+
+@interface BZAgentAppDelegate ()<UITabBarControllerDelegate>
 - (void)initializeSettings;
 @end
 
@@ -24,7 +32,8 @@ void restartAndKill();
 
 @implementation BZAgentAppDelegate
 
-@synthesize window;
+@synthesize window = _window;
+@synthesize viewController = _viewController;
 //@ bgTask;
 
 #pragma mark -
@@ -43,67 +52,83 @@ void restartAndKill();
 	InstallUncaughtExceptionHandler();
 	[self initializeSettings];
 	
-	window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    // sapi
+    //设置imei号,可以是mac地址
+    [[SapiSettings sharedSettings] setImei:[[UIDevice currentDevice] uniqueIdentifier]];
+    //设置地质环境online、rd、qa
+    [[SapiSettings sharedSettings] setEnvironmentType:SapiEnvironment_Online];
+    //设置appid，根据passport分配的appid做修改
+    [[SapiSettings sharedSettings] setAppid:@"1"];
+    //设置tpl，根据passport分配的appid做修改
+    [[SapiSettings sharedSettings] setTpl:@"lo"];
+    //设置key，根据passport分配的key做修改
+    [[SapiSettings sharedSettings] setAppkey:@"b5222199bf02772e41884e90812912d5"];
+    
+    //application.idleTimerDisabled
+
+    
+	self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	
-	//Disable the auto-lock feature
-	application.idleTimerDisabled = YES;
-    // 判断是否是第一次启动
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"])  {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"firstLaunch"];
-    }
-
-    //Start our application off in the IdleController.  This controller will display a simple screen stating the current state of the
-	//application.  This is useful for both debugging and getting some visual information on whether or not the agent is actually working.
-	idleController = [[BZAgentController alloc] init];
-    
-    //self.window.rootViewController = idleController;
-//	[self.window addSubview:idleController.view];
-
-    loginController  = [[BZLoginController alloc] init];
-    
-    giftController = [[UAQGiftViewController alloc] init];
-    
-    settingsController = [[UAQSettingsViewController alloc] init];
-    settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
-    settingsNavigationController.navigationBar.topItem.title = @"设置";
-    
-    NSArray *controllerArray = [[NSArray alloc] initWithObjects:idleController,giftController,settingsNavigationController,nil];
-    
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    tabBarController.delegate = self;
-    tabBarController.viewControllers = controllerArray;
-    tabBarController.selectedIndex = 2;
-    
-    UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
-    [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
-    [tabBarController.tabBar insertSubview:mview atIndex:1];
-    mview.alpha = 0.8;
-    //tabBarController.t
-    //[idleController.view setBackgroundColor:[UIColor blueColor]];
-    [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
-    [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
-    [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
-    
-    UIViewController *activeController = tabBarController.selectedViewController;
-    
-    [self.window addSubview:tabBarController.view];
-    self.window.rootViewController = tabBarController;
-    //[idleController presentModalViewController:loginController animated:NO];
-
-    
-    
-    
-    
+    self.viewController = [[[LoginViewController alloc] init] autorelease];
+    self.viewController.hideRegistButton = YES;
+    self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginSucceed:) name:kLoginSucceedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registVerified:) name:kRegistVerifiedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fillUnameSucceed:) name:kFillUnameSucceedNotification object:nil];
+    //第3方登录返回信息通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oauthLoginSucceed:) name:kOauthLoginNotification object:nil];
+    //帐号完整化返回信息
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fillAccountSucceed:) name:kFillAccountNotification object:nil];
+    //返回按钮触发事件
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut:) name:kLoginViewBackBtnPressed object:nil];
+    
+    LoginSharedModel* model = [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] getLoginedAccount];
+    if(model && model.bduss && model.ptoken)
+    {
+        //        NSLog(@"model.bduss = %@",model.bduss);
+        //        NSLog(@"model.ptoken = %@",model.ptoken);
+        NSMutableString* info = [NSMutableString stringWithString:@"uname="];
+        if(model.uname)
+            [info appendString:model.uname];
+        [info appendString:@"&bduss="];
+        [info appendString:model.bduss];
+        [info appendString:@"&ptoken="];
+        [info appendString:model.ptoken];
+        
+        
 
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
-        [UAQGuideViewController show];
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"同步成功"
+                                                            message:info
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
     }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:@"用户已注销，没有用户登录"
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
+        
+        return YES;
 
+    }
+    
+//    return YES;
 
     
-    return YES;
+    
+    
 }
 
 //JK
@@ -287,6 +312,251 @@ if( !maxBytesPerMonth) {
 
 }
 
+#pragma mark  sapi login
+
+-(void)loginSucceed:(NSNotification*) notification
+{
+    NSDictionary* dictionary = notification.userInfo;
+    if(dictionary)
+    {
+        NSString* uname = [dictionary objectForKey:@"uname"];
+        NSString* bduss = [dictionary objectForKey:@"bduss"];
+        NSString* ptoken = [dictionary objectForKey:@"ptoken"];
+        NSMutableString* info = [NSMutableString stringWithString:uname];
+        [info appendString:@"登录成功"];
+        [info appendString:@"bduss:"];
+        [info appendString:bduss];
+        
+/*        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:info
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
+ */
+        //Disable the auto-lock feature
+        
+        //application.idleTimerDisabled = YES;
+        // 判断是否是第一次启动
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"])  {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
+            [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"firstLaunch"];
+        }
+        
+        //Start our application off in the IdleController.  This controller will display a simple screen stating the current state of the
+        //application.  This is useful for both debugging and getting some visual information on whether or not the agent is actually working.
+        idleController = [[BZAgentController alloc] init];
+        
+        //self.window.rootViewController = idleController;
+        //	[self.window addSubview:idleController.view];
+        
+        //    loginController  = [[BZLoginController alloc] init];
+        
+        giftController = [[UAQGiftViewController alloc] init];
+        
+        settingsController = [[UAQSettingsViewController alloc] init];
+        settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
+        settingsNavigationController.navigationBar.topItem.title = @"设置";
+        
+        NSArray *controllerArray = [[NSArray alloc] initWithObjects:idleController,giftController,settingsNavigationController,nil];
+        
+        UITabBarController *tabBarController = [[UITabBarController alloc] init];
+        tabBarController.delegate = self;
+        tabBarController.viewControllers = controllerArray;
+        tabBarController.selectedIndex = 2;
+        
+        UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
+        [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
+        [tabBarController.tabBar insertSubview:mview atIndex:1];
+        mview.alpha = 0.8;
+        //tabBarController.t
+        //[idleController.view setBackgroundColor:[UIColor blueColor]];
+        [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
+        [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
+        [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
+        
+        UIViewController *activeController = tabBarController.selectedViewController;
+        
+        [self.window addSubview:tabBarController.view];
+        self.window.rootViewController = tabBarController;
+        //[idleController presentModalViewController:loginController animated:NO];
+        
+        
+        
+        
+        
+        [self.window makeKeyAndVisible];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
+            [UAQGuideViewController show];
+        }
+        
+        
+        
+        //return YES;
+
+        LoginSharedModel* model = [[LoginSharedModel alloc] init];
+        model.bduss = bduss;
+        model.ptoken = ptoken;
+        model.uname = uname;
+        [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] valid:model];
+        [model release];
+    }
+}
+
+-(void)registVerified:(NSNotification*) notification
+{
+    NSDictionary* dictionary = notification.userInfo;
+    if(dictionary)
+    {
+        NSString* bduss = [dictionary objectForKey:@"bduss"];
+        NSMutableString* info = [NSMutableString stringWithString:@"成功"];
+        [info appendString:@"注册成功"];
+        [info appendString:@"bduss:"];
+        [info appendString:bduss];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:info
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
+    }
+}
+
+-(void)fillUnameSucceed:(NSNotification*) notification
+{
+    NSDictionary* dictionary = notification.userInfo;
+    if(dictionary)
+    {
+        NSString* bduss = [dictionary objectForKey:@"bduss"];
+        NSMutableString* info = [NSMutableString stringWithString:bduss];
+        [info appendString:@"补填成功"];
+        [info appendString:@"bduss:"];
+        [info appendString:bduss];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:info
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
+    }
+}
+
+-(void)oauthLoginSucceed:(NSNotification*) notification
+{
+    NSDictionary* dictionary = notification.userInfo;
+    if(dictionary)
+    {
+        NSString* os_username = [[dictionary objectForKey:@"data"] objectForKey:@"os_username"];
+        NSString* bduss = [[dictionary objectForKey:@"data"] objectForKey:@"bduss"];
+        NSString* ptoken = [[dictionary objectForKey:@"data"] objectForKey:@"ptoken"];
+        NSString* display_name = [[dictionary objectForKey:@"data"] objectForKey:@"display_name"];
+        NSString* os_type = [[dictionary objectForKey:@"data"] objectForKey:@"os_type"];
+        NSString* bduid = [[dictionary objectForKey:@"data"] objectForKey:@"bduid"];
+        
+        //其他返回属性
+        //        NSString* is_binded = [[dictionary objectForKey:@"data"] objectForKey:@"is_binded"];
+        //        NSString* os_headurl = [[dictionary objectForKey:@"data"] objectForKey:@"os_headurl"];
+        //        NSString* os_sex = [[dictionary objectForKey:@"data"] objectForKey:@"os_sex"];
+        //        NSString* os_type = [[dictionary objectForKey:@"data"] objectForKey:@"os_type"];
+        //        NSString* phoenix_token = [[dictionary objectForKey:@"data"] objectForKey:@"phoenix_token"];
+        
+        NSMutableString* info = [NSMutableString stringWithString:os_username];
+        [info appendString:@"登录成功"];
+        [info appendString:@"bduss:"];
+        [info appendString:bduss];
+        [info appendString:bduid];
+        [info appendString:@"displayname:"];
+        [info appendString:display_name];
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                            message:info
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"确定", nil];
+        [alertView setTag:100];
+        [alertView show];
+        [alertView autorelease];
+        
+        LoginSharedModel* model = [[LoginSharedModel alloc] init];
+        model.bduss = bduss;
+        model.ptoken = ptoken;
+        
+        model.uname = @"";
+        model.uid = bduid;
+        model.displayname = display_name;
+        //第3方登录标记名（用第3方登录必须带）
+        model.expandName = OAUTH_NAME;
+        model.oauthType = os_type;
+        [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] valid:model];
+        [model release];
+    }
+}
+
+-(void)fillAccountSucceed:(NSNotification*) notification
+{
+    NSDictionary* dictionary = notification.userInfo;
+    if(dictionary)
+    {
+        NSString* displayname = [[dictionary objectForKey:@"data"] objectForKey:@"displayname"];
+        NSString* bduss = [[dictionary objectForKey:@"data"] objectForKey:@"bduss"];
+        NSString* uid = [[dictionary objectForKey:@"data"] objectForKey:@"uid"];
+        NSString* errcode = [[dictionary objectForKey:@"data"] objectForKey:@"errno"];
+        NSString* errmsg = [[dictionary objectForKey:@"data"] objectForKey:@"errmsg"];
+        
+        //        NSString* email = [[dictionary objectForKey:@"data"] objectForKey:@"email"];
+        //        NSString* ptoken = [[dictionary objectForKey:@"data"] objectForKey:@"ptoken"];
+        //        NSString* stoken = [[dictionary objectForKey:@"data"] objectForKey:@"stoken"];
+        //        NSString* errcode = [[dictionary objectForKey:@"data"] objectForKey:@"errno"];
+        
+        if(errcode && [errcode isEqualToString:@"0"])
+        {
+            NSMutableString* info = [NSMutableString stringWithString:displayname ? displayname : @""];
+            [info appendString:@"登录成功"];
+            [info appendString:@"bduss:"];
+            [info appendString:bduss];
+            [info appendString:uid];
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                message:info
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:@"确定", nil];
+            [alertView setTag:100];
+            [alertView show];
+            [alertView autorelease];
+        }
+        else
+        {
+            NSMutableString* info = [NSMutableString stringWithString:errmsg ? errmsg : @""];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@""
+                                                                message:info
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:@"确定", nil];
+            [alertView setTag:100];
+            [alertView show];
+            [alertView autorelease];
+        }
+        
+    }
+}
+
+-(void)logOut:(NSNotification*) notification
+{
+    //    LoginSharedModel* model = [[LoginSharedModel alloc] init];
+    //    [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] invalid:model];
+    //    [model release];
+}
+
+
+
 
 @end
 
@@ -324,3 +594,5 @@ void InstallUncaughtExceptionHandler()
 	signal(SIGBUS, SignalHandler);
 	signal(SIGPIPE, SignalHandler);
 }
+
+

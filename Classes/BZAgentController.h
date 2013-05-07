@@ -44,7 +44,15 @@
 //    NSInteger bytesDownloaded;
 //    NSInteger maxBytesAllowed;
     JobStatusInfo *statusInfo;
+    MIMBarGraph *myBarChart;
+    
+    
+    NSArray *yValuesArray;
+    NSArray *xTitlesArray;
 }
+
+@property (nonatomic, assign) MIMBarGraph *myBarChart;
+//@property (nonatomic, assign) NSString *activeURL;
 
 
 - (void)saveStatusInfo;

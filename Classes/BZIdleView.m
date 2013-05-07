@@ -14,6 +14,8 @@
 #define kBZBottomBorderShadowHeight 5
 #define kBZAnimationDuration 10.0f
 
+
+
 @implementation JobStatusInfo
 
 @synthesize jobsCompletedToday;
@@ -33,6 +35,7 @@
 @synthesize scrollPanel;
 @synthesize enabledSwitch;
 @synthesize settingsButton;
+@synthesize barChartTableView;
 //@synthesize statusInfo;
 //@synthesize apiURLField;
 //@synthesize pollNowButton;
@@ -61,6 +64,9 @@
 		scrollPanel = [[UIScrollView alloc] initWithFrame:self.frame];
 		[self addSubview:scrollPanel];
 		
+        barChartTableView = [[UITableView alloc] init];
+        barChartTableView.frame = CGRectMake(0, 0, 280, 100);
+        [scrollPanel addSubview:barChartTableView];
         
         statusBarLocationImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kBZLocationImage]];
         statusBarLocationImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -199,6 +205,7 @@
     [taskProgessLabel release];
     [taskFreqLabel release];
     [settingsButton release];
+    [barChartTableView release];
     
 	[super dealloc];
 }
@@ -222,6 +229,7 @@
     
     dataUsageLabel.frame = CGRectMake(bounds.origin.x, taskFreqLabel.frame.origin.y + taskFreqLabel.frame.size.height, dataUsageLabel.frame.size.width, dataUsageLabel.frame.size.height);
     
+    barChartTableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y, barChartTableView.frame.size.width, barChartTableView.frame.size.height);
 }
 
 #pragma mark -

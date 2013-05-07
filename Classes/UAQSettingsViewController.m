@@ -27,7 +27,7 @@
 @end
 
 @implementation UAQSettingsViewController
-
+NSString *url;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -67,6 +67,7 @@
 - (void)dealloc
 {
     [settingsView release];
+    [url release];
     [super dealloc];
 }
 
@@ -219,6 +220,43 @@
             default:
                 break;
         }
+    }else if(section == SECTION_SETTINGS)
+    {
+        switch (row) {
+            case ROW_CHECK_UPDATE:{
+                // check update
+                UAQUpdate *uaqUp = [[UAQJobManager sharedInstance] checkUpdate];
+                //BOOL updateAvailable = YES;
+                if (uaqUp.updateAvailable) {
+                    //
+                    url = uaqUp.url;
+                    UIAlertView *talert = [[UIAlertView alloc] initWithTitle:@"有新版本"
+                                                                     message:@"更新"
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"下次更新"
+                                                           otherButtonTitles:@"立即更新",nil];
+                    [talert show];
+                    [talert release];
+                }
+                break;
+            }
+                
+            default:
+                break;
+        }
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+    {
+        NSLog(@"Cancel");
+    }
+    else
+    {
+        NSLog(@"Safari");
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
     }
 }
 

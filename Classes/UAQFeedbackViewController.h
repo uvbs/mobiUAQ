@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UAQFeedbackView.h"
+#import "UAQJobManager.h"
 
 @protocol UAQFeedbackViewDelegate;
 

@@ -21,7 +21,7 @@
 
 #import "BZSettingsViewController.h"
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate>
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate>
 @property (nonatomic, copy) NSString *activeURL;
 
 - (void)registerForKeyboardNotifications;
@@ -44,6 +44,7 @@
 @implementation BZAgentController
 
 @synthesize activeURL;
+@synthesize myBarChart;
 
 - (id)init
 {
@@ -107,10 +108,14 @@
 	[idleView.enabledSwitch addTarget:self action:@selector(enabledToggleValueChanged:) forControlEvents:UIControlEventValueChanged];
     [idleView.settingsButton addTarget:self action:@selector(settingsButtonEntered) forControlEvents:UIControlEventTouchUpInside];
 //	idleView.apiURLField.delegate = self;
-	[self.view addSubview:idleView];
+	
 	
 //	idleView.apiURLField.text = activeURL;
     idleView.delegate = self;
+    idleView.barChartTableView.backgroundColor = [UIColor clearColor];
+    idleView.barChartTableView.dataSource = self;
+    idleView.barChartTableView.delegate = self;
+    [self.view addSubview:idleView];
     /*
     settingsView = [[BZSettingsView alloc] initWithFrame:self.view.bounds];
     [settingsView.maxBytesMBPerMonthSlider addTarget:self action:@selector(maxBytesMBPerMonthChaged) forControlEvents:UIControlEventValueChanged];
@@ -501,7 +506,166 @@
 
     
 }
+#pragma mark draw mychartView
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *deviceType = [UIDevice currentDevice].model;
+    if(![deviceType isEqualToString:@"iPhone"])
+        return 500;
+    
+    
+    return 200;
+}
 
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;
+{
+    return  1;
+}
+/*
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Bar Charts";
+}
+ */
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    return  1;
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"myBarChartCell";
+    
+    
+    
+    UITableViewCell *cell;// = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    //if (cell == nil)
+    //{
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    NSLog(@"row is %d",indexPath.row);
+    switch (indexPath.row)
+    {
+        case 0:
+            
+        {
+            
+            myBarChart=[[MIMBarGraph alloc]initWithFrame:CGRectMake(50, 20, idleView.barChartTableView.frame.size.width-50, idleView.barChartTableView.frame.size.width * 0.5)];
+            myBarChart.delegate=self;
+            myBarChart.tag=10+indexPath.row;
+            myBarChart.barLabelStyle=BAR_LABEL_STYLE1;
+            myBarChart.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"0,255,0,1"], nil];
+            myBarChart.mbackgroundcolor=[MIMColorClass colorWithComponent:@"0,0,0,0"];
+            myBarChart.xTitleStyle=XTitleStyle2;
+            myBarChart.gradientStyle=VERTICAL_GRADIENT_STYLE;
+            myBarChart.glossStyle=GLOSS_STYLE_2;
+            [myBarChart drawBarChart];
+            [cell.contentView addSubview:myBarChart];
+            [myBarChart release];
+        }
+            break;
+
+    }
+    return cell;
+
+}
+
+-(NSArray *)valuesForGraph:(id)graph
+{
+    
+    yValuesArray=[[NSArray alloc]initWithObjects:@"10000",@"21000",@"24000",@"11000",@"5000",@"2000",@"9000",@"4000",@"10000",@"17000",@"15000",@"11000",nil];
+    
+    return yValuesArray;
+
+}
+
+-(NSArray *)valuesForXAxis:(id)graph
+{
+    NSArray *xValuesArray=nil;
+    xValuesArray=[[NSArray alloc]initWithObjects:@"Jan",
+                  @"Feb",
+                  @"Mar",
+                  @"Apr",
+                  @"May",
+                  @"Jun",
+                  @"Jul",
+                  @"Aug",
+                  @"Sep",
+                  @"Oct",
+                  @"Nov",
+                  @"Dec", nil];
+    
+    
+    return xValuesArray;
+}
+
+
+-(NSArray *)titlesForXAxis:(id)graph
+{
+        xTitlesArray=[[NSArray alloc]initWithObjects:@"Jan",
+                      @"Feb",
+                      @"Mar",
+                      @"Apr",
+                      @"May",
+                      @"Jun",
+                      @"Jul",
+                      @"Aug",
+                      @"Sep",
+                      @"Oct",
+                      @"Nov",
+                      @"Dec", nil];
+    
+    
+    return xTitlesArray;
+    
+}
+-(NSDictionary *)animationOnBars:(id)graph
+{
+    if([(MIMBarGraph *)graph tag]==10)
+        return [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:BAR_ANIMATION_VGROW_STYLE],[NSNumber numberWithFloat:1.0], nil] forKeys:[NSArray arrayWithObjects:@"type",@"animationDuration" ,nil] ];
+    return nil;
+}
+
+-(NSDictionary *)horizontalLinesProperties:(id)graph
+{
+    if([(MIMBarGraph *)graph tag]==10)
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"4,1",@"dotted", nil];
+
+    return nil;
+}
+-(NSDictionary *)xAxisProperties:(id)graph
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
+}
+-(NSDictionary *)yAxisProperties:(id)graph
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
+}
+-(UILabel *)createLabelWithText:(NSString *)text
+{
+    UILabel *a=[[UILabel alloc]initWithFrame:CGRectMake(5, idleView.barChartTableView.frame.size.width * 0.5 + 20, 310, 20)];
+    [a setBackgroundColor:[UIColor clearColor]];
+    [a setText:text];
+    a.numberOfLines=5;
+    [a setTextAlignment:UITextAlignmentCenter];
+    [a setTextColor:[UIColor blackColor]];
+    [a setFont:[UIFont fontWithName:@"Helvetica" size:12]];
+    [a setMinimumFontSize:8];
+    return a;
+    
+}
+
+
+#pragma mark - end draw myBarChartView
 
 - (void) clearStatusInfoEveryDay
 {

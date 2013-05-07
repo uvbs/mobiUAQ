@@ -6,6 +6,22 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "MIMBarGraph.h"
+#import "MIMColor.h"
+
+@interface BarChartClass : UIViewController<UITableViewDelegate,UITableViewDataSource,BarGraphDelegate>
+{
+    
+    IBOutlet UITableView *myTableView;
+    MIMBarGraph *myBarChart;
+    
+    
+    NSArray *yValuesArray;
+    NSArray *xTitlesArray;
+}
+
+@end
 
 
 @interface  JobStatusInfo : NSObject {
@@ -45,6 +61,7 @@
 	
 	UIScrollView *scrollPanel;
 	
+    UITableView *barChartTableView;
 	UIImageView *statusImage;
 	UIImageView *brandingImage;
 	UILabel *statusLabel;
@@ -81,6 +98,8 @@
 @property (nonatomic, readonly) UIScrollView *scrollPanel;
 @property (nonatomic, readonly) UISwitch *enabledSwitch;
 @property (nonatomic, readonly) UIButton *settingsButton;
+@property (nonatomic, readonly) UITableView *barChartTableView;
+
 
 //@property (nonatomic, assign) JobStatusInfo *statusInfo;
 //@property (nonatomic, readonly) UITextField *apiURLField;

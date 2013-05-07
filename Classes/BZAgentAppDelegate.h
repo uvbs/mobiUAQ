@@ -16,6 +16,10 @@
 #import "UAQGuideViewController.h"
 #import "UAQSettingsViewController.h"
 
+@class LoginViewController;
+@class RegViewController;
+
+
 @interface BZAgentAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
 	BZAgentController *idleController;
@@ -33,7 +37,10 @@
     
 }
 
-@property (nonatomic, readonly, retain) UIWindow *window;
+
+@property (strong, nonatomic) UIWindow *window;
+
+@property (strong, nonatomic) LoginViewController *viewController;
 
 @end
 

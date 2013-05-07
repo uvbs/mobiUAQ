@@ -21,7 +21,7 @@
 @private
     id<UAQFeedbackViewDelegate> delegate;
     UITextField *textFieldFeedback;
-    UILabel *labelStates;
+    UITextView *labelStates;
     UITextField *textFieldUserName;
     UIButton * btnCommit;
     UIScrollView *scrollPanel;
@@ -30,7 +30,7 @@
 
 @property (nonatomic, assign) id<UAQFeedbackViewDelegate> delegate;
 @property (nonatomic, readonly) UITextField *textFieldFeedback;
-@property (nonatomic, readonly) UILabel *labelStates;
+@property (nonatomic, readonly) UITextView *labelStates;
 @property (nonatomic, readonly) UITextField *textFieldUserName;
 @property (nonatomic, readonly) UIButton * btnCommit;
 @property (nonatomic, readonly) UIScrollView *scrollPanel;

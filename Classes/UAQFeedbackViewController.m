@@ -32,6 +32,7 @@
     NSLog(@"loadview");
     feedbackView = [[UAQFeedbackView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
     feedbackView.delegate = self;
+    [feedbackView.btnCommit addTarget:self action:@selector(btnFeedbackPressed) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:feedbackView];
     
@@ -45,6 +46,11 @@
         self.navigationItem.title = @"意见反馈";
     }
     return self;
+}
+
+- (void)btnFeedbackPressed
+{
+    [[UAQJobManager sharedInstance] publishFeedback:feedbackView.textFieldFeedback.text username:feedbackView.textFieldUserName.text];
 }
 
 - (void)viewDidLoad

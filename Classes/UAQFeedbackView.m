@@ -42,9 +42,10 @@
         textFieldUserName.placeholder = @"您的邮箱/hi帐号（选填）";
         [scrollPanel addSubview:textFieldUserName];
         
-        labelStates = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320-40, 60)];
+        labelStates = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320-40, 60)];
         labelStates.text = @"欢迎您提出宝贵的意见和建议，您留下的每个字都将用来改善我们的软件";
         labelStates.backgroundColor = [UIColor clearColor];
+        labelStates.editable = NO;
         [scrollPanel addSubview:labelStates];
         
         btnCommit = [UIButton buttonWithType:UIButtonTypeCustom];
