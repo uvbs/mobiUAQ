@@ -68,6 +68,65 @@ void restartAndKill();
 
     
 	self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    /////
+    // debug below
+    ////
+    
+    idleController = [[BZAgentController alloc] init];
+    
+    //self.window.rootViewController = idleController;
+    //	[self.window addSubview:idleController.view];
+    
+    //    loginController  = [[BZLoginController alloc] init];
+    
+    giftController = [[UAQGiftViewController alloc] init];
+    
+    settingsController = [[UAQSettingsViewController alloc] init];
+    
+    configController = [[UAQConfigViewController alloc] init];
+    
+    settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
+    settingsNavigationController.navigationBar.topItem.title = @"设置";
+    
+    NSArray *controllerArray = [[NSArray alloc] initWithObjects:configController,idleController,giftController,settingsNavigationController,nil];
+    
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController.delegate = self;
+    tabBarController.viewControllers = controllerArray;
+    tabBarController.selectedIndex = 2;
+    
+    UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
+    [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
+    [tabBarController.tabBar insertSubview:mview atIndex:1];
+    mview.alpha = 0.8;
+    //tabBarController.t
+    //[idleController.view setBackgroundColor:[UIColor blueColor]];
+    [configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
+    [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
+    [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
+    [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
+    
+    UIViewController *activeController = tabBarController.selectedViewController;
+    
+    [self.window addSubview:tabBarController.view];
+    self.window.rootViewController = tabBarController;
+    //[idleController presentModalViewController:loginController animated:NO];
+    
+    
+    
+    
+    
+    [self.window makeKeyAndVisible];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
+        [UAQGuideViewController show];
+    }
+    
+    return YES;
+    
+    ///////
+    // debug above
+    ///////
 	
     self.viewController = [[[LoginViewController alloc] init] autorelease];
     self.viewController.hideRegistButton = YES;
@@ -357,10 +416,13 @@ if( !maxBytesPerMonth) {
         giftController = [[UAQGiftViewController alloc] init];
         
         settingsController = [[UAQSettingsViewController alloc] init];
+        
+        configController = [[UAQConfigViewController alloc] init];
+        
         settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
         settingsNavigationController.navigationBar.topItem.title = @"设置";
         
-        NSArray *controllerArray = [[NSArray alloc] initWithObjects:idleController,giftController,settingsNavigationController,nil];
+        NSArray *controllerArray = [[NSArray alloc] initWithObjects:configController,idleController,giftController,settingsNavigationController,nil];
         
         UITabBarController *tabBarController = [[UITabBarController alloc] init];
         tabBarController.delegate = self;
@@ -373,6 +435,7 @@ if( !maxBytesPerMonth) {
         mview.alpha = 0.8;
         //tabBarController.t
         //[idleController.view setBackgroundColor:[UIColor blueColor]];
+        [configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
         [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
         [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
         [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
