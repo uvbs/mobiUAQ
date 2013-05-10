@@ -49,7 +49,8 @@ NSString *url;
     settingsView.tableView.delegate = self;
     NSLog(@"SettingsViewController");
     [self.view addSubview:settingsView];
-    self.navigationController.navigationBar.topItem.titleView = settingsView.headView;
+    self.navigationController.navigationBar.topItem.titleView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"head_background.png"]];
+    //[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head_background.png"]];
 }
 
 - (void)viewDidLoad

@@ -24,6 +24,7 @@
     UIImageView *headView ;
     GMGridView *gmGridView;
     UIButton *infoButton;
+    UIButton *startButton;
 }
 
 @property (nonatomic, assign) id<UAQConfigViewDelegate> delegate;
@@ -31,6 +32,7 @@
 @property (nonatomic, readonly) UIImageView *headView ;
 @property (nonatomic, readonly) GMGridView *gmGridView;
 @property (nonatomic, readonly) UIButton *infoButton;
+@property (nonatomic, readonly) UIButton *startButton;
 
 
 @end

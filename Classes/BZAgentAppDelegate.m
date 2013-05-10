@@ -93,12 +93,14 @@ void restartAndKill();
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     tabBarController.delegate = self;
     tabBarController.viewControllers = controllerArray;
-    tabBarController.selectedIndex = 2;
-    
+    tabBarController.selectedIndex = 0;
+    [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
+ /*
     UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
     [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
     [tabBarController.tabBar insertSubview:mview atIndex:1];
     mview.alpha = 0.8;
+  */
     //tabBarController.t
     //[idleController.view setBackgroundColor:[UIColor blueColor]];
     [configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
