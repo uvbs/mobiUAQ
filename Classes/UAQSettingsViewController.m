@@ -49,7 +49,8 @@ NSString *url;
     settingsView.tableView.delegate = self;
     NSLog(@"SettingsViewController");
     [self.view addSubview:settingsView];
-    self.navigationController.navigationBar.topItem.titleView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"head_background.png"]];
+    //self.navigationBar.topItem.titleView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"head_background.png"]];
+    
     //[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head_background.png"]];
 }
 
@@ -226,13 +227,14 @@ NSString *url;
         switch (row) {
             case ROW_CHECK_UPDATE:{
                 // check update
+                NSLog(@"check update");
                 UAQUpdate *uaqUp = [[UAQJobManager sharedInstance] checkUpdate];
                 //BOOL updateAvailable = YES;
                 if (uaqUp.updateAvailable) {
                     //
                     url = uaqUp.url;
                     UIAlertView *talert = [[UIAlertView alloc] initWithTitle:@"有新版本"
-                                                                     message:@"更新"
+                                                                     message:uaqUp.msg
                                                                     delegate:self
                                                            cancelButtonTitle:@"下次更新"
                                                            otherButtonTitles:@"立即更新",nil];

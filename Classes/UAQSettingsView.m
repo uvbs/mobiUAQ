@@ -22,7 +22,7 @@
         [self setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"main_background.png"]]];
         
         tableView = [[UITableView alloc] initWithFrame:CGRectMake(20, 80, 320-40, 200) style:UITableViewStyleGrouped];
-        tableView.backgroundColor = [UIColor brownColor];
+        tableView.backgroundColor = [UIColor whiteColor];
         tableView.allowsSelection = YES;
         [self addSubview:tableView];
         

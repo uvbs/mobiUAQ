@@ -20,8 +20,9 @@
 #import "BZWebViewController.h"
 
 #import "BZSettingsViewController.h"
+#import "UAQConfigViewController.h"
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate>
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UAQConfigViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate>
 @property (nonatomic, copy) NSString *activeURL;
 
 - (void)registerForKeyboardNotifications;
@@ -79,9 +80,10 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(jobUploaded:) name:BZJobUploadedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(failedToUploadJob:) name:BZFailedToUploadJobNotification object:nil];
 		
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startButtonStatusChanged:) name:UAQConfigStartButtonNotification object:nil];
+        
 		NSNumber *shouldAutoPoll = [[NSUserDefaults standardUserDefaults] objectForKey:kBZAutoPollSettingsKey];
 
-       // NSLog(@"JK auto-pull %i",[shouldAutoPoll boolValue]);
 		if (shouldAutoPoll && [shouldAutoPoll boolValue])
         {
             isEnabled = YES;
@@ -90,10 +92,10 @@
 		}
    //     [self pollForJobs:true];
 
-        NSInteger screenSaverTimeout = [self screenSaverTimeout];
-		if (screenSaverTimeout > 0) {
-			[self startScreenSaverTimer];
-		}
+//      NSInteger screenSaverTimeout = [self screenSaverTimeout];
+//		if (screenSaverTimeout > 0) {
+//			[self startScreenSaverTimer];
+//		}
 
 	}
 	return self;
@@ -106,16 +108,29 @@
 	idleView = [[BZIdleView alloc] initWithFrame:self.view.bounds];
 //	[idleView.pollNowButton addTarget:self action:@selector(pollNowPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[idleView.enabledSwitch addTarget:self action:@selector(enabledToggleValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [idleView.settingsButton addTarget:self action:@selector(settingsButtonEntered) forControlEvents:UIControlEventTouchUpInside];
-//	idleView.apiURLField.delegate = self;
-	
+//    [idleView.settingsButton addTarget:self action:@selector(settingsButtonEntered) forControlEvents:UIControlEventTouchUpInside];
+
+	[idleView.trafficInfoButton addTarget:self action:@selector(trafficInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    [idleView.giftInfoButton addTarget:self action:@selector(giftInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
 	
 //	idleView.apiURLField.text = activeURL;
     idleView.delegate = self;
     idleView.barChartTableView.backgroundColor = [UIColor clearColor];
     idleView.barChartTableView.dataSource = self;
     idleView.barChartTableView.delegate = self;
+    
+    idleView.giftInfoTableView.backgroundColor = [UIColor clearColor];
+    idleView.giftInfoTableView.dataSource = self;
+    idleView.giftInfoTableView.delegate = self;
+    
+    idleView.currentPage = 0;
+    idleView.pageControl.numberOfPages = 2;
+    idleView.pageControl.currentPage = 0;
+
     [self.view addSubview:idleView];
+    
+    
     /*
     settingsView = [[BZSettingsView alloc] initWithFrame:self.view.bounds];
     [settingsView.maxBytesMBPerMonthSlider addTarget:self action:@selector(maxBytesMBPerMonthChaged) forControlEvents:UIControlEventValueChanged];
@@ -133,14 +148,12 @@
 
 -(void) viewDidLoad
 {
-    idleView.enabledSwitch.on = YES;
-    [idleView showEnabled:@"自动监测任务"];
-    isEnabled = YES;
-    [self startPolling];
+//    idleView.enabledSwitch.on = YES;
+//    [idleView showEnabled:@"自动监测任务"];
+//    isEnabled = YES;
+//    [self startPolling];
     [idleView updateStatusInfo:statusInfo withJobFinished:false];
 
-    //if( idleView.enabledSwitch.state == )
-    //[idleView.enabledSwitch sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewDidUnload
@@ -163,6 +176,61 @@
 	[super dealloc];
 }
 
+#pragma button action
+- (void)trafficInfoButtonAction
+{
+    [idleView.trafficInfoButton setTitleColor:[UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1] forState:UIControlStateNormal];
+    [idleView.giftInfoButton setTitleColor:[UIColor colorWithRed:142.0/255 green:142.0/255 blue:142.0/255 alpha:1] forState:UIControlStateNormal];
+    [UIView beginAnimations:nil context:nil];//动画开始
+    [UIView setAnimationDuration:0.3];
+    
+    idleView.slidLabel.frame = CGRectMake(0, kUAQButtonHeight, kUAQSlideWidth, 4);
+    [idleView.scrollPanel setContentOffset:CGPointMake(320*0, 0)];//页面滑动
+    
+    [UIView commitAnimations];
+
+}
+
+- (void)giftInfoButtonAction
+{
+    [idleView.giftInfoButton setTitleColor:[UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1]  forState:UIControlStateNormal];
+    [idleView.trafficInfoButton setTitleColor:[UIColor colorWithRed:142.0/255 green:142.0/255 blue:142.0/255 alpha:1] forState:UIControlStateNormal];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    
+    idleView.slidLabel.frame = CGRectMake(160, kUAQButtonHeight, kUAQSlideWidth, 4);
+    [idleView.scrollPanel setContentOffset:CGPointMake(320*1, 0)];
+    [UIView commitAnimations];
+}
+
+// At the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
+    CGFloat pageWidth = idleView.scrollPanel.frame.size.width;
+    int page = floor((idleView.scrollPanel.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    
+    idleView.pageControl.currentPage = page;
+    idleView.currentPage = page;
+    idleView.pageControlUsed = NO;
+    [self btnActionShow];
+}
+
+- (void) btnActionShow
+{
+    if (idleView.currentPage == 0) {
+        [self trafficInfoButtonAction];
+    }
+    else{
+        [self giftInfoButtonAction];
+    }
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    //暂不处理 - 其实左右滑动还有包含开始等等操作，这里不做介绍
+}
+
 #pragma mark -
 #pragma mark Polling
 
@@ -177,7 +245,7 @@
 	
 	float pollFrequency = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZJobsFetchTime] floatValue];
 	if (pollFrequency <= 0) {
-		pollFrequency = 30.0;
+		pollFrequency = 30.0; // seconds
 	}
 	pollTimer = [[NSTimer scheduledTimerWithTimeInterval:pollFrequency target:self selector:@selector(tick:) userInfo:nil repeats:YES] retain];
 }
@@ -232,12 +300,14 @@
     if (!busy) 
     {
         
-//        [idleView showPolling:@"监测中"];
+//        [idleView showPolling:@"监测中"];公公公愚
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        statusInfo.maxBytesAllowed = [[defaults objectForKey:kBZMaxBytesPerMonth] integerValue];
 
  //       [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
 ///*
         if((statusInfo.jobsCompletedToday < statusInfo.maxJobsPerDay) ){
-            if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed * 1000 * 1000) ){
+            if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
                 // Switch to the next valid server
                 [self switchActiveUrl];
                 [idleView showPolling:@"监测中"];
@@ -281,7 +351,7 @@
 - (void)pollNowPressed:(UIButton*)button
 {
 	[self pollForJobs:false];
-	[self resetScreenSaverTimer];
+	//[self resetScreenSaverTimer];
 }
 
 - (void)enabledToggleValueChanged:(UISwitch*)toggle
@@ -297,7 +367,7 @@
 		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
 	}
-	[self resetScreenSaverTimer];
+	//[self resetScreenSaverTimer];
 }
 
 /*
@@ -313,6 +383,25 @@
 }
 */
 
+- (void)startButtonStatusDidChanged:(BOOL)shouldStart
+{
+    NSLog(@"from delegate");
+    if (shouldStart) {
+		isEnabled = YES;
+		//[idleView showEnabled:@"Polling enabled"];
+        [idleView showEnabled:@"自动监测任务"];
+		[self startPolling];
+	}
+	else {
+		isEnabled = NO;
+		[idleView showDisabled:@"手动监测任务"];
+		[self stopPolling];
+	}
+	//[self resetScreenSaverTimer];
+
+}
+// settings moved to configview
+/*
 - (void)settingsViewControllerDidFinish:(BZSettingsViewController *)controller
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -333,7 +422,7 @@
 //    [idleView updateStatusInfo:statusInfo withJobFinished:NO];
 
 }
-
+*/
 
 - (void)stopPollingRequested
 {
@@ -341,7 +430,7 @@
 	
 	isEnabled = NO;
 	[idleView.enabledSwitch setOn:NO animated:NO];
-	[self resetScreenSaverTimer];
+	//[self resetScreenSaverTimer];
 }
 
 #pragma mark -
@@ -396,6 +485,45 @@
             [idleView showDisabled:@"停止监测任务"];
 		}
 	}
+}
+
+- (void)applicationEnterBackground:(BOOL)entered
+{
+    if (entered) {
+		isEnabled = YES;
+		//[idleView showEnabled:@"Polling enabled"];
+        [idleView showEnabled:@"自动监测任务"];
+		[self startPolling];
+	}
+	else {
+		isEnabled = NO;
+		[idleView showDisabled:@"手动监测任务"];
+		[self stopPolling];
+	}}
+
+- (void)startButtonStatusChanged:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    BOOL buttonStatus = [[userInfo objectForKey:kUAQButtonStatus] boolValue];
+    
+    NSLog(@"from notification center ");
+    NSLog(buttonStatus?@"YES":@"NO");
+
+    
+    if (buttonStatus) {
+		isEnabled = YES;
+		//[idleView showEnabled:@"Polling enabled"];
+        [idleView showEnabled:@"自动监测任务"];
+		[self startPolling];
+	}
+	else {
+		isEnabled = NO;
+		[idleView showDisabled:@"手动监测任务"];
+		[self stopPolling];
+	}
+	//[self resetScreenSaverTimer];
+
+    
 }
 
 - (void)jobListUpdated:(NSNotification*)notification
@@ -509,12 +637,15 @@
 #pragma mark draw mychartView
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (tableView == idleView.barChartTableView) {
+        
     NSString *deviceType = [UIDevice currentDevice].model;
     if(![deviceType isEqualToString:@"iPhone"])
         return 500;
+    }
+
     
-    
-    return 200;
+    return 300;
 }
 
 
@@ -548,41 +679,57 @@
     
     
     UITableViewCell *cell;// = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
-    //if (cell == nil)
-    //{
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    NSLog(@"row is %d",indexPath.row);
-    switch (indexPath.row)
-    {
-        case 0:
-            
-        {
-            
-            myBarChart=[[MIMBarGraph alloc]initWithFrame:CGRectMake(50, 20, idleView.barChartTableView.frame.size.width-50, idleView.barChartTableView.frame.size.width * 0.5)];
-            myBarChart.delegate=self;
-            myBarChart.tag=10+indexPath.row;
-            myBarChart.barLabelStyle=BAR_LABEL_STYLE1;
-            myBarChart.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"0,255,0,1"], nil];
-            myBarChart.mbackgroundcolor=[MIMColorClass colorWithComponent:@"0,0,0,0"];
-            myBarChart.xTitleStyle=XTitleStyle2;
-            myBarChart.gradientStyle=VERTICAL_GRADIENT_STYLE;
-            myBarChart.glossStyle=GLOSS_STYLE_2;
-            [myBarChart drawBarChart];
-            [cell.contentView addSubview:myBarChart];
-            [myBarChart release];
-        }
-            break;
 
+    if (tableView == idleView.barChartTableView)
+    {
+        NSLog(@"row is %d",indexPath.row);
+        switch (indexPath.row)
+        {
+            case 0:
+            {
+                myBarChart=[[MIMBarGraph alloc]initWithFrame:CGRectMake(0, 0, idleView.barChartTableView.frame.size.width, idleView.barChartTableView.frame.size.height)];
+                myBarChart.delegate=self;
+                myBarChart.tag=10+indexPath.row;
+                myBarChart.barLabelStyle=BAR_LABEL_STYLE2;
+                myBarChart.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"93,156,210,1"], nil];
+                myBarChart.mbackgroundcolor=[MIMColorClass colorWithComponent:@"232,234,237,1"];
+                myBarChart.xTitleStyle=XTitleStyle2;
+                myBarChart.gradientStyle=VERTICAL_GRADIENT_STYLE;
+                myBarChart.glossStyle=GLOSS_STYLE_1;
+                
+                [myBarChart drawBarChart];
+                [cell.contentView addSubview:myBarChart];
+                [myBarChart release];
+            }
+            break;
+                
+        }
+    }else
+    {
+        
     }
     return cell;
 
 }
 
+-(NSDictionary *)barProperties:(id)graph
+{
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:20.0] forKey:@"barwidth"];
+    return dict;
+} //barwidth,shadow,horGradient,verticalGradient,gapBetweenGroup,gapBetweenBars
+-(NSDictionary *)yAxisProperties:(id)graph
+{
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hide"];
+    return dict;
+}
+//hide,color,width,style
+
+
 -(NSArray *)valuesForGraph:(id)graph
 {
     
-    yValuesArray=[[NSArray alloc]initWithObjects:@"10000",@"21000",@"24000",@"11000",@"5000",@"2000",@"9000",@"4000",@"10000",@"17000",@"15000",@"11000",nil];
+    yValuesArray=[[NSArray alloc]initWithObjects:@"10",@"21",@"24",@"11",@"5",@"2",@"9",@"4",@"10",@"17",@"15",@"11",nil];
     
     return yValuesArray;
 
@@ -592,7 +739,7 @@
 {
     NSArray *xValuesArray=nil;
     xValuesArray=[[NSArray alloc]initWithObjects:@"Jan",
-                  @"Feb",
+                  @"二月",
                   @"Mar",
                   @"Apr",
                   @"May",
@@ -611,7 +758,7 @@
 
 -(NSArray *)titlesForXAxis:(id)graph
 {
-        xTitlesArray=[[NSArray alloc]initWithObjects:@"Jan",
+        xTitlesArray=[[NSArray alloc]initWithObjects:@"一月",
                       @"Feb",
                       @"Mar",
                       @"Apr",
@@ -634,7 +781,7 @@
         return [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:BAR_ANIMATION_VGROW_STYLE],[NSNumber numberWithFloat:1.0], nil] forKeys:[NSArray arrayWithObjects:@"type",@"animationDuration" ,nil] ];
     return nil;
 }
-
+/*
 -(NSDictionary *)horizontalLinesProperties:(id)graph
 {
     if([(MIMBarGraph *)graph tag]==10)
@@ -642,14 +789,17 @@
 
     return nil;
 }
+ */
 -(NSDictionary *)xAxisProperties:(id)graph
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
 }
+/*
 -(NSDictionary *)yAxisProperties:(id)graph
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
 }
+ */
 -(UILabel *)createLabelWithText:(NSString *)text
 {
     UILabel *a=[[UILabel alloc]initWithFrame:CGRectMake(5, idleView.barChartTableView.frame.size.width * 0.5 + 20, 310, 20)];
@@ -872,7 +1022,7 @@
 - (void)resetScreenSaverTimer
 {
 	[self stopScreenSaverTimer];
-	[self adjustTimer];
+	//[self adjustTimer];
 }
 
 - (void)screenSaverTick:(NSTimer*)timer
@@ -883,7 +1033,7 @@
 
 - (void)idleViewTouched:(BZIdleView*)view
 {
-	[self resetScreenSaverTimer];
+	//[self resetScreenSaverTimer];
 }
 
 

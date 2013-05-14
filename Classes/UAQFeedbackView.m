@@ -7,11 +7,12 @@
 //
 
 #import "UAQFeedbackView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation UAQFeedbackView
 
 @synthesize delegate;
-@synthesize textFieldFeedback;
+@synthesize textViewFeedback;
 @synthesize textFieldUserName;
 @synthesize labelStates;
 @synthesize btnCommit;
@@ -22,42 +23,48 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        UIGraphicsBeginImageContext(self.frame.size);
-        [[UIImage imageNamed:@"noise_pattern"] drawInRect:self.bounds];
-        UIImage *bg_image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        [self setBackgroundColor:[UIColor colorWithPatternImage:bg_image]];
+        self.backgroundColor = [UIColor whiteColor];
         self.userInteractionEnabled = YES;
 		//[bg_image release];
         
 		scrollPanel = [[UIScrollView alloc] initWithFrame:self.frame];
-		[self addSubview:scrollPanel];
+        scrollPanel.contentSize = CGSizeMake(300, 200);
+        scrollPanel.scrollEnabled = YES;
         
-        textFieldFeedback = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320-40, 300)];
-        textFieldFeedback.placeholder = @"请输入您的反馈意见（字数500以内）";
+        textViewFeedback = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 300, 100)];
+        textViewFeedback.text = @"";
+        //textViewFeedback. = UITextBorderStyleRoundedRect;
+        textViewFeedback.backgroundColor = [UIColor whiteColor];
+        textViewFeedback.layer.borderColor = [UIColor grayColor].CGColor;
+        textViewFeedback.layer.borderWidth = 1.0;
+        textViewFeedback.layer.cornerRadius = 5.0;
         
-        [scrollPanel addSubview:textFieldFeedback ];
         
-        textFieldUserName = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320-40, 40)];
-        textFieldUserName.placeholder = @"您的邮箱/hi帐号（选填）";
-        [scrollPanel addSubview:textFieldUserName];
+        [scrollPanel addSubview:textViewFeedback ];
         
-        labelStates = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320-40, 60)];
+
+        lablePlaceHolder = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 300, 20)];
+        lablePlaceHolder.text = @"请输入您的反馈意见（字数500以内）";
+        lablePlaceHolder.enabled = NO;
+        lablePlaceHolder.font = [UIFont systemFontOfSize:12];
+        lablePlaceHolder.backgroundColor = [UIColor clearColor];
+        [scrollPanel addSubview:lablePlaceHolder];
+        
+        labelStates = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
         labelStates.text = @"欢迎您提出宝贵的意见和建议，您留下的每个字都将用来改善我们的软件";
         labelStates.backgroundColor = [UIColor clearColor];
         labelStates.editable = NO;
         [scrollPanel addSubview:labelStates];
         
-        btnCommit = [UIButton buttonWithType:UIButtonTypeCustom];
-        btnCommit.frame = CGRectMake(0, 0, 320-40, 30);
-        [btnCommit setTitle:@"..." forState:UIControlStateNormal];
-        // [settingsButton addTarget:self action:@selector(customSettings) forControlEvents:UIControlEventTouchUpInside];
-        UIImage *btnImage = [UIImage imageNamed:@"poll_button.png"];
-        [btnCommit setImage:btnImage forState:UIControlStateNormal];
-        [scrollPanel addSubview:btnCommit];
-        [btnImage release];
+        [self addSubview:scrollPanel];
+
     }
     return self;
+}
+
+- (void)updatePlaceHolder:(NSString *)msg
+{
+    lablePlaceHolder.text =  msg;
 }
 
 /*
@@ -74,10 +81,11 @@
     CGRect bounds = self.bounds;
     NSLog(@"%f",labelStates.frame.size.width);
     labelStates.frame = CGRectMake(bounds.origin.x,bounds.origin.y, labelStates.frame.size.width, labelStates.frame.size.height);
-    textFieldFeedback.frame = CGRectMake(bounds.origin.x, bounds.origin.y + labelStates.frame.size.height, textFieldFeedback.frame.size.width, textFieldFeedback.frame.size.height);
-    textFieldUserName.frame = CGRectMake(bounds.origin.x, labelStates.frame.origin.y + textFieldFeedback.frame.size.height, textFieldUserName.frame.size.width, textFieldUserName.frame.size.height);
+    textViewFeedback.frame = CGRectMake(bounds.origin.x+10, bounds.origin.y + labelStates.frame.size.height, textViewFeedback.frame.size.width, textViewFeedback.frame.size.height);
+    lablePlaceHolder.frame = CGRectMake(bounds.origin.x+10, bounds.origin.y + labelStates.frame.size.height, lablePlaceHolder.frame.size.width, lablePlaceHolder.frame.size.height);
+    //textFieldUserName.frame = CGRectMake(bounds.origin.x, labelStates.frame.origin.y + textViewFeedback.frame.size.height, textFieldUserName.frame.size.width, textFieldUserName.frame.size.height);
     
-    btnCommit.frame = CGRectMake(bounds.origin.x, textFieldUserName.frame.origin.y + textFieldUserName.frame.size.height, btnCommit.frame.size.width, btnCommit.frame.size.height);
+    //btnCommit.frame = CGRectMake(bounds.origin.x, textFieldUserName.frame.origin.y + textFieldUserName.frame.size.height, btnCommit.frame.size.width, btnCommit.frame.size.height);
 }
 
 @end

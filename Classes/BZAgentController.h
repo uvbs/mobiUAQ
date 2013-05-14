@@ -10,13 +10,22 @@
 //Views
 #import "BZIdleView.h"
 #import "BZSettingsViewController.h"
-
+#import "UAQConfigViewController.h"
 @class BZAgentController;
+@class UAQConfigViewController;
+
 @protocol BZAgentControllerDelegate <NSObject>
 
 //- (void)settingsViewControllerDidFinish:(BZAgentController *)controller;
 
 @end
+/*
+@protocol UAQConfigViewControllerDelegate <NSObject>
+
+- (void)startButtonStatusDidChanged:(BOOL)shouldStart;
+
+@end
+*/
 
 /**
  * Controller that is presented when the agent is idle.  This is also handy for quick modifications to the agents for debugging and testing
@@ -57,5 +66,6 @@
 
 - (void)saveStatusInfo;
 -(void)updateStatusInfo;
+- (void)applicationEnterBackground:(BOOL)entered;
 
 @end

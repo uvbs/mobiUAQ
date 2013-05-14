@@ -10,18 +10,25 @@
 
 @implementation UAQUpdate
 
+@synthesize updateAvailable;
+@synthesize url;
+@synthesize msg;
 
 
 @end
+
+
 
 static UAQJobManager *sharedInstance;
 
 @interface UAQJobManager ()
 @property (nonatomic, retain) BZHTTPURLConnection *activeRequest;
+
 @end
 
 @implementation UAQJobManager
 
+@synthesize uaqCombosDictionary;
 
 + (void)initialize
 {
@@ -99,7 +106,7 @@ static UAQJobManager *sharedInstance;
     UAQUpdate * uaqUp = [[UAQUpdate alloc] init];
     uaqUp.updateAvailable = YES;
     uaqUp.url = @"http://m.so.com";
-    
+    uaqUp.msg = @"有新版本";
     return uaqUp;
 }
 

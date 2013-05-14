@@ -8,21 +8,39 @@
 
 #import <UIKit/UIKit.h>
 #import "UAQConfigView.h"
+#import "UAQJobManager.h"
+
+@protocol UAQConfigViewControllerDelegate;
+
+
+
+//@interface BZSettingsViewController : UIViewController<UAQConfigViewControllerDelegate>{
+//@private
+//    id <BZSettingsViewControllerDelegate> delegate;
+    
 
 @protocol UAQConfigViewDelegate;
 
-
-@interface UAQConfigViewController : UIViewController<UAQConfigViewDelegate>
+@interface UAQConfigViewController : UIViewController<UAQConfigViewDelegate,UAQConfigViewControllerDelegate>
 {
     CGPoint dragStartPt;
     bool dragging;
     
     @private
-        id <UAQConfigViewDelegate> delegate;
+        id <UAQConfigViewControllerDelegate> delegate;
+
+        //id <UAQConfigViewDelegate> delegate;
         
         UAQConfigView *configView;
     }
     
-    @property (nonatomic, assign) id<UAQConfigViewDelegate> delegate;
+    @property (nonatomic, assign) id<UAQConfigViewControllerDelegate> delegate;
 
 @end
+
+@protocol UAQConfigViewControllerDelegate <NSObject>
+
+- (void)startButtonStatusDidChanged:(BOOL)shouldStart;
+
+@end
+

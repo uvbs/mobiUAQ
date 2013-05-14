@@ -20,20 +20,26 @@
 {
 @private
     id<UAQFeedbackViewDelegate> delegate;
-    UITextField *textFieldFeedback;
+    UITextView *textViewFeedback;
     UITextView *labelStates;
     UITextField *textFieldUserName;
     UIButton * btnCommit;
     UIScrollView *scrollPanel;
     
+    UILabel *lablePlaceHolder;
+    
+
+    
 }
 
 @property (nonatomic, assign) id<UAQFeedbackViewDelegate> delegate;
-@property (nonatomic, readonly) UITextField *textFieldFeedback;
+@property (nonatomic, readonly) UITextView *textViewFeedback;
 @property (nonatomic, readonly) UITextView *labelStates;
 @property (nonatomic, readonly) UITextField *textFieldUserName;
-@property (nonatomic, readonly) UIButton * btnCommit;
+@property (nonatomic, assign) UIButton * btnCommit;
 @property (nonatomic, readonly) UIScrollView *scrollPanel;
+@property (nonatomic, assign) UILabel *lablePlaceHolder;
 
 
+- (void)updatePlaceHolder:(NSString *)msg;
 @end

@@ -16,6 +16,8 @@
 #define BZNewJobReceivedNotification @"BZNewJobReceivedNotification"
 #define BZNoJobsNotification @"BZNoJobsNotification"
 #define BZFailedToGetJobsNotification @"BZFailedToGetJobsNotification"
+#define UAQConfigStartButtonNotification @"UAQConfigStartButtonNotification"
+
 
 #define BZJobUploadedNotification @"BZJobUploadedNotification"
 #define BZFailedToUploadJobNotification @"BZFailedToUploadJobNotification"
@@ -82,6 +84,7 @@ extern const NSString *BZPasswordKey;
 #define kBZBytesUploaded @"bz-bytes-uploaded"
 #define kBZBytesDownloaded @"bz-bytes-downloaded"
 #define kBZMaxBytesPerMonth @"bz-max-bytes-per-month"
+#define kBZUserPressedStart @"bz-user-pressed-start"
 
 //FPS
 #define kBZFPSSettingsKey @"bz-fps"
@@ -126,3 +129,4 @@ extern const NSString *BZPasswordKey;
 
 //Other constants
 #define kBZJobsErrorKey @"bz-error-key"
+#define kUAQButtonStatus @"uaq-btn-status"

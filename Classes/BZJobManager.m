@@ -102,11 +102,11 @@ static BZJobManager *sharedInstance;
         NSString *pattern;
         if ([url characterAtIndex:[url length] - 1] == '/') {
             //pattern = @"work/getwork.php?recover=1&location=%@&key=%@&pc=android_asdffdaf&operator=chinamobile&active=2";
-            pattern = @"updatefcgi?recover=1&location=CN_110000_110100_1&key=ios_id&pc=ios_123&operator=chinamobile&active=1";
+            pattern = @"taskfcgi?recover=1&location=CN_110000_110100_1&key=ios_id&pc=ios_123&operator=chinamobile&active=1";
         }
         else {
             //pattern = @"/work/getwork.php?recover=1&location=%@&key=%@&pc=android_asdffdaf&operator=chinamobile&active=2";
-            pattern = @"/updatefcgi?recover=1&location=CN_110000_110100_1&key=ios_id&pc=ios_123&operator=chinamobile&active=1";
+            pattern = @"/taskfcgi?recover=1&location=CN_110000_110100_1&key=ios_id&pc=ios_123&operator=chinamobile&active=1";
 
         }
         url = [url stringByAppendingFormat:pattern,
@@ -230,7 +230,7 @@ static BZJobManager *sharedInstance;
 	[data writeToFile:[cachesFolder stringByAppendingPathComponent:@"results.har"] atomically:YES];
 	data = nil;
     
-    url=@"http://220.181.7.18";
+    url=@"http://202.108.23.123";
 	NSString *pattern;
 	if ([url characterAtIndex:[url length] - 1] == '/') {
 		pattern = @"work/workdone.php?har=1&done=1&location=%@&key=%@&id=%@&flattenZippedHar=1";

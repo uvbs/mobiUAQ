@@ -10,6 +10,9 @@
 #import "MIMBarGraph.h"
 #import "MIMColor.h"
 
+#define kUAQButtonHeight 30
+#define kUAQSlideWidth  160
+
 @interface BarChartClass : UIViewController<UITableViewDelegate,UITableViewDataSource,BarGraphDelegate>
 {
     
@@ -19,6 +22,8 @@
     
     NSArray *yValuesArray;
     NSArray *xTitlesArray;
+    
+    
 }
 
 @end
@@ -60,6 +65,14 @@
 	id<BZIdleViewDelegate> delegate;
 	
 	UIScrollView *scrollPanel;
+    //左右滑动部分
+	UIPageControl *pageControl;
+    int currentPage;
+    BOOL pageControlUsed;
+    UITableView *giftInfoTableView;
+
+    UIButton *trafficInfoButton;
+    UIButton *giftInfoButton;
 	
     UITableView *barChartTableView;
 	UIImageView *statusImage;
@@ -91,6 +104,8 @@
 	UIButton *wakeupButton;
 	
 	BOOL screenSaverEnabled;
+    
+    
 }
 
 @property (nonatomic, assign) id<BZIdleViewDelegate> delegate;
@@ -99,6 +114,14 @@
 @property (nonatomic, readonly) UISwitch *enabledSwitch;
 @property (nonatomic, readonly) UIButton *settingsButton;
 @property (nonatomic, readonly) UITableView *barChartTableView;
+@property (nonatomic, readonly) UITableView *giftInfoTableView;
+
+@property (retain, nonatomic) UILabel *slidLabel;//用于指示作用
+@property (readonly,nonatomic) UIButton *trafficInfoButton;
+@property (readonly,nonatomic) UIButton *giftInfoButton;
+@property (nonatomic, assign)	UIPageControl *pageControl;
+@property (nonatomic, assign)	int currentPage;
+@property (nonatomic, assign)	BOOL pageControlUsed;
 
 
 //@property (nonatomic, assign) JobStatusInfo *statusInfo;

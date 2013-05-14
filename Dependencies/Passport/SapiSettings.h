@@ -79,10 +79,10 @@
 //绑定类型：implicit－暗绑，explicit－明绑，optional－选择性绑定
 #define _BIND_TYPE                                  @"&act=explicit"
 //配置第3方登录icon显示开关
-#define WEIBO_ON                                    YES
+#define WEIBO_ON                                    NO
 #define FEIXIN_ON                                   NO
-#define QQ_ON                                       YES
-#define RENREN_ON                                   YES
+#define QQ_ON                                       NO
+#define RENREN_ON                                   NO
 /********************************************************************************************
  *产品线可自行配置的参数部分end
  ********************************************************************************************/

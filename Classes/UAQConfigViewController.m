@@ -9,6 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UAQConfigViewController.h"
 #import "GMGridView.h"
+#import "BZConstants.h"
+#import "MBProgressHUD.h"
 
 #define selectedTag 100
 #define cellSize 100
@@ -17,6 +19,8 @@
 #define cellADeactive 0.3
 #define cellAHidden 0.0
 #define defaultFontSize 10.0
+
+#define keyComboSelect @"_uaqComboSelect"
 
 
 @interface UAQConfigViewController ()<GMGridViewDataSource,GMGridViewSortingDelegate,GMGridViewTransformationDelegate,GMGridViewActionDelegate,UAQConfigViewDelegate,UITableViewDataSource,UITableViewDelegate>
@@ -29,6 +33,9 @@
     NSInteger _lastDeleteItemIndexAsked;
     
     UIImageView *imageCheck;
+    UIButton *startButton;
+    NSInteger _lastComboSelect;
+   
 }
 
 //- (void)addMoreItem;
@@ -64,15 +71,19 @@
 - (id)init
 {
     if ((self = [super init])) {
-        self.title = @"Demo";
+  //      self.title = @"Demo";
         _data = [[NSMutableArray alloc] init];
-        
+        _lastComboSelect = [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect] integerValue];
+        if (!_lastComboSelect) {
+            _lastComboSelect = 0;
+        }
         _comboImages = [[NSMutableArray alloc] init];
         
         for (int i = 0; i < 5; i ++)
         {
             [_data addObject:[NSString stringWithFormat:@"套餐 %d", i]];
             [_comboImages addObject:[NSString stringWithFormat:@"combo%d.png",i]];
+
         }
         _currentData = _data;
 
@@ -94,11 +105,18 @@
     configView.tableView.dataSource = self;
     configView.tableView.delegate = self;
     
+//    configView.headTitle.text = @"用户名";
+//    configView.headTitle.textColor = [UIColor whiteColor];
+    
     [self.view addSubview:configView];
     
     imageCheck = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"checked.png"]];
     imageCheck.alpha = 0.0;
     [configView addSubview:imageCheck];
+    
+//    if ([UAQJobStatusInfo sharedJobInstance].comboSelect) {
+//        NSLog("%@",[UAQJobStatusInfo sharedJobInstance].comboSelect);
+//    }
 /*
     GMGridView *gmGridView = [[GMGridView alloc] initWithFrame:self.view.bounds];
     gmGridView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -144,11 +162,73 @@
     [alertView show];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [configView updateJobStatus];
+    
+    NSNumber *comboSelect = [[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect];
+    NSLog(@"view will appear %d",[comboSelect integerValue]);
+
+    switch ([comboSelect integerValue]) {
+        case 1:
+        {
+            CGPoint pointOne=CGPointMake(140, 97);
+            imageCheck.alpha = 1.0;
+            imageCheck.center = pointOne;
+            startButton.enabled = YES;
+
+            break;
+        }
+        case 2:
+        {
+            CGPoint pointOne=CGPointMake(290, 97);
+            imageCheck.alpha = 1.0;
+            imageCheck.center = pointOne;
+            startButton.enabled = YES;
+
+            break;
+        }
+        case 3:
+        {
+            CGPoint pointOne=CGPointMake(140, 230);
+            imageCheck.alpha = 1.0;
+            imageCheck.center = pointOne;
+            startButton.enabled = YES;
+
+            break;
+        }
+            
+        case 4:
+        {
+            CGPoint pointOne=CGPointMake(290, 230);
+            imageCheck.alpha = 1.0;
+            imageCheck.center = pointOne;
+            startButton.enabled = YES;
+
+            break;
+        }
+            
+            
+        default:
+            startButton.enabled = NO;
+
+            break;
+    }
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    //[UAQJobStatusInfo sharedJobInstance];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    [configView updateJobStatus];
+    //configView
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -169,7 +249,7 @@
 
 -(CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 1;
+    return 2.0;
 }
 -(CGFloat)tableView:(UITableView*)tableView heightForFooterInSection:(NSInteger)section
 {
@@ -178,12 +258,12 @@
 
 -(UIView*)tableView:(UITableView*)tableView viewForHeaderInSection:(NSInteger)section
 {
-    return [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)] autorelease];
+    return [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 2)] autorelease];
 }
 
 -(UIView*)tableView:(UITableView*)tableView viewForFooterInSection:(NSInteger)section
 {
-    return [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)] autorelease];
+    return [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 2)] autorelease];
 }
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -201,7 +281,7 @@
 - (UITableViewCell *)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *identifier = @"_UAQSettingsCELL";
-    static NSString *ComboIdentifier = @"_UAQSettingsComboCELL";
+ //   static NSString *ComboIdentifier = @"_UAQSettingsComboCELL";
 
     UITableViewCell *cell = (UITableViewCell *) [tableView dequeueReusableCellWithIdentifier:identifier];
     if(cell == nil)
@@ -215,11 +295,13 @@
                 cell.backgroundColor = [UIColor whiteColor];
         
                 UIButton *btnCombo1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                btnCombo1.frame = CGRectMake(0.0f, 0.0f, 150.0f, 133.0f);
+                btnCombo1.frame = CGRectMake(10.0f, 0.0f, 150.0f, 133.0f);
+                [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+                [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
                 UILabel *lableCombo1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
                 lableCombo1.text = @"套餐A";
                 lableCombo1.font = [UIFont boldSystemFontOfSize:24];
-                lableCombo1.textColor = [UIColor blueColor];
+                lableCombo1.textColor =  [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
                 lableCombo1.textAlignment = UITextAlignmentCenter;
                 lableCombo1.backgroundColor = [UIColor clearColor];
                 [btnCombo1 addSubview:lableCombo1];
@@ -242,13 +324,13 @@
                 
                 
                 UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                btnCombo2.frame = CGRectMake(150.0f, 0.0f, 150.0f, 133.0f);
-                //[btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
-                //[btnCombo2 setTitle:@"话题" forState:UIControlStateNormal];
+                btnCombo2.frame = CGRectMake(160.0f, 0.0f, 150.0f, 133.0f);
+                [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+                [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
                 UILabel *lableCombo2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
                 lableCombo2.text = @"套餐B";
                 lableCombo2.font = [UIFont boldSystemFontOfSize:24];
-                lableCombo2.textColor = [UIColor blueColor];
+                lableCombo2.textColor =  [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
                 lableCombo2.textAlignment = UITextAlignmentCenter;
                 lableCombo2.backgroundColor = [UIColor clearColor];
                 [btnCombo2 addSubview:lableCombo2];
@@ -271,7 +353,7 @@
                 
 
                 UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake((cell.contentView.bounds.size.width/2), 0, 1, cell.contentView.bounds.size.height)] autorelease];
-                lineView.backgroundColor = [UIColor grayColor];
+                lineView.backgroundColor = [UIColor colorWithRed:209.0/255 green:209.0/255 blue:209.9/255 alpha:1];
                 lineView.autoresizingMask = 0x3f;
                 [cell addSubview:lineView];
 
@@ -279,11 +361,14 @@
             {
                 cell.backgroundColor = [UIColor whiteColor];
                 UIButton *btnCombo1 = [UIButton buttonWithType:UIButtonTypeCustom];
-                btnCombo1.frame = CGRectMake(0.0f, 0.0f, 150.0f, 133.0f);
+                btnCombo1.frame = CGRectMake(10.0f, 0.0f, 150.0f, 133.0f);
+                [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+                [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+                
                 UILabel *lableCombo1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
                 lableCombo1.text = @"套餐C";
                 lableCombo1.font = [UIFont boldSystemFontOfSize:24];
-                lableCombo1.textColor = [UIColor blueColor];
+                lableCombo1.textColor = [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
                 lableCombo1.textAlignment = UITextAlignmentCenter;
                 lableCombo1.backgroundColor = [UIColor clearColor];
                 [btnCombo1 addSubview:lableCombo1];
@@ -305,13 +390,13 @@
                 
                 
                 UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
-                btnCombo2.frame = CGRectMake(150.0f, 0.0f, 150.0f, 133.0f);
-                //[btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
-                //[btnCombo2 setTitle:@"话题" forState:UIControlStateNormal];
+                btnCombo2.frame = CGRectMake(160.0f, 0.0f, 150.0f, 133.0f);
+                [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+                [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
                 UILabel *lableCombo2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
                 lableCombo2.text = @"套餐D";
                 lableCombo2.font = [UIFont boldSystemFontOfSize:24];
-                lableCombo2.textColor = [UIColor blueColor];
+                lableCombo2.textColor = [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
                 lableCombo2.textAlignment = UITextAlignmentCenter;
                 lableCombo2.backgroundColor = [UIColor clearColor];
                 [btnCombo2 addSubview:lableCombo2];
@@ -334,7 +419,7 @@
                 
                 
                 UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake((cell.contentView.bounds.size.width/2), 0, 1, cell.contentView.bounds.size.height)] autorelease];
-                lineView.backgroundColor = [UIColor grayColor];
+                lineView.backgroundColor = [UIColor colorWithRed:209.0/255 green:209.0/255 blue:209.9/255 alpha:1];
                 lineView.autoresizingMask = 0x3f;
                 [cell addSubview:lineView];
                 
@@ -345,23 +430,37 @@
         {
             cell.backgroundColor = [UIColor whiteColor];
 
-            UIButton *btnStart = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            btnStart.frame = CGRectMake(10.0f, 0.0f, cell.frame.size.width-20, cell.frame.size.height);
-            btnStart.backgroundColor = [UIColor clearColor];
+            startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            //startButton.selected = YES;
+            if(_lastComboSelect == 0) {startButton.enabled = NO;}else{startButton.enabled = YES;}
+            startButton.frame = CGRectMake(10.0f, 0.0f, cell.frame.size.width-20, cell.frame.size.height);
+            startButton.backgroundColor = [UIColor whiteColor];
             //[btnCombo4 setBackgroundImage:[UIImage imageNamed:@"start_button.png"] forState:UIControlStateNormal];
             //[btnCombo4 setTitle:@"" forState:UIControlStateNormal];
-            [btnStart addTarget:self action:@selector(onClickCombo4:) forControlEvents:UIControlEventTouchUpInside];
+            [startButton addTarget:self action:@selector(onClickStartButton:) forControlEvents:UIControlEventTouchUpInside];
+            //[startButton setImage:[UIImage imageNamed:@"disabled.png"] forState:UIControlStateNormal];
+
+            //startButton.titleLabel.text = @"开始监测";
+           // startButton.titleLabel.textColor = [UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
+            startButton.titleLabel.font = [UIFont boldSystemFontOfSize:24];
+            [startButton setTitle:@"开始监测" forState:UIControlStateNormal ];//= lableStart;
+            //[startButton setFont:[UIFont boldSystemFontOfSize:24]];
+            [startButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1] forState:UIControlStateNormal];
+            //[startButton setTitle:@"停止监测" forState:UIControlStateHighlighted ];//= lableStart;
+            //[startButton addSubview:lableStart];
+
+            [cell addSubview:startButton];
+
+        }else if(indexPath.section == 2)
+        {
+            cell.backgroundColor = [UIColor whiteColor];
+            UILabel *labelStatus = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, 300, 30)];
+            labelStatus.text = @"本月已完成任务";
+            //NSString *taskNum = [NSUserDefaults standardUserDefaults] objectForKey:
+            UILabel *labelTaskComplete = [[UILabel alloc] initWithFrame:CGRectMake(100, 5, 200, 30)];
+            //labelTaskComplete.text = ;
             
-            UILabel *lableStart = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, 300, 30)];
-            lableStart.text = @"开始监测";
-            lableStart.font = [UIFont boldSystemFontOfSize:24];
-            lableStart.textColor = [UIColor blueColor];
-            lableStart.textAlignment = UITextAlignmentCenter;
-            lableStart.backgroundColor = [UIColor clearColor];
-            [btnStart addSubview:lableStart];
-
-            [cell addSubview:btnStart];
-
+            [cell addSubview:configView.labelJobStatus];
         }
     }
     return cell;
@@ -370,17 +469,23 @@
 - (IBAction)onClickCombo1:(id)sender
 {
     NSLog(@"combo 1");
-    CGPoint pointOne=CGPointMake(140, 120);
+    CGPoint pointOne=CGPointMake(140, 97);
     imageCheck.alpha = 1.0;
     imageCheck.center = pointOne;
+    _lastComboSelect = 1;
+    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:keyComboSelect];
+    startButton.enabled = YES;
 }
 
 - (IBAction)onClickCombo2:(id)sender
 {
     NSLog(@"combo 2");
-    CGPoint pointOne=CGPointMake(273, 120);
+    CGPoint pointOne=CGPointMake(290, 97);
     imageCheck.alpha = 1.0;
     imageCheck.center = pointOne;
+    _lastComboSelect = 2;
+    [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:keyComboSelect];
+    startButton.enabled = YES;
 
 }
 
@@ -388,20 +493,90 @@
 - (IBAction)onClickCombo3:(id)sender
 {
     NSLog(@"combo 3");
-    CGPoint pointOne=CGPointMake(140, 270);
+    CGPoint pointOne=CGPointMake(140, 230);
     imageCheck.alpha = 1.0;
     imageCheck.center = pointOne;
+    _lastComboSelect = 3;
+    [[NSUserDefaults standardUserDefaults] setInteger:3 forKey:keyComboSelect];
+    startButton.enabled = YES;
 
 }
 
 - (IBAction)onClickCombo4:(id)sender
 {
     NSLog(@"combo 4");
-    CGPoint pointOne=CGPointMake(273, 270);
+    CGPoint pointOne=CGPointMake(290, 230);
     imageCheck.alpha = 1.0;
     imageCheck.center = pointOne;
+    _lastComboSelect = 4;
+    [[NSUserDefaults standardUserDefaults] setInteger:4 forKey:keyComboSelect];
+    startButton.enabled = YES;
+
 
 }
+
+- (IBAction)onClickStartButton:(id)sender
+{
+    NSLog(@"start button");
+    
+    
+    
+    UIButton *button = (UIButton *)sender;
+    button.selected = !button.selected;
+    
+   
+
+    
+    NSArray *uaqCombosArray = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:12*1024*1024],[NSNumber numberWithInteger:2*12*1024*1024],[NSNumber numberWithInteger:3*12*1024*1024],[NSNumber numberWithInteger:4*2*12*1024*1024], nil];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithInt:_lastComboSelect] forKey:keyComboSelect];
+    NSLog(@"count %d",[uaqCombosArray count]);
+
+    NSInteger maxTraffic = [[uaqCombosArray objectAtIndex:_lastComboSelect] integerValue];
+    NSLog(@"%d",maxTraffic);
+    [defaults setObject:[NSNumber numberWithInt:maxTraffic ] forKey:kBZMaxBytesPerMonth];
+    if (button.selected) {
+        [startButton setTitle:@"停止监测" forState:UIControlStateNormal ];//= lableStart;
+        [defaults setBool:YES forKey:kBZUserPressedStart];
+        NSLog(@"enabled");
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+        
+        // Configure for text only and offset down
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"监测已开始";
+        hud.margin = 10.f;
+        hud.yOffset = 150.f;
+        hud.removeFromSuperViewOnHide = YES;
+        
+        [hud hide:YES afterDelay:3];
+        
+
+
+    } else {
+        [startButton setTitle:@"开始监测" forState:UIControlStateNormal ];//= lableStart;
+        [defaults setBool:NO forKey:kBZUserPressedStart];
+        NSLog(@"disabled");
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+        
+        // Configure for text only and offset down
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"监测已停止";
+        hud.margin = 10.f;
+        hud.yOffset = 150.f;
+        hud.removeFromSuperViewOnHide = YES;
+        
+        [hud hide:YES afterDelay:3];
+        
+
+    }
+    [defaults synchronize];
+    
+    [delegate startButtonStatusDidChanged:button.selected];
+    NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:button.selected] forKey:kUAQButtonStatus];
+    [[NSNotificationCenter defaultCenter] postNotificationName:UAQConfigStartButtonNotification object:self userInfo:dict];
+
+}
+
 
 /*
 //////////////////////////////////////////////////////////////

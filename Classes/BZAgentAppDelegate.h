@@ -35,7 +35,10 @@
     UAQConfigViewController *configController;
     UINavigationController *settingsNavigationController;
     UINavigationController *giftNavigationController;
-
+    UINavigationController *idleViewNavigationController;
+    UINavigationController * configNavigationController;
+    
+    UITabBarController *tabBarController;
     
 }
 
@@ -43,6 +46,7 @@
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) LoginViewController *viewController;
+@property (strong ,nonatomic) UITabBarController *tabBarController;
 
 @end
 

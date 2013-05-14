@@ -206,6 +206,7 @@
 		0487856F1681C13C00B33854 /* BZLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0487856E1681C13C00B33854 /* BZLoginView.m */; };
 		048785721681C1A700B33854 /* BZLoginController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 048785711681C1A700B33854 /* BZLoginController.mm */; };
 		048876B3169AD8AE000C0496 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048876B2169AD8AE000C0496 /* MapKit.framework */; };
+		04A59A321740D69500B14FD1 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A59A311740D69500B14FD1 /* MBProgressHUD.m */; };
 		04C76F4A1696818200E51694 /* idle_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 04C76F491696818200E51694 /* idle_bg.png */; };
 		04C76F4E1696A2A700E51694 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 04C76F4D1696A2A700E51694 /* location.png */; };
 		04CC902C172D797400162D95 /* UAQGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CC902B172D797400162D95 /* UAQGuideViewController.m */; };
@@ -234,6 +235,7 @@
 		04FF52B7173CE00E003D1C12 /* combo4.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FF52B6173CE00E003D1C12 /* combo4.png */; };
 		04FF52B9173D1003003D1C12 /* combo_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FF52B8173D1003003D1C12 /* combo_bg.png */; };
 		04FF52BB173D1803003D1C12 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FF52BA173D1803003D1C12 /* checked.png */; };
+		04FF52BD173E901B003D1C12 /* combo_bg_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 04FF52BC173E901B003D1C12 /* combo_bg_highlight.png */; };
 		1D3623260D0F684500981E51 /* BZAgentAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BZAgentAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -618,6 +620,8 @@
 		048785701681C1A700B33854 /* BZLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BZLoginController.h; sourceTree = "<group>"; };
 		048785711681C1A700B33854 /* BZLoginController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BZLoginController.mm; sourceTree = "<group>"; };
 		048876B2169AD8AE000C0496 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		04A59A301740D69500B14FD1 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		04A59A311740D69500B14FD1 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		04C76F491696818200E51694 /* idle_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = idle_bg.png; path = Images/idle_bg.png; sourceTree = "<group>"; };
 		04C76F4D1696A2A700E51694 /* location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = location.png; path = Images/location.png; sourceTree = "<group>"; };
 		04CC902A172D797400162D95 /* UAQGuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQGuideViewController.h; sourceTree = "<group>"; };
@@ -653,6 +657,7 @@
 		04FF52B6173CE00E003D1C12 /* combo4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = combo4.png; sourceTree = "<group>"; };
 		04FF52B8173D1003003D1C12 /* combo_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = combo_bg.png; path = Button/combo_bg.png; sourceTree = "<group>"; };
 		04FF52BA173D1803003D1C12 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
+		04FF52BC173E901B003D1C12 /* combo_bg_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = combo_bg_highlight.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* BZAgentAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BZAgentAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* BZAgentAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BZAgentAppDelegate.m; sourceTree = "<group>"; };
@@ -1195,6 +1200,15 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
+		04A59A2F1740D69500B14FD1 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				04A59A301740D69500B14FD1 /* MBProgressHUD.h */,
+				04A59A311740D69500B14FD1 /* MBProgressHUD.m */,
+			);
+			path = MBProgressHUD;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1299,6 +1313,7 @@
 		F7020D19129F379A00BA9E11 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				04A59A2F1740D69500B14FD1 /* MBProgressHUD */,
 				040E78C3173B72A8002A5EBB /* GMGridView */,
 				0476620D1738F66700DD3ABA /* Passport */,
 				042DD5971738D9A500F1133E /* MIMChartLib */,
@@ -1562,6 +1577,7 @@
 		F7C65ED412E0E62C0044F46C /* Button */ = {
 			isa = PBXGroup;
 			children = (
+				04FF52BC173E901B003D1C12 /* combo_bg_highlight.png */,
 				04D11B171734E4A4000D4074 /* btn_nor.png */,
 				04D11B181734E4A4000D4074 /* btn_nor@2x.png */,
 				04D11B191734E4A4000D4074 /* btn_press.png */,
@@ -1845,6 +1861,7 @@
 				04FF52B7173CE00E003D1C12 /* combo4.png in Resources */,
 				04FF52B9173D1003003D1C12 /* combo_bg.png in Resources */,
 				04FF52BB173D1803003D1C12 /* checked.png in Resources */,
+				04FF52BD173E901B003D1C12 /* combo_bg_highlight.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1985,6 +2002,7 @@
 				040E78D5173B72A8002A5EBB /* GMGridViewLayoutStrategies.m in Sources */,
 				040E78D6173B72A8002A5EBB /* UIGestureRecognizer+GMGridViewAdditions.m in Sources */,
 				040E78D7173B72A8002A5EBB /* UIView+GMGridViewAdditions.m in Sources */,
+				04A59A321740D69500B14FD1 /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

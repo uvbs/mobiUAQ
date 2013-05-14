@@ -35,6 +35,7 @@ void restartAndKill();
 @synthesize window = _window;
 @synthesize viewController = _viewController;
 //@ bgTask;
+@synthesize tabBarController = _tabBarController;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -71,61 +72,53 @@ void restartAndKill();
     /////
     // debug below
     ////
-    
     idleController = [[BZAgentController alloc] init];
-    
-    //self.window.rootViewController = idleController;
-    //	[self.window addSubview:idleController.view];
-    
-    //    loginController  = [[BZLoginController alloc] init];
-    
+    [idleController applicationEnterBackground:NO];
     giftController = [[UAQGiftViewController alloc] init];
+    idleViewNavigationController = [[UINavigationController alloc] initWithRootViewController:idleController];
+    idleViewNavigationController.navigationBar.topItem.title = @"用户名";
+    [idleViewNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
     
     settingsController = [[UAQSettingsViewController alloc] init];
     
     configController = [[UAQConfigViewController alloc] init];
+    configNavigationController = [[UINavigationController alloc] initWithRootViewController:configController];
+    configNavigationController.navigationBar.topItem.title = @"用户名";
+    [configNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
+    
     
     settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
     settingsNavigationController.navigationBar.topItem.title = @"设置";
+    [settingsNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
     
-    NSArray *controllerArray = [[NSArray alloc] initWithObjects:configController,idleController,giftController,settingsNavigationController,nil];
+    NSArray *controllerArray = [[NSArray alloc] initWithObjects:configNavigationController,idleViewNavigationController,giftController,settingsNavigationController,nil];
     
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController = [[UITabBarController alloc] init];
     tabBarController.delegate = self;
     tabBarController.viewControllers = controllerArray;
     tabBarController.selectedIndex = 0;
     [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
- /*
-    UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
-    [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
-    [tabBarController.tabBar insertSubview:mview atIndex:1];
-    mview.alpha = 0.8;
-  */
+    /*
+     UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
+     [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
+     [tabBarController.tabBar insertSubview:mview atIndex:1];
+     mview.alpha = 0.8;
+     */
     //tabBarController.t
     //[idleController.view setBackgroundColor:[UIColor blueColor]];
-    [configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
-    [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
+    //[configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
+    [idleViewNavigationController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
     [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
+    [configNavigationController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
     [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
     
-    UIViewController *activeController = tabBarController.selectedViewController;
+    //        UIViewController *activeController = tabBarController.selectedViewController;
     
     [self.window addSubview:tabBarController.view];
     self.window.rootViewController = tabBarController;
-    //[idleController presentModalViewController:loginController animated:NO];
-    
-    
-    
-    
-    
     [self.window makeKeyAndVisible];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
-        [UAQGuideViewController show];
-    }
-    
     return YES;
-    
     ///////
     // debug above
     ///////
@@ -146,6 +139,10 @@ void restartAndKill();
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOut:) name:kLoginViewBackBtnPressed object:nil];
     
     LoginSharedModel* model = [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] getLoginedAccount];
+    
+    return YES;
+
+    /*
     if(model && model.bduss && model.ptoken)
     {
         //        NSLog(@"model.bduss = %@",model.bduss);
@@ -184,6 +181,7 @@ void restartAndKill();
         return YES;
 
     }
+     */
     
 //    return YES;
 
@@ -203,6 +201,8 @@ void restartAndKill();
 {
     //[idleController];
     [idleController updateStatusInfo];
+    [idleController applicationEnterBackground:NO];
+
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -214,7 +214,7 @@ void restartAndKill();
     }else{
         NSLog(@"backgrounding not accepted");
     }
- 
+    [idleController applicationEnterBackground:YES];
     [self backgroundHandler];
 }
 
@@ -409,40 +409,46 @@ if( !maxBytesPerMonth) {
         //Start our application off in the IdleController.  This controller will display a simple screen stating the current state of the
         //application.  This is useful for both debugging and getting some visual information on whether or not the agent is actually working.
         idleController = [[BZAgentController alloc] init];
-        
-        //self.window.rootViewController = idleController;
-        //	[self.window addSubview:idleController.view];
-        
-        //    loginController  = [[BZLoginController alloc] init];
-        
+        [idleController applicationEnterBackground:NO];
         giftController = [[UAQGiftViewController alloc] init];
+        idleViewNavigationController = [[UINavigationController alloc] initWithRootViewController:idleController];
+        idleViewNavigationController.navigationBar.topItem.title = uname;//@"用户名";
+        [idleViewNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
         
         settingsController = [[UAQSettingsViewController alloc] init];
         
         configController = [[UAQConfigViewController alloc] init];
+        configNavigationController = [[UINavigationController alloc] initWithRootViewController:configController];
+        configNavigationController.navigationBar.topItem.title = uname;//@"用户名";
+        [configNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
+        
         
         settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
         settingsNavigationController.navigationBar.topItem.title = @"设置";
+        [settingsNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
         
-        NSArray *controllerArray = [[NSArray alloc] initWithObjects:configController,idleController,giftController,settingsNavigationController,nil];
+        NSArray *controllerArray = [[NSArray alloc] initWithObjects:configNavigationController,idleViewNavigationController,giftController,settingsNavigationController,nil];
         
         UITabBarController *tabBarController = [[UITabBarController alloc] init];
         tabBarController.delegate = self;
         tabBarController.viewControllers = controllerArray;
-        tabBarController.selectedIndex = 2;
-        
-        UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
-        [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
-        [tabBarController.tabBar insertSubview:mview atIndex:1];
-        mview.alpha = 0.8;
+        tabBarController.selectedIndex = 0;
+        [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
+        /*
+         UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
+         [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
+         [tabBarController.tabBar insertSubview:mview atIndex:1];
+         mview.alpha = 0.8;
+         */
         //tabBarController.t
         //[idleController.view setBackgroundColor:[UIColor blueColor]];
-        [configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
-        [idleController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
+        //[configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
+        [idleViewNavigationController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
         [giftController.tabBarItem initWithTitle:@"礼品" image:[UIImage imageNamed:@"light.png"] tag:2];
+        [configNavigationController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
         [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
         
-        UIViewController *activeController = tabBarController.selectedViewController;
+//        UIViewController *activeController = tabBarController.selectedViewController;
         
         [self.window addSubview:tabBarController.view];
         self.window.rootViewController = tabBarController;
@@ -450,13 +456,12 @@ if( !maxBytesPerMonth) {
         
         
         
-        
-        
         [self.window makeKeyAndVisible];
-        
-        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
-            [UAQGuideViewController show];
-        }
+
+// not needed at this moment
+//        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
+//            [UAQGuideViewController show];
+//        }
         
         
         
