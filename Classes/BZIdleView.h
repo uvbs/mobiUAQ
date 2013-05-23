@@ -11,7 +11,7 @@
 #import "MIMColor.h"
 
 #define kUAQButtonHeight 30
-#define kUAQSlideWidth  160
+#define kUAQSlideWidth  90
 
 @interface BarChartClass : UIViewController<UITableViewDelegate,UITableViewDataSource,BarGraphDelegate>
 {

@@ -21,9 +21,17 @@
 
 #import "BZSettingsViewController.h"
 #import "UAQConfigViewController.h"
+#import "Base64.h"
+#import "LoginShareAssistant.h"
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UAQConfigViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate>
+#import "Reachability.h"
+
+#import "MBProgressHUD.h"
+
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UAQConfigViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate,MBProgressHUDDelegate,UIWebViewDelegate>
 @property (nonatomic, copy) NSString *activeURL;
+@property (nonatomic, assign) MBProgressHUD *loadingHUD;
+
 
 - (void)registerForKeyboardNotifications;
 - (void)unregisterForKeyboardNotifications;
@@ -46,6 +54,7 @@
 
 @synthesize activeURL;
 @synthesize myBarChart;
+@synthesize loadingHUD;
 
 - (id)init
 {
@@ -128,22 +137,81 @@
     idleView.pageControl.numberOfPages = 2;
     idleView.pageControl.currentPage = 0;
 
-    [self.view addSubview:idleView];
+    // disable idleView and use webview
+ //   [self.view addSubview:idleView];
     
+    NSLog(@"init giftwebview ");
+//	[self registerForKeyboardNotifications];
     
-    /*
-    settingsView = [[BZSettingsView alloc] initWithFrame:self.view.bounds];
-    [settingsView.maxBytesMBPerMonthSlider addTarget:self action:@selector(maxBytesMBPerMonthChaged) forControlEvents:UIControlEventValueChanged];
-    [settingsView.maxJobsPerDaySlider addTarget:self action:@selector(maxJobsPerDayChanged) forControlEvents:UIControlEventValueChanged];
-    */
+}
 
-	[self registerForKeyboardNotifications];
+- (void)loadingWebView
+{
+    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+    NSURL *url;
+    if (assistant) {
+        NSString *uname = assistant.getLoginedAccount.uname;
+        
+        if (!uname) {
+            uname =  @"公公公愚";
+            
+        }
+        //NSString *uname = @"公公公愚";
+        NSString *encodedString = [[uname dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+        url = [NSURL URLWithString:[@"http://220.181.7.18/appstat/stat.php?username=" stringByAppendingString:encodedString]];
+    }
+    NSLog(@"%@",url);
     
+    UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 365)];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url ];
+    //[self.view addSubview:webView];
+    awebView.delegate = self;
+    [awebView loadRequest:request];
+    [self.view addSubview:awebView];
+    
+    [awebView release];
+
+}
+
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    
+    NSLog(@"start load");
+    loadingHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    loadingHUD.delegate = self;
+    
+    loadingHUD.mode = MBProgressHUDModeIndeterminate;
+    loadingHUD.labelText = @"正在加载中";
+    loadingHUD.margin = 10.f;
+    loadingHUD.yOffset = 100.f;
+    loadingHUD.removeFromSuperViewOnHide = YES;
+    [loadingHUD hide:YES afterDelay:2];
+
+    
+}
+
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    
+    NSLog(@"failed load");
+}
+
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    
+    NSLog(@"finished load");
+   // [loadingHUD hide:YES];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
  //   [idleView updateStatusInfo:statusInfo withJobFinished:NO];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self loadingWebView];
 }
 
 -(void) viewDidLoad
@@ -153,6 +221,7 @@
 //    isEnabled = YES;
 //    [self startPolling];
     [idleView updateStatusInfo:statusInfo withJobFinished:false];
+    [self loadingWebView];
 
 }
 
@@ -172,6 +241,7 @@
 	[pollTimer release];
 	[idleView release];
 	[activeURL release];
+    [loadingHUD release];
 	
 	[super dealloc];
 }
@@ -179,12 +249,12 @@
 #pragma button action
 - (void)trafficInfoButtonAction
 {
-    [idleView.trafficInfoButton setTitleColor:[UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1] forState:UIControlStateNormal];
+    [idleView.trafficInfoButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1] forState:UIControlStateNormal];
     [idleView.giftInfoButton setTitleColor:[UIColor colorWithRed:142.0/255 green:142.0/255 blue:142.0/255 alpha:1] forState:UIControlStateNormal];
     [UIView beginAnimations:nil context:nil];//动画开始
     [UIView setAnimationDuration:0.3];
     
-    idleView.slidLabel.frame = CGRectMake(0, kUAQButtonHeight, kUAQSlideWidth, 4);
+    idleView.slidLabel.frame = CGRectMake(35, kUAQButtonHeight, kUAQSlideWidth, 4);
     [idleView.scrollPanel setContentOffset:CGPointMake(320*0, 0)];//页面滑动
     
     [UIView commitAnimations];
@@ -193,13 +263,13 @@
 
 - (void)giftInfoButtonAction
 {
-    [idleView.giftInfoButton setTitleColor:[UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1]  forState:UIControlStateNormal];
+    [idleView.giftInfoButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1]  forState:UIControlStateNormal];
     [idleView.trafficInfoButton setTitleColor:[UIColor colorWithRed:142.0/255 green:142.0/255 blue:142.0/255 alpha:1] forState:UIControlStateNormal];
     
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.3];
     
-    idleView.slidLabel.frame = CGRectMake(160, kUAQButtonHeight, kUAQSlideWidth, 4);
+    idleView.slidLabel.frame = CGRectMake(195, kUAQButtonHeight, kUAQSlideWidth, 4);
     [idleView.scrollPanel setContentOffset:CGPointMake(320*1, 0)];
     [UIView commitAnimations];
 }
@@ -301,12 +371,29 @@
     {
         
 //        [idleView showPolling:@"监测中"];公公公愚
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        statusInfo.maxBytesAllowed = [[defaults objectForKey:kBZMaxBytesPerMonth] integerValue];
+        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+        [reachability startNotifier];
+        
+        NetworkStatus status = [reachability currentReachabilityStatus];
+        if(status == NotReachable)
+        {
+            //No internet
+        }
+        else if (status == ReachableViaWiFi)
+        {
+            //WiFi
+            // no traffic limitation
+            [self switchActiveUrl];
+            [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
 
- //       [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
-///*
-        if((statusInfo.jobsCompletedToday < statusInfo.maxJobsPerDay) ){
+        }
+        else if (status == ReachableViaWWAN)
+        {
+            //3G
+            
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            statusInfo.maxBytesAllowed = [[defaults objectForKey:kBZMaxBytesPerMonth] integerValue];
+            
             if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
                 // Switch to the next valid server
                 [self switchActiveUrl];
@@ -315,32 +402,26 @@
             }else{
                 [idleView showError:@"已达到最大流量限制"];
             }
-        }else{
-            [idleView showError:@"已达到今日最大任务数"];
-            [self clearStatusInfoEveryDay];
-
+            
         }
-////        */
     }
    
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
     
-    NSDate *checkDate = [df dateFromString:@"2013-01-09 13:06:00"];
+    NSDate *checkDate = [df dateFromString:@"2013-01-01 13:06:00"];
     NSDate *now  = [NSDate date];
     NSDateComponents *checkComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:checkDate];
     NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:now];
     
-    if ([checkComponents hour] == [nowComponents hour] && [checkComponents minute] == [nowComponents minute]) {
-        // clear everyday
-        [self clearStatusInfoEveryDay];
-        if ([checkComponents day] == [nowComponents day]) {
-            // clear everymonth
-            [self clearStatusInfoEveryMonth];
-        }
-        [self updateStatusInfo];
 
+    if ([checkComponents day] == [nowComponents day]) {
+        // clear everymonth
+        [self clearStatusInfoEveryMonth];
     }
+    [self updateStatusInfo];
+    
+    
     
 }
 
@@ -692,7 +773,7 @@
                 myBarChart.delegate=self;
                 myBarChart.tag=10+indexPath.row;
                 myBarChart.barLabelStyle=BAR_LABEL_STYLE2;
-                myBarChart.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"93,156,210,1"], nil];
+                myBarChart.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"57,146,237,1"], nil];
                 myBarChart.mbackgroundcolor=[MIMColorClass colorWithComponent:@"232,234,237,1"];
                 myBarChart.xTitleStyle=XTitleStyle2;
                 myBarChart.gradientStyle=VERTICAL_GRADIENT_STYLE;
@@ -715,7 +796,7 @@
 
 -(NSDictionary *)barProperties:(id)graph
 {
-    NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:20.0] forKey:@"barwidth"];
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:35.0],@"gapBetweenBars",[NSNumber numberWithFloat:20.0],@"barwidth", nil];//:[NSNumber numberWithFloat:20.0] forKey:@"barwidth"];
     return dict;
 } //barwidth,shadow,horGradient,verticalGradient,gapBetweenGroup,gapBetweenBars
 -(NSDictionary *)yAxisProperties:(id)graph

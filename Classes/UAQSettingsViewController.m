@@ -7,10 +7,13 @@
 //
 
 #import "UAQSettingsViewController.h"
+#import "UAQHomeViewController.h"
+#import "BZAgentAppDelegate.h"
+
 
 #define SECTION_ACCOUNT 0
 #define SECTION_SETTINGS 1
-#define SECTION_OTHERS 2
+#define SECTION_OTHERS 1
 
 // section settings
 #define ROW_MAX_TRAFFIC 0
@@ -27,7 +30,7 @@
 @end
 
 @implementation UAQSettingsViewController
-NSString *url;
+//@synthesize uaqUp;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -49,6 +52,7 @@ NSString *url;
     settingsView.tableView.delegate = self;
     NSLog(@"SettingsViewController");
     [self.view addSubview:settingsView];
+    //settingsView.uaqUp = [[UAQUpdate alloc] init];
     //self.navigationBar.topItem.titleView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"head_background.png"]];
     
     //[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head_background.png"]];
@@ -69,7 +73,6 @@ NSString *url;
 - (void)dealloc
 {
     [settingsView release];
-    [url release];
     [super dealloc];
 }
 
@@ -82,9 +85,9 @@ NSString *url;
         case SECTION_ACCOUNT:
             title = @"账户";
             break;
-        case SECTION_SETTINGS:
-            title = @"设置";
-            break;
+       // case SECTION_SETTINGS:
+       //     title = @"设置";
+       //     break;
         case SECTION_OTHERS:
             title = @"其他";
             break;
@@ -103,9 +106,9 @@ NSString *url;
         case SECTION_ACCOUNT:
             rows = 1;
             break;
-        case SECTION_SETTINGS:
-            rows = 3;
-            break;
+    //    case SECTION_SETTINGS:
+    //    rows = 3;
+    //        break;
         case SECTION_OTHERS:
             rows = 4;
             break;
@@ -118,7 +121,7 @@ NSString *url;
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -134,25 +137,6 @@ NSString *url;
             [cell.detailTextLabel setText:@"注销登录"];
             [cell.detailTextLabel setTextColor:[UIColor grayColor]];
             [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
-
-        }else if(indexPath.section == SECTION_SETTINGS)
-        {
-            if(indexPath.row == ROW_MAX_TRAFFIC)
-            {
-                [cell.detailTextLabel setText:@"每月流量限制"];
-                [cell.detailTextLabel setTextColor:[UIColor grayColor]];
-                [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
-            }else if (indexPath.row == ROW_LOW_BATTERY)
-            {
-                [cell.detailTextLabel setText:@"最低电量保护"];
-                [cell.detailTextLabel setTextColor:[UIColor grayColor]];
-                [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
-            }else if (indexPath.row == ROW_CHECK_UPDATE)
-            {
-                [cell.detailTextLabel setText:@"升级检查"];
-                [cell.detailTextLabel setTextColor:[UIColor grayColor]];
-                [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
-            }
 
         }else if (indexPath.section == SECTION_OTHERS)
         {
@@ -222,46 +206,26 @@ NSString *url;
             default:
                 break;
         }
-    }else if(section == SECTION_SETTINGS)
+    }else if (section == SECTION_ACCOUNT)
     {
-        switch (row) {
-            case ROW_CHECK_UPDATE:{
-                // check update
-                NSLog(@"check update");
-                UAQUpdate *uaqUp = [[UAQJobManager sharedInstance] checkUpdate];
-                //BOOL updateAvailable = YES;
-                if (uaqUp.updateAvailable) {
-                    //
-                    url = uaqUp.url;
-                    UIAlertView *talert = [[UIAlertView alloc] initWithTitle:@"有新版本"
-                                                                     message:uaqUp.msg
-                                                                    delegate:self
-                                                           cancelButtonTitle:@"下次更新"
-                                                           otherButtonTitles:@"立即更新",nil];
-                    [talert show];
-                    [talert release];
-                }
-                break;
-            }
-                
-            default:
-                break;
+        if (row == 0) {
+            // logout
+            //LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+                LoginSharedModel* model = [[LoginSharedModel alloc] init];
+                [[LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"] invalid:model];
+                [model release];
+            //[UIApplication sharedApplication]
+            BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            [self.navigationController presentModalViewController:app.viewController animated:YES];
+
+
+            //exit(0);
+            //[self.navigationController presentModalViewController:[[[UAQHomeViewController alloc]init ]autorelease] animated:YES];
         }
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0)
-    {
-        NSLog(@"Cancel");
-    }
-    else
-    {
-        NSLog(@"Safari");
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-    }
-}
 
 
 @end

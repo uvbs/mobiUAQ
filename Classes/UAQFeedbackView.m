@@ -80,7 +80,7 @@
 {
     CGRect bounds = self.bounds;
     NSLog(@"%f",labelStates.frame.size.width);
-    labelStates.frame = CGRectMake(bounds.origin.x,bounds.origin.y, labelStates.frame.size.width, labelStates.frame.size.height);
+    labelStates.frame = CGRectMake(bounds.origin.x,bounds.origin.y+5, labelStates.frame.size.width, labelStates.frame.size.height);
     textViewFeedback.frame = CGRectMake(bounds.origin.x+10, bounds.origin.y + labelStates.frame.size.height, textViewFeedback.frame.size.width, textViewFeedback.frame.size.height);
     lablePlaceHolder.frame = CGRectMake(bounds.origin.x+10, bounds.origin.y + labelStates.frame.size.height, lablePlaceHolder.frame.size.width, lablePlaceHolder.frame.size.height);
     //textFieldUserName.frame = CGRectMake(bounds.origin.x, labelStates.frame.origin.y + textViewFeedback.frame.size.height, textFieldUserName.frame.size.width, textFieldUserName.frame.size.height);

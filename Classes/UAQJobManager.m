@@ -7,13 +7,28 @@
 //
 
 #import "UAQJobManager.h"
+#import "CJSONSerializer.h"
+#import "CJSONDeserializer.h"
+#import "ASIFormDataRequest.h"
 
 @implementation UAQUpdate
 
-@synthesize updateAvailable;
-@synthesize url;
-@synthesize msg;
+@synthesize updateAvailable = _updateAvailable;
+@synthesize url = _url;
+@synthesize msg = _msg;
 
+- (id)init
+{
+    self = [super init];
+	if (self) {
+        //
+        _updateAvailable = NO;
+        _url = @"";
+        _msg = @"";
+	}
+	return self;
+
+}
 
 @end
 
@@ -22,7 +37,7 @@
 static UAQJobManager *sharedInstance;
 
 @interface UAQJobManager ()
-@property (nonatomic, retain) BZHTTPURLConnection *activeRequest;
+//@property (nonatomic, retain) BZHTTPURLConnection *activeRequest;
 
 @end
 
@@ -44,6 +59,7 @@ static UAQJobManager *sharedInstance;
 	self = [super init];
 	if (self) {
         //
+        
 	}
 	return self;
 }
@@ -54,7 +70,7 @@ static UAQJobManager *sharedInstance;
 }
 - (void)dealloc
 {
-	[activeRequest release];
+	//[activeRequest release];
 	[super dealloc];
 }
 
@@ -78,36 +94,89 @@ static UAQJobManager *sharedInstance;
 - (void)publishFeedback:(NSString *)feedback username:(NSString *)username
 {
     @synchronized(self) {
-        static NSString *kBZBoundary = @"f09wjf09jbananafoiasdfjasdf";
+//        static NSString *kBZBoundary = @"f09wjf09jbananafoiasdfjasdf";
         
 #if BZ_DEBUG_REQUESTS
         NSLog(@"Posting feedback");
 #endif
-        NSString* strRequest = [NSString stringWithFormat:@"username=%@&feedback==%@",username,feedback];
-        NSString *url = @"http://";
-                                
-        NSData* dataRequest = [strRequest dataUsingEncoding: NSUTF8StringEncoding ];
+        //NSString* strRequest = [NSString stringWithFormat:@"username=%@&feedback==%@",username,feedback];
+        NSString *url = @"http://220.181.7.18/work/uaq_iphone_feedback.php";
+        NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:username,@"username",feedback,@"feedback", nil];
+        NSData * dataJson = [[CJSONSerializer serializer] serializeDictionary:dict error:nil];
+        //NSData* dataRequest = [strRequest dataUsingEncoding: NSUTF8StringEncoding ];
         // zipData.length;
-        if (dataRequest) {
-            //Send off the video publish request
-            self.activeRequest = [[[BZHTTPURLConnection alloc] initWithType:BZHTTPURLConnectionTypePublishHarVideo request:[self requestWithUrl:url data:dataRequest boundary:kBZBoundary formName:@"result" ] delegate:self] autorelease];
+        //NSLog(@"%d",dataJson.length);
+        NSString *jsonString = [[NSString alloc] initWithData:dataJson encoding:NSUTF8StringEncoding];
+        if (jsonString.length) {
+
+            ASIFormDataRequest *requestForm = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:url]];
+             [requestForm setPostValue:jsonString forKey:@"result"];
+            [requestForm startSynchronous];
             
-            NSLog(@"activeRequest is :%@",self.activeRequest);
+            NSLog(@"response\n%@",[requestForm responseString]);
+            [requestForm release];
+            requestForm = nil;
+
+          //  self.activeRequest = [[[BZHTTPURLConnection alloc] initWithType:BZHTTPURLConnectionTypePublishHarVideo request:[self requestWithUrl:url data:dataJson boundary:kBZBoundary formName:@"result" ] delegate:self] autorelease];
+            
+           // NSLog(@"activeRequest is :%@",self.activeRequest);
         }
         else {
-            self.activeRequest = nil;
+          //  self.activeRequest = nil;
         }
+        //[dataJson release];
+        //[dict release];
+        //[url release];
     }
-
 }
 
 - (UAQUpdate *)checkUpdate
 {
     UAQUpdate * uaqUp = [[UAQUpdate alloc] init];
-    uaqUp.updateAvailable = YES;
-    uaqUp.url = @"http://m.so.com";
-    uaqUp.msg = @"有新版本";
+    NSURL *url = [[NSURL alloc] initWithString:@"http://220.181.7.18/work/uaq_iphone_update.php?ver=100"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSHTTPURLResponse *response;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+//    NSString *strData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+   // NSLog(@"get %@",strData);
+    //[CJSONSerializer serializer] ser
+    NSError *err = nil;
+    NSDictionary *dict =[[CJSONDeserializer deserializer] deserializeAsDictionary:data error:&err];
+    if (err) {
+        
+    }else
+    {
+        uaqUp.updateAvailable = [[dict objectForKey:@"updateAvailable"] boolValue];
+        uaqUp.url = [dict objectForKey:@"url"];
+        uaqUp.msg = [dict objectForKey:@"msg"];
+    }
+//    NSLog(@"%@",dict);
     return uaqUp;
 }
+
+- (UAQUpdate *)checkLatestNews
+{
+    UAQUpdate * uaqUp = [[UAQUpdate alloc] init];
+    NSURL *url = [[NSURL alloc] initWithString:@"http://220.181.7.18/work/uaq_iphone_update.php?ver=100"];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSHTTPURLResponse *response;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+    //    NSString *strData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    // NSLog(@"get %@",strData);
+    //[CJSONSerializer serializer] ser
+    NSError *err = nil;
+    NSDictionary *dict =[[CJSONDeserializer deserializer] deserializeAsDictionary:data error:&err];
+    if (err) {
+        
+    }else
+    {
+        uaqUp.updateAvailable = [[dict objectForKey:@"updateAvailable"] boolValue];
+        uaqUp.url = [dict objectForKey:@"url"];
+        uaqUp.msg = [dict objectForKey:@"msg"];
+    }
+    //    NSLog(@"%@",dict);
+    return uaqUp;
+}
+
 
 @end

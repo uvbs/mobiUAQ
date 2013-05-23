@@ -10,6 +10,8 @@
 #import "UAQSettingsView.h"
 #import "UAQAboutViewController.h"
 #import "UAQFeedbackViewController.h"
+#import "LoginShareAssistant.h"
+#import "LoginViewController.h"
 
 @protocol UAQSettingsViewDelegate;
 

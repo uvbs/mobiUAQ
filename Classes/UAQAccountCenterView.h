@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol UAQAccountCenterDelegate <NSObject>
+
+@end
+
 @interface UAQAccountCenterView : UIView
+{
+    id <UAQAccountCenterDelegate> *delegate;
+    UITableView *accountTableView;
+}
+@property (nonatomic, assign) UITableView * accountTableView;
+@property (nonatomic, assign)    id <UAQAccountCenterDelegate> *delegate;
+
 
 @end

@@ -10,8 +10,12 @@
 
 @implementation UAQSettingsView
 
+
 @synthesize delegate;
 @synthesize tableView;
+@synthesize uaqUp;
+@synthesize updateAlert;
+
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -21,7 +25,7 @@
         // Initialization code
         [self setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"main_background.png"]]];
         
-        tableView = [[UITableView alloc] initWithFrame:CGRectMake(20, 80, 320-40, 200) style:UITableViewStyleGrouped];
+        tableView = [[UITableView alloc] initWithFrame:CGRectMake(20, 80, 320, 200) style:UITableViewStyleGrouped];
         tableView.backgroundColor = [UIColor whiteColor];
         tableView.allowsSelection = YES;
         [self addSubview:tableView];
@@ -46,7 +50,8 @@
 {
     [tableView release];
     [headView release];
-
+    [uaqUp release];
+    //[updateAlert release];
     [super dealloc];
 }
 
@@ -55,9 +60,78 @@
     CGRect bounds = self.bounds;
     NSLog(@"%f",bounds.size.height);
     //headView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 20, headView.frame.size.width, headView.frame.size.height);
-    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 20, self.window.frame.size.width, self.window.frame.size.height  - headView.frame.size.height - 48 - 48);
+    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 20, self.window.frame.size.width, self.window.frame.size.height  - headView.frame.size.height - 48 );
     
     
+}
+
+- (void)setUaqUp:(UAQUpdate *)uaqup
+{
+    NSLog(@"uaqup set");
+    if (self->uaqUp != uaqup) {
+        [self->uaqUp release];
+        self->uaqUp = [uaqup retain];
+    }
+    
+    NSLog(@"%@",self->uaqUp.url);
+}
+
+- (void)setUpdateAlert:(UIAlertView *)alert
+{
+    NSLog(@"set ");
+    if (self->updateAlert != alert) {
+        [self->updateAlert release];
+        self->updateAlert = [alert retain];
+    }
+    
+}
+
+- (void)showAlreadyUpdated
+{
+    //   NSLog(@"%@",self);
+    
+    self.updateAlert = [[[UIAlertView alloc] initWithTitle:@"已经是最新版本"
+                                                   message:@"当前已经是最新版本"
+                                                  delegate:self
+                                         cancelButtonTitle:@"确定"
+                                         otherButtonTitles:nil] autorelease];
+    [updateAlert show];
+    //[updateAlert release];
+    //NSLog(@"%@",self.updateAlert);
+    
+    
+}
+
+
+- (void)showUpdateAvailable:(NSString *)msg
+{
+ //   NSLog(@"%@",self);
+    
+    self.updateAlert = [[[UIAlertView alloc] initWithTitle:@"有新版本"
+                                                     message:msg
+                                                    delegate:self
+                                           cancelButtonTitle:@"下次更新"
+                                           otherButtonTitles:@"立即更新",nil] autorelease];
+    [updateAlert show];
+    //[updateAlert release];
+    //NSLog(@"%@",self.updateAlert);
+
+
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+    {
+        NSLog(@"Cancel");
+    }
+    else if( buttonIndex == 1)
+    {
+        NSLog(@"update");
+        //NSLog(@"Safari %@",self->uaqUp.url);
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://uaq.baidu.com/apps/iphone"]];
+    }
 }
 
 /*

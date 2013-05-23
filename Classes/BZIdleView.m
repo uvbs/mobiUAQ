@@ -73,7 +73,7 @@
         trafficInfoButton = [UIButton buttonWithType:UIButtonTypeCustom];
         trafficInfoButton.frame = CGRectMake(0, 0, 160, kUAQButtonHeight);
         [trafficInfoButton setTitle:@"流量统计" forState:UIControlStateNormal];
-        [trafficInfoButton setTitleColor:[UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1] forState:UIControlStateNormal];
+        [trafficInfoButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1] forState:UIControlStateNormal];
         trafficInfoButton.titleLabel.font = [UIFont boldSystemFontOfSize:18];
         trafficInfoButton.backgroundColor = [UIColor colorWithRed:232.0/255 green:234.0/255 blue:237.0/255 alpha:1]; // change
         trafficInfoButton.showsTouchWhenHighlighted = YES;
@@ -88,10 +88,14 @@
         giftInfoButton.showsTouchWhenHighlighted = YES;
         [self addSubview:giftInfoButton];
 
-        slidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kUAQButtonHeight, kUAQSlideWidth, 4)];
-        slidLabel.backgroundColor = [UIColor blueColor];
+        slidLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, kUAQButtonHeight, kUAQSlideWidth, 4)];
+        slidLabel.backgroundColor = [UIColor colorWithRed:100.0/255 green:159.0/255 blue:211.0/255 alpha:1];
         [self addSubview:slidLabel];
   
+        UILabel *vsplitLable = [[UILabel alloc] initWithFrame:CGRectMake(160, 2, 1, kUAQButtonHeight - 4)];
+        vsplitLable.backgroundColor = [UIColor colorWithRed:209.0/255 green:213.0/255 blue:218.0/255 alpha:1];
+        [self addSubview:vsplitLable];
+        [vsplitLable release];
 		
         barChartTableView = [[UITableView alloc] init];
         barChartTableView.frame = CGRectMake(0, 0, 320, 240);
@@ -106,18 +110,18 @@
 		statusImage.contentMode = UIViewContentModeScaleAspectFit;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 			//This is an iphone, we need to scale down the image view
-			statusImage.frame = CGRectMake(0, 0, 50, 50);
+			statusImage.frame = CGRectMake(0, 0, 10, 10);
 		}
 		else {
-			statusImage.frame = CGRectMake(0, 0, 300, 300);
+			statusImage.frame = CGRectMake(0, 0, 30, 30);
 		}
 		
 		baseColor = [[UIColor colorWithRed:192.0f/255.0f green:80.0f/255.0f blue:0.0f alpha:1.0f] retain];
 		
 		[scrollPanel addSubview:statusImage];
 		
-		statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(kBZLeftSidePadding, kBZTopPadding, self.bounds.size.width - 2 * kBZLeftSidePadding, 30)];
-		statusLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+		statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(kBZLeftSidePadding, kBZTopPadding, self.bounds.size.width - 2 * kBZLeftSidePadding, 10)];
+		statusLabel.font = [UIFont boldSystemFontOfSize:12.0f];
 		statusLabel.textAlignment = UITextAlignmentCenter;
 		statusLabel.textColor = [UIColor whiteColor];
 		statusLabel.shadowColor = [UIColor grayColor];
@@ -126,7 +130,7 @@
 		statusLabel.adjustsFontSizeToFitWidth = YES;
 		[scrollPanel addSubview:statusLabel];
 		
-		enabledSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(kBZLeftSidePadding, 0, 100, 44)];
+		enabledSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(kBZLeftSidePadding, 0, 100, 12)];
 		[scrollPanel addSubview:enabledSwitch];
 
         
@@ -172,23 +176,8 @@
 - (void)layoutSubviews
 {
 	CGRect bounds = self.bounds;
-    //CGFloat locationWith = 10;
- //   statusBarLocationImage.frame = CGRectMake(bounds.origin.x, bounds.origin.y, statusBarLocationImage.frame.size.width, statusBarLocationImage.frame.size.height);
-//    statusBarLocationLabel.frame = CGRectMake(bounds.origin.x + statusBarLocationImage.frame.size.width, bounds.origin.y, statusBarLocationLabel.frame.size.width, statusBarLocationLabel.frame.size.height);
-    
-    //settingsButton.frame = CGRectMake(bounds.size.width - settingsButton.frame.size.width, bounds.origin.y, settingsButton.frame.size.width, settingsButton.frame.size.height);
-    
-	statusImage.frame = CGRectMake(bounds.origin.x + roundf(0.5 * (bounds.size.width - statusImage.frame.size.width)), bounds.origin.y + 25, statusImage.frame.size.width, statusImage.frame.size.height);
-	statusLabel.frame = CGRectMake(bounds.origin.x, statusImage.frame.origin.y + statusImage.frame.size.height + 10, bounds.size.width, 30);
-	enabledSwitch.frame = CGRectMake(bounds.origin.x + roundf(0.5 * (bounds.size.width - enabledSwitch.frame.size.width)), statusLabel.frame.origin.y + statusLabel.frame.size.height + 15, enabledSwitch.frame.size.width, enabledSwitch.frame.size.height);
-    
-//    taskNumLabel.frame = CGRectMake(bounds.origin.x, enabledSwitch.frame.origin.y + enabledSwitch.frame.size.height, taskNumLabel.frame.size.width, taskNumLabel.frame.size.height);
-//    taskProgessLabel.frame = CGRectMake(bounds.origin.x, taskNumLabel.frame.origin.y + taskNumLabel.frame.size.height, taskProgessLabel.frame.size.width, taskProgessLabel.frame.size.height);
-//    taskFreqLabel.frame = CGRectMake(bounds.origin.x, taskProgessLabel.frame.origin.y + taskProgessLabel.frame.size.height, taskFreqLabel.frame.size.width, taskFreqLabel.frame.size.height);
-    
-//    dataUsageLabel.frame = CGRectMake(bounds.origin.x, taskFreqLabel.frame.origin.y + taskFreqLabel.frame.size.height, dataUsageLabel.frame.size.width, dataUsageLabel.frame.size.height);
-    
-    barChartTableView.frame = CGRectMake(bounds.origin.x - 40, bounds.origin.y+150, barChartTableView.frame.size.width + 40, barChartTableView.frame.size.height);
+    scrollPanel.frame = CGRectMake(bounds.origin.x, bounds.origin.y, scrollPanel.frame.size.width, scrollPanel.frame.size.height);
+    barChartTableView.frame = CGRectMake(bounds.origin.x - 45, bounds.origin.y+150, barChartTableView.frame.size.width + 45, barChartTableView.frame.size.height);
     giftInfoTableView.frame = CGRectMake(bounds.origin.x + 320, 0, giftInfoTableView.frame.size.width, giftInfoTableView.frame.size.height);
 }
 

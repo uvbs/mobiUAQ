@@ -16,6 +16,8 @@
 #import "UAQGuideViewController.h"
 #import "UAQSettingsViewController.h"
 #import "UAQConfigViewController.h"
+#import "UAQGiftWebViewController.h"
+#import "UAQHomeViewController.h"
 
 @class LoginViewController;
 @class RegViewController;
@@ -34,9 +36,11 @@
     UAQSettingsViewController *settingsController;
     UAQConfigViewController *configController;
     UINavigationController *settingsNavigationController;
-    UINavigationController *giftNavigationController;
+    //UINavigationController *giftNavigationController;
     UINavigationController *idleViewNavigationController;
     UINavigationController * configNavigationController;
+    UINavigationController *giftViewNavigationController;
+    UAQHomeViewController *homeViewController;
     
     UITabBarController *tabBarController;
     

@@ -51,7 +51,7 @@
 {
 @private
 		//We only spawn one fetch job request at a time. If needed, this can change to a dictionary and we can add identifiers to the connections
-	BZHTTPURLConnection *activeRequest;
+//	BZHTTPURLConnection *activeRequest;
     NSDictionary *uaqCombosDictionary;
 
     

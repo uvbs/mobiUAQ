@@ -7,7 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UAQGiftWebView.h"
 
-@interface UAQGiftWebViewController : UIViewController
+
+@protocol UAQGiftWebViewDelegate;
+
+
+@interface UAQGiftWebViewController : UIViewController<UAQGiftWebViewDelegate>
+{
+    UAQGiftWebView *giftWebView;
+
+}
+@property (nonatomic, retain) UAQGiftWebView *giftWebView;
+
+
 
 @end

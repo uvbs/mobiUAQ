@@ -8,6 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
+
+@class UAQGiftWebView;
+@protocol UAQGiftWebViewDelegate <NSObject>
+
+
+@end
+
+
+
 @interface UAQGiftWebView : UIView
+{
+    id<UAQGiftWebViewDelegate> delegate;
+    UIWebView *webView;
+}
+
+@property (nonatomic, assign)     id<UAQGiftWebViewDelegate> delegate;
+@property (nonatomic, assign)     UIWebView *webView;
+
 
 @end

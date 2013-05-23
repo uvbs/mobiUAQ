@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UAQAccountCenterView.h"
 
-@interface UAQAccountCenterViewController : UIViewController
+@interface UAQAccountCenterViewController : UIViewController<UAQAccountCenterDelegate>
+{
+    UAQAccountCenterView *accountView;
+}
+
+@property (nonatomic, readonly)     UAQAccountCenterView *accountView;
+
 
 @end

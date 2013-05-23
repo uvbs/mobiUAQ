@@ -7,6 +7,7 @@
 //
 
 #import "UAQFeedbackViewController.h"
+#import "LoginShareAssistant.h"
 
 @interface UAQFeedbackViewController ()<UAQFeedbackViewDelegate,UITextViewDelegate>
 
@@ -67,7 +68,16 @@
 
 - (void)btnFeedbackPressed
 {
- //   [[UAQJobManager sharedInstance] publishFeedback:feedbackView.textFieldFeedback.text username:feedbackView.textFieldUserName.text];
+    if ([feedbackView.textViewFeedback.text isEqualToString: @""]) {
+        return;
+    }
+    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+    
+    [[UAQJobManager sharedInstance] publishFeedback:feedbackView.textViewFeedback.text username:assistant.getLoginedAccount.uname];
+    // never release assistant, or app crashes
+    //[assistant release];
+    //[self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)viewDidLoad
@@ -78,12 +88,6 @@
     UINavigationBar *bar = [self.navigationController navigationBar];
     [bar setTintColor:[UIColor colorWithRed:39.0/255 green:103.0/255 blue:213.0/255 alpha:1]];
     [anotherButton release];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

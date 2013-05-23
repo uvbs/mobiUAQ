@@ -191,16 +191,23 @@ static BZJobManager *sharedInstance;
     #if BZ_DEBUG_REQUESTS
         NSLog(@"Posting zip");
     #endif
+        Reachability *reachability = [Reachability reachabilityForInternetConnection];
+        [reachability startNotifier];
         
+        NetworkStatus status = [reachability currentReachabilityStatus];
+       
+
         NSData *zipData = [result zipResultData];
         // JK save uploaded data size
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *dataSize = [defaults objectForKey:kBZBytesUploaded];
-        dataSize = [NSNumber numberWithInt: zipData.length + [dataSize integerValue]];
-        [defaults setObject:[NSNumber numberWithInt:[dataSize integerValue]] forKey:kBZBytesUploaded];
-        [defaults synchronize];
-         
+        if (zipData && (status == ReachableViaWWAN))
+        {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSNumber *dataSize = [defaults objectForKey:kBZBytesUploaded];
+            dataSize = [NSNumber numberWithInt: zipData.length + [dataSize integerValue]];
+            [defaults setObject:[NSNumber numberWithInt:[dataSize integerValue]] forKey:kBZBytesUploaded];
+            [defaults synchronize];
+        }
+
        // zipData.length;
         if (zipData) {
             //Send off the video publish request

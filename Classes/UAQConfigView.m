@@ -32,6 +32,7 @@
         tableView.backgroundColor = [UIColor whiteColor];
         [tableView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin ];
         tableView.allowsSelection = YES;
+        tableView.scrollEnabled = NO;
         [self addSubview:tableView];
         //headView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head_background.png"]];
         //[self addSubview:headView];
@@ -44,6 +45,7 @@
         labelJobStatus.font = [UIFont boldSystemFontOfSize:12];
         labelJobStatus.textColor = [UIColor grayColor];
         labelJobStatus.textAlignment = UITextAlignmentCenter;
+        labelJobStatus.backgroundColor = [UIColor clearColor];
         [self addSubview:labelJobStatus];
 //        startButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //        UIImage *btn_image = [UIImage imageNamed:@"login_button.png"];
