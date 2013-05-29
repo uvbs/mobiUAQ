@@ -12,6 +12,8 @@
 //URL Connections
 #import "BZHTTPURLConnection.h"
 
+#import "Reachability.h"
+
 
 @interface UAQUpdate : NSObject
 {
@@ -34,6 +36,7 @@
     NSInteger bytesDownloaded;
     
     NSInteger comboSelect;
+    
 }
 + (UAQJobStatusInfo*)sharedJobInstance;
 
@@ -53,7 +56,7 @@
 		//We only spawn one fetch job request at a time. If needed, this can change to a dictionary and we can add identifiers to the connections
 //	BZHTTPURLConnection *activeRequest;
     NSDictionary *uaqCombosDictionary;
-
+    Reachability *hostReach;
     
 }
 @property (nonatomic, assign) NSDictionary *uaqCombosDictionary;
@@ -64,6 +67,8 @@
 - (void)publishFeedback:(NSString*)feedback username:(NSString *)username;
 
 - (UAQUpdate *)checkUpdate;
+- (UAQUpdate *)checkLatestNews;
+- (NSInteger)connectType;
 
 @end
 

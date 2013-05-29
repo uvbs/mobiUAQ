@@ -8,6 +8,7 @@
 
 #import "UAQAccountCenterViewController.h"
 #import "LoginShareAssistant.h"
+#import "BZConstants.h"
 
 @interface UAQAccountCenterViewController ()<UITableViewDataSource,UITableViewDelegate,UAQAccountCenterDelegate>
 
@@ -88,9 +89,26 @@
             if (indexPath.row == 0)
             {
                 cell.backgroundColor = [UIColor whiteColor];
-                LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
-                cell.textLabel.text = assistant.getLoginedAccount.uname;
+                //LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+                NSString *name = @"用户名：";
+                [cell.detailTextLabel setTextColor:[UIColor grayColor]];
+                [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
+                
+                cell.detailTextLabel.text = [name stringByAppendingString: [[NSUserDefaults standardUserDefaults]objectForKey:keyUAQLoginName]];
+            }else if (indexPath.row == 1)
+            {
+                cell.backgroundColor = [UIColor whiteColor];
+                NSInteger comboSelect =  [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect] integerValue];
+
+                NSString *name = @"套  餐： ";
+                NSArray *comboDisplayArray = [NSArray arrayWithObjects:@"未选择",@"套餐A",@"套餐B",@"套餐C",@"套餐D", nil];
+                [cell.detailTextLabel setTextColor:[UIColor grayColor]];
+                [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
+                
+
+                cell.detailTextLabel.text = [name stringByAppendingString: [comboDisplayArray objectAtIndex:comboSelect]];
             }
+
         }
     }
     

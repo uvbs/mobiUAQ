@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.6</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>osx</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -51,5 +51,7 @@
 	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
+	<key>UIStatusBarHidden</key>
+	<true/>
 </dict>
 </plist>

@@ -1,24 +1,27 @@
 //
-//  UAQGiftWebViewController.m
+//  UAQTicketWebViewController.m
 //  BZAgent
 //
-//  Created by Jack Song on 5/17/13.
+//  Created by Jack Song on 5/27/13.
 //  Copyright (c) 2013 Blaze. All rights reserved.
 //
 
-#import "UAQGiftWebViewController.h"
+#import "UAQTicketWebViewController.h"
 #import "MBProgressHUD.h"
+#import "BZConstants.h"
+#import "Base64.h"
 
-@interface UAQGiftWebViewController ()<UIWebViewDelegate,MBProgressHUDDelegate>
+@interface UAQTicketWebViewController ()<MBProgressHUDDelegate,UIWebViewDelegate>
 @property (nonatomic, assign) MBProgressHUD *loadingHUD;
 @property (nonatomic, readonly) UIWebView *awebView;
+
 @end
 
-@implementation UAQGiftWebViewController
+@implementation UAQTicketWebViewController
 
-@synthesize giftWebView;
 @synthesize loadingHUD;
 @synthesize awebView;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -28,18 +31,23 @@
     }
     return self;
 }
-
 - (id)init
 {
     if ((self = [super init])) {
         //
-        NSLog(@"init giftwebview ");
-       }
-    NSLog(@"init giftwebview thht ");
+        NSLog(@"init ticket webview ");
+    }
+    NSLog(@"init ticket webview a2");
 
     return self;
 }
 
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+}
 
 - (void)loadView
 {
@@ -49,34 +57,45 @@
     //loadingHUD.delegate = self;
     
     //loadingHUD.labelText = @"Loading";
-
-    giftWebView = [[UAQGiftWebView alloc] initWithFrame:self.view.bounds];
+    
+    //giftWebView = [[UAQGiftWebView alloc] initWithFrame:self.view.bounds];
     awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 375)];
     [self.view addSubview:awebView];
-
+    
     //[loadingHUD showWhileExecuting:@selector(loadingWebView) onTarget:self withObject:nil animated:YES];
-
+    
 }
 
 - (void)loadingWebView
 {
     //UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
-    NSURL *url = [NSURL URLWithString:@"http://220.181.7.18/appstat/gift.php"];
+//    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+    NSURL *url;
+//    if (assistant)
+    {
+        NSString *uname = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];;
+        
+        //NSString *uname = @"公公公愚";
+        NSString *encodedString = [[uname dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+        url = [NSURL URLWithString:[@"http://220.181.7.18/appstat/ticket.php?username=" stringByAppendingString:encodedString]];
+    }
+
+   // NSURL *url = [NSURL URLWithString:@"http://220.181.7.18/appstat/ticket.php"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url ];
     //[self.view addSubview:webView];
     awebView.delegate = self;
     [awebView loadRequest:request];
-//    [self.view addSubview:awebView];
- //   [awebView release];
-
+    //    [self.view addSubview:awebView];
+    //   [awebView release];
+    
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     
     NSLog(@"start load");
-   loadingHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    loadingHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     loadingHUD.delegate = self;
-
+    
     loadingHUD.mode = MBProgressHUDModeIndeterminate;
     loadingHUD.labelText = @"正在加载中";
     loadingHUD.margin = 10.f;
@@ -84,7 +103,7 @@
     loadingHUD.removeFromSuperViewOnHide = YES;
     
     [loadingHUD hide:YES afterDelay:2];
-
+    
 }
 
 
@@ -92,8 +111,8 @@
     
     NSLog(@"failed load");
     //[loadingHUD hide:YES];
-   // [loadingHUD release];
-   // loadingHUD = nil;
+    // [loadingHUD release];
+    // loadingHUD = nil;
 }
 
 
@@ -105,34 +124,21 @@
     //loadingHUD = nil;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [self loadingWebView];
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)dealloc {
     [loadingHUD release];
     [awebView release];
-
-     [giftWebView release];
+    
+    //[giftWebView release];
     [super dealloc];
 }
 - (void)viewDidUnload {
-
+    
     [super viewDidUnload];
 }
+
 
 @end

@@ -181,7 +181,7 @@
 - (NSData*)zipResultData
 {
 	NSString *cachesFolder = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-	NSString *archiveLocation = [[cachesFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-results.zip", jobId]];
+	NSString *archiveLocation = [[cachesFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent:[NSString stringWithFormat:@"mobiUAQ_%@-results.zip", jobId]];
 	NSData *data = nil;
 
 #if BZ_DEBUG_REQUESTS

@@ -192,26 +192,47 @@ static BZJobManager *sharedInstance;
         NSLog(@"Posting zip");
     #endif
         Reachability *reachability = [Reachability reachabilityForInternetConnection];
-        [reachability startNotifier];
+        //[reachability startNotifier];
         
         NetworkStatus status = [reachability currentReachabilityStatus];
        
 
         NSData *zipData = [result zipResultData];
         // JK save uploaded data size
-        if (zipData && (status == ReachableViaWWAN))
+        if (zipData )
         {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            NSNumber *dataSize = [defaults objectForKey:kBZBytesUploaded];
-            dataSize = [NSNumber numberWithInt: zipData.length + [dataSize integerValue]];
-            [defaults setObject:[NSNumber numberWithInt:[dataSize integerValue]] forKey:kBZBytesUploaded];
+            NSUInteger dataSize ;
+            if ( status == ReachableViaWWAN) {
+                dataSize = [[defaults objectForKey:kBZBytesUploaded3G] integerValue];
+                NSLog(@"datasize 3G %d",dataSize);
+
+            }else if (status == ReachableViaWiFi)
+            {
+                dataSize = [[defaults objectForKey:kBZBytesUploaded] integerValue];
+                NSLog(@"datasize WiFi %d",dataSize);
+
+            }
+
+            dataSize = [[NSNumber numberWithInt: zipData.length + dataSize] integerValue];
+            if ( status == ReachableViaWWAN) {
+                [defaults setObject:[NSNumber numberWithInt:dataSize] forKey:kBZBytesUploaded3G];
+                //dataSize = [[defaults objectForKey:kBZBytesUploaded3G] integerValue];
+                NSLog(@"datasize 3G %d",dataSize);
+
+            }else if (status == ReachableViaWiFi)
+            {
+                [defaults setObject:[NSNumber numberWithInt:dataSize] forKey:kBZBytesUploaded];
+                NSLog(@"datasize WiFi %d",dataSize);
+
+            }
             [defaults synchronize];
         }
 
        // zipData.length;
         if (zipData) {
             //Send off the video publish request
-            self.activeUploadHarRequest = [[[BZHTTPURLConnection alloc] initWithType:BZHTTPURLConnectionTypePublishHarVideo request:[self requestWithUrl:url data:zipData boundary:kBZBoundary formName:@"result" zipName:[NSString stringWithFormat:@"%@-results.zip", result.jobId]] delegate:self] autorelease];
+            self.activeUploadHarRequest = [[[BZHTTPURLConnection alloc] initWithType:BZHTTPURLConnectionTypePublishHarVideo request:[self requestWithUrl:url data:zipData boundary:kBZBoundary formName:@"result" zipName:[NSString stringWithFormat:@"mobiUAQ_%@-results.zip", result.jobId]] delegate:self] autorelease];
             
             //NSLog(@"activeUploadHarRequest is :%@",self.activeUploadHarRequest);
         }
@@ -334,6 +355,7 @@ static BZJobManager *sharedInstance;
                 if ([data length] > 0) {
                     BZJob *job = [self jobFromData:data response:connection.response];
                     NSLog(@"%@",connection.url);
+                    NSLog(@"jobs count %d",[currentJobs count]);
                     if (job) {		
                         [currentJobs addObject:job];
                         

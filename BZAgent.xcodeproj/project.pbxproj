@@ -108,6 +108,7 @@
 		044651E3168D50E7005D49B4 /* login_button_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 044651E1168D50E7005D49B4 /* login_button_pressed.png */; };
 		044651E4168D50E7005D49B4 /* login_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 044651E2168D50E7005D49B4 /* login_button.png */; };
 		044651E6168D6738005D49B4 /* login_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 044651E5168D6738005D49B4 /* login_bg.png */; };
+		0461FFAB175334CE00DE7A30 /* UAQTicketWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0461FFAA175334CE00DE7A30 /* UAQTicketWebViewController.m */; };
 		047662931738F66700DD3ABA /* FIllAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0476620F1738F66700DD3ABA /* FIllAccountViewController.m */; };
 		047662941738F66700DD3ABA /* FillUnameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047662111738F66700DD3ABA /* FillUnameViewController.m */; };
 		047662951738F66700DD3ABA /* ForgotPassViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047662131738F66700DD3ABA /* ForgotPassViewController.m */; };
@@ -533,6 +534,8 @@
 		044651E1168D50E7005D49B4 /* login_button_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login_button_pressed.png; sourceTree = "<group>"; };
 		044651E2168D50E7005D49B4 /* login_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login_button.png; sourceTree = "<group>"; };
 		044651E5168D6738005D49B4 /* login_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = login_bg.png; path = Images/Button/login_bg.png; sourceTree = "<group>"; };
+		0461FFA9175334CE00DE7A30 /* UAQTicketWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQTicketWebViewController.h; sourceTree = "<group>"; };
+		0461FFAA175334CE00DE7A30 /* UAQTicketWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UAQTicketWebViewController.m; sourceTree = "<group>"; };
 		0476620E1738F66700DD3ABA /* FIllAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FIllAccountViewController.h; sourceTree = "<group>"; };
 		0476620F1738F66700DD3ABA /* FIllAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FIllAccountViewController.m; sourceTree = "<group>"; };
 		047662101738F66700DD3ABA /* FillUnameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FillUnameViewController.h; sourceTree = "<group>"; };
@@ -1453,6 +1456,8 @@
 				044520471745FA6A00EA2B64 /* UAQHomeViewController.m */,
 				04CD0D9E174DF7770087BBEE /* UAQAccountCenterViewController.h */,
 				04CD0D9F174DF7770087BBEE /* UAQAccountCenterViewController.m */,
+				0461FFA9175334CE00DE7A30 /* UAQTicketWebViewController.h */,
+				0461FFAA175334CE00DE7A30 /* UAQTicketWebViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2131,6 +2136,7 @@
 				042C109C174A4C40003043E2 /* Base64.m in Sources */,
 				04CD0DA0174DF7770087BBEE /* UAQAccountCenterViewController.m in Sources */,
 				04CD0DA6174DF7A50087BBEE /* UAQAccountCenterView.m in Sources */,
+				0461FFAB175334CE00DE7A30 /* UAQTicketWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

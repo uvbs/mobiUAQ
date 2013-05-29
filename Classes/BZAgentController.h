@@ -45,6 +45,7 @@
 	BOOL isEnabled;
 	BOOL keyboardVisible;
 	BOOL busy;
+    BOOL isBackground;
     
 //    NSInteger jobsCompletedToday;
 //    NSInteger maxJobsPerDay;

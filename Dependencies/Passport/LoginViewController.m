@@ -415,7 +415,7 @@
 	UIBarButtonItem *RegBarBtn = [[UIBarButtonItem alloc] initWithCustomView:registBtn];
 	NavBar.topItem.rightBarButtonItem = RegBarBtn;	
 	[RegBarBtn release];
-    
+  /*
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setFrame:CGRectMake(10, 10, 50.0, 29.0)];
     [backBtn setBackgroundColor:[UIColor clearColor]];
@@ -429,6 +429,7 @@
 	UIBarButtonItem *backBarBtn = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
 	NavBar.topItem.leftBarButtonItem = backBarBtn;	
 	[backBarBtn release];
+   */
 }
 
 -(void) setHideRegistButton:(BOOL)hideRegistButton

@@ -9,6 +9,7 @@
 #import "UAQSettingsViewController.h"
 #import "UAQHomeViewController.h"
 #import "BZAgentAppDelegate.h"
+#import "BZConstants.h"
 
 
 #define SECTION_ACCOUNT 0
@@ -18,10 +19,10 @@
 // section settings
 #define ROW_MAX_TRAFFIC 0
 #define ROW_LOW_BATTERY 1
-#define ROW_CHECK_UPDATE 2
+//#define ROW_CHECK_UPDATE 2
 // section others
 #define ROW_FEEDBACK 0
-#define ROW_SHARE_FRIEND 1
+#define ROW_CHECK_UPDATE 1
 #define ROW_TERM_OF_SERVICE 2
 #define ROW_ABOUT 3
 
@@ -110,7 +111,7 @@
     //    rows = 3;
     //        break;
         case SECTION_OTHERS:
-            rows = 4;
+            rows = 2;
             break;
             
         default:
@@ -145,10 +146,10 @@
                 [cell.detailTextLabel setText:@"使用反馈"];
                 [cell.detailTextLabel setTextColor:[UIColor grayColor]];
                 [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
-            }else if (indexPath.row == ROW_SHARE_FRIEND)
+            }else if (indexPath.row == ROW_CHECK_UPDATE)
             {
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                [cell.detailTextLabel setText:@"推荐给好友"];
+                [cell.detailTextLabel setText:@"检查更新"];
                 [cell.detailTextLabel setTextColor:[UIColor grayColor]];
                 [cell.detailTextLabel setFont:[UIFont fontWithName:@"Arial" size:14]];
             }else if (indexPath.row == ROW_TERM_OF_SERVICE)
@@ -203,6 +204,16 @@
                 [feedbackViewController release];
                 break;
             }
+            case ROW_CHECK_UPDATE:{
+                UAQUpdate *uaqUp = [[UAQJobManager sharedInstance] checkUpdate];
+                if (uaqUp.updateAvailable) {
+                    [settingsView showUpdateAvailable:uaqUp.msg];
+                }else
+                {
+                    [settingsView showAlreadyUpdated];
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -216,6 +227,10 @@
                 [model release];
             //[UIApplication sharedApplication]
             BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:@"" forKey:keyUAQLoginName];
+            [defaults synchronize];
             
             [self.navigationController presentModalViewController:app.viewController animated:YES];
 

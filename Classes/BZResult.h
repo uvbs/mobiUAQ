@@ -61,4 +61,6 @@
 - (void)endSession;
 - (void)endSessionAsTimeout;
 
+- (id)customDictionary;
+
 @end

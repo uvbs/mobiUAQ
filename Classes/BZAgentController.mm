@@ -67,6 +67,7 @@
 		isEnabled = NO;
 		keyboardVisible = NO;
 		busy = NO;
+        isBackground = NO;
         //statusInfo = [[JobStatusInfo alloc] init];
  
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -140,29 +141,25 @@
     // disable idleView and use webview
  //   [self.view addSubview:idleView];
     
-    NSLog(@"init giftwebview ");
 //	[self registerForKeyboardNotifications];
     
 }
 
 - (void)loadingWebView
 {
-    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+//    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
     NSURL *url;
-    if (assistant) {
-        NSString *uname = assistant.getLoginedAccount.uname;
-        
-        if (!uname) {
-            uname =  @"公公公愚";
-            
-        }
-        //NSString *uname = @"公公公愚";
+//    if (assistant)
+    {
+        //NSString *uname = assistant.getLoginedAccount.uname;
+        NSString *uname =[[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
+
         NSString *encodedString = [[uname dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
         url = [NSURL URLWithString:[@"http://220.181.7.18/appstat/stat.php?username=" stringByAppendingString:encodedString]];
     }
-    NSLog(@"%@",url);
+    NSLog(@"url is %@",url);
     
-    UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 365)];
+    UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 375)];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url ];
     //[self.view addSubview:webView];
@@ -221,7 +218,7 @@
 //    isEnabled = YES;
 //    [self startPolling];
     [idleView updateStatusInfo:statusInfo withJobFinished:false];
-    [self loadingWebView];
+ //   [self loadingWebView];
 
 }
 
@@ -367,19 +364,13 @@
 - (void)pollForJobs:(BOOL) fromAuto
 {
     NSLog(@"now completed: %d busy %d",statusInfo.jobsCompletedToday,busy);
-    if (!busy) 
+    if (!busy && isEnabled && isBackground)
     {
         
 //        [idleView showPolling:@"监测中"];公公公愚
-        Reachability *reachability = [Reachability reachabilityForInternetConnection];
-        [reachability startNotifier];
-        
-        NetworkStatus status = [reachability currentReachabilityStatus];
-        if(status == NotReachable)
-        {
-            //No internet
-        }
-        else if (status == ReachableViaWiFi)
+        NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
+
+        if (ctid == 0)
         {
             //WiFi
             // no traffic limitation
@@ -387,38 +378,43 @@
             [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
 
         }
-        else if (status == ReachableViaWWAN)
+        else if (ctid == 1)
         {
             //3G
             
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             statusInfo.maxBytesAllowed = [[defaults objectForKey:kBZMaxBytesPerMonth] integerValue];
             
-            if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
+   //         if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
                 // Switch to the next valid server
                 [self switchActiveUrl];
                 [idleView showPolling:@"监测中"];
                 [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
-            }else{
-                [idleView showError:@"已达到最大流量限制"];
-            }
+ //           }else{
+ //               [idleView showError:@"已达到最大流量限制"];
+ //           }
             
         }
     }
-   
+    /*
+    NSLog(@"before date df");
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
     
     NSDate *checkDate = [df dateFromString:@"2013-01-01 13:06:00"];
     NSDate *now  = [NSDate date];
     NSDateComponents *checkComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:checkDate];
+    NSLog(@"before date now");
+
     NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:now];
-    
+    NSLog(@"after date now");
+
 
     if ([checkComponents day] == [nowComponents day]) {
         // clear everymonth
         [self clearStatusInfoEveryMonth];
     }
+     */
     [self updateStatusInfo];
     
     
@@ -541,7 +537,7 @@
 		
 		//Now poll for the next one if there are none in the queue.  Make sure that this is sequential so that the upload does not affect the next job.  We could theoretically download at the same time though.
 		BZJobManager *jobManager = [BZJobManager sharedInstance];
-		if ([jobManager hasJobs]) {
+		if ([jobManager hasJobs] && isEnabled && isBackground) {
 			busy = YES;
 			
 			//Enforce the timeout
@@ -553,6 +549,7 @@
 			BZWebViewController *webController = [[[BZWebViewController alloc] initWithJob:[jobManager nextJob] timeout:timeout] autorelease];
 			webController.delegate = self;
 			[self presentModalViewController:webController animated:NO];
+            NSLog(@"start bzwebview");
 		}
 		else if (isEnabled && shouldPoll) {
 			[self pollForJobs:false];
@@ -570,14 +567,15 @@
 
 - (void)applicationEnterBackground:(BOOL)entered
 {
+    NSLog(@"isBackground %@",entered?@"YES":@"NO");
     if (entered) {
-		isEnabled = YES;
+		isBackground = YES;
 		//[idleView showEnabled:@"Polling enabled"];
         [idleView showEnabled:@"自动监测任务"];
 		[self startPolling];
 	}
 	else {
-		isEnabled = NO;
+		isBackground = NO;
 		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
 	}}
@@ -614,7 +612,7 @@
 #endif
 	[idleView showPolling:@"Processing new job"];
 	
-	[self processNextJob:NO];
+	[self processNextJob:YES];// JK original NO
 }
 
 - (void)failedToGetJobs:(NSNotification*)notification
@@ -697,13 +695,29 @@
         
   
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *downloadSize = [defaults objectForKey:kBZBytesDownloaded];
+    NSNumber *downloadSize = [defaults objectForKey:kBZBytesDownloaded];
+    NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
+    
+    //if (ctid == 0)
+    if (ctid == 1) {
+        downloadSize = [defaults objectForKey:kBZBytesDownloaded3G];
+    }
+    
         downloadSize = [ NSNumber numberWithInt:[downloadSize integerValue] + result.totalBytesFromNetwork];
 
+    if (ctid == 1) {
+        [defaults setObject:[NSNumber numberWithInt:[downloadSize integerValue]] forKey:kBZBytesDownloaded3G];
+
+    }else
+    {
         [defaults setObject:[NSNumber numberWithInt:[downloadSize integerValue]] forKey:kBZBytesDownloaded];
+    }
+    statusInfo.jobsCompletedToday += 1;
+
+    [defaults setObject:[NSNumber numberWithInt:statusInfo.jobsCompletedToday] forKey:kBZJobsCompletedToday];
         [defaults synchronize];
         // update after job completed
-        statusInfo.jobsCompletedToday += 1;
+        //statusInfo.jobsCompletedToday += 1;
         statusInfo.bytesDownloaded = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZBytesDownloaded] integerValue];// need to get from results
         statusInfo.bytesUploaded = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZBytesUploaded] integerValue]; // need to get from webview, maybe
         [idleView updateStatusInfo:statusInfo withJobFinished: YES];

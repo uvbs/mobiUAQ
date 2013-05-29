@@ -12,6 +12,12 @@
 
 //Constants
 #import "BZConstants.h"
+#import "/Users/jack/work/iOS/mobiUAQ/Dependencies/Passport/inc/LoginShareAssistant.h"
+#import "Reachability.h"
+#import "NSData+Base64.h"
+#import <CommonCrypto/CommonHMAC.h>
+#import "UAQJobManager.h"
+
 
 @interface BZResult ()
 @property (nonatomic, retain) BZSession *currentRun;
@@ -536,6 +542,48 @@
 - (NSString*)description
 {
 	return [self jsonStringFromResult];
+}
+
+- (id)customDictionary
+{
+    NSMutableDictionary *custcomDict = [[NSMutableDictionary alloc] init];
+    
+    NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
+    
+    if (ctid == 0)
+    {
+        //WiFi
+        [custcomDict setObject:[NSNumber numberWithInt:0] forKey:@"net"];
+        [custcomDict setObject:[NSNumber numberWithInt:0] forKey:@"connectType"];
+
+    }
+    else if (ctid == 1)
+    {
+        [custcomDict setObject:[NSNumber numberWithInt:1] forKey:@"net"];
+        [custcomDict setObject:[NSNumber numberWithInt:1] forKey:@"connectType"];
+
+    }
+    NSInteger combo = [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect] integerValue] - 1;
+    NSLog(@"%@", jobId);
+    NSArray *jobSplit = [jobId componentsSeparatedByString:@"-"];
+    NSString *uname_base64 = [[[[NSUserDefaults standardUserDefaults]objectForKey:keyUAQLoginName ] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+    NSString *jobDate = [NSString stringWithFormat: @"%@-%@-%@", [jobSplit objectAtIndex:1],[jobSplit objectAtIndex:1],[jobSplit objectAtIndex:2]];
+    NSString *md5Seed = [[[jobSplit objectAtIndex:0] stringByAppendingString:uname_base64] stringByAppendingString:jobDate];
+    const char *cStr = [md5Seed UTF8String];
+    unsigned char result[16];
+    CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
+    NSString *md5 = [NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7],result[8], result[9], result[10], result[11],result[12], result[13], result[14], result[15]];
+    
+    NSString *deviceType = [[[UIDevice currentDevice] model] stringByAppendingString: [[UIDevice currentDevice] systemVersion]];
+    [custcomDict setObject:deviceType forKey:@"deviceType"];
+    [custcomDict setObject:uname_base64 forKey:@"userName"];
+    [custcomDict setObject:md5 forKey:@"md5"];
+    [custcomDict setObject:@"" forKey:@"client_ip"];
+    [custcomDict setObject:[NSNumber numberWithInt:combo] forKey:@"p_type"];
+
+    
+    
+    return custcomDict;
 }
 
 @end

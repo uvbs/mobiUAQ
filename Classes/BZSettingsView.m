@@ -279,19 +279,6 @@
         [self addSubview:jobFetchFreqSlider];
         
         
-        
- /*
-        maxJobsPerDaySlider = [UISlider ];
-        
-		baseColor = [[UIColor colorWithRed:92.0f/255.0f green:80.0f/255.0f blue:0.0f alpha:1.0f] retain];
-		
-        usage_tips = [[UILabel alloc] initWithFrame:(CGRectMake((self.bounds.size.width>kBZTipWidth?self.bounds.size.width-kBZTipWidth:self.bounds.size.width*0.5)*0.5, round(self.bounds.size.height*0.02), kBZTipWidth, kBZTipHeight))];
-        usage_tips.lineBreakMode = UILineBreakModeWordWrap;
-        usage_tips.numberOfLines = 0;
-        [usage_tips setText:(@"UAQ移动监测IOS版，\n  使用准入帐号登陆")];
-        [usage_tips setBackgroundColor:[UIColor clearColor]];
-        [self addSubview:usage_tips];
-*/
     }
     return self;
 }

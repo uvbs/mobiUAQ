@@ -37,6 +37,10 @@
 static UAQJobManager *sharedInstance;
 
 @interface UAQJobManager ()
+{
+    NSInteger *connetTypeId;
+
+}
 //@property (nonatomic, retain) BZHTTPURLConnection *activeRequest;
 
 @end
@@ -59,7 +63,23 @@ static UAQJobManager *sharedInstance;
 	self = [super init];
 	if (self) {
         //
+
+        // 设置网络状态变化时的通知函数
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:kReachabilityChangedNotification
+                                                   object:nil];
         
+        [[NSNotificationCenter defaultCenter] postNotificationName:kReachabilityChangedNotification object:nil];
+        
+        hostReach = [[Reachability reachabilityWithHostName:@"www.baidu.com"] retain];
+        
+        [hostReach startNotifier];
+        NetworkStatus status = [hostReach currentReachabilityStatus];
+        
+        NSLog(@"net status %@",status==ReachableViaWWAN?@"3g":@"wifi");
+
+
 	}
 	return self;
 }
@@ -72,6 +92,35 @@ static UAQJobManager *sharedInstance;
 {
 	//[activeRequest release];
 	[super dealloc];
+}
+
+#pragma mark - Public  methods
+-(void)reachabilityChanged:(NSNotification *)note
+{
+    Reachability * curReach = [note object];
+//    NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    [self updateInterfaceWithReachability:curReach];
+}
+
+-(void)updateInterfaceWithReachability:(Reachability *)curReach
+{
+    NetworkStatus status = [curReach currentReachabilityStatus];
+    //由其他环境变为wifi环境
+    NSLog(@"net changed");
+    if (status == ReachableViaWiFi)
+    {
+        NSLog(@"切换到WIFi环境");
+        connetTypeId = 0;
+    }else if( status == ReachableViaWWAN)
+    {
+        NSLog(@"3G env");
+        connetTypeId = 1;
+    }
+}
+
+- (NSInteger)connectType
+{
+    return connetTypeId;
 }
 
 - (NSURLRequest*)requestWithUrl:(NSString*)url data:(NSData*)data boundary:(NSString*)boundary formName:(NSString*)formName
@@ -157,7 +206,7 @@ static UAQJobManager *sharedInstance;
 - (UAQUpdate *)checkLatestNews
 {
     UAQUpdate * uaqUp = [[UAQUpdate alloc] init];
-    NSURL *url = [[NSURL alloc] initWithString:@"http://220.181.7.18/work/uaq_iphone_update.php?ver=100"];
+    NSURL *url = [[NSURL alloc] initWithString:@"http://220.181.7.18/work/uaq_iphone_news.php?ver=100"];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     NSHTTPURLResponse *response;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
@@ -167,7 +216,7 @@ static UAQJobManager *sharedInstance;
     NSError *err = nil;
     NSDictionary *dict =[[CJSONDeserializer deserializer] deserializeAsDictionary:data error:&err];
     if (err) {
-        
+        NSLog(@"%@",[err description]);
     }else
     {
         uaqUp.updateAvailable = [[dict objectForKey:@"updateAvailable"] boolValue];

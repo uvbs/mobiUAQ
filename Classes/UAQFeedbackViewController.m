@@ -7,7 +7,8 @@
 //
 
 #import "UAQFeedbackViewController.h"
-#import "LoginShareAssistant.h"
+//#import "LoginShareAssistant.h"
+#import "BZConstants.h"
 
 @interface UAQFeedbackViewController ()<UAQFeedbackViewDelegate,UITextViewDelegate>
 
@@ -71,9 +72,9 @@
     if ([feedbackView.textViewFeedback.text isEqualToString: @""]) {
         return;
     }
-    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
+    //LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
     
-    [[UAQJobManager sharedInstance] publishFeedback:feedbackView.textViewFeedback.text username:assistant.getLoginedAccount.uname];
+    [[UAQJobManager sharedInstance] publishFeedback:feedbackView.textViewFeedback.text username:[[NSUserDefaults standardUserDefaults]objectForKey:keyUAQLoginName]];
     // never release assistant, or app crashes
     //[assistant release];
     //[self.navigationController popViewControllerAnimated:YES];

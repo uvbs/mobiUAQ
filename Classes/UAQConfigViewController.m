@@ -22,7 +22,6 @@
 #define configViewFontSize 18.0
 #define configViewFontSizeSmall 12.0
 
-#define keyComboSelect @"_uaqComboSelect"
 
 
 @interface UAQConfigViewController ()<GMGridViewDataSource,GMGridViewSortingDelegate,GMGridViewTransformationDelegate,GMGridViewActionDelegate,UAQConfigViewDelegate,UITableViewDataSource,UITableViewDelegate>
@@ -35,6 +34,7 @@
     NSInteger _lastDeleteItemIndexAsked;
     
     UIImageView *imageCheck;
+    UILabel *labelCheck;
     UIButton *startButton;
     NSInteger _lastComboSelect;
    
@@ -120,29 +120,14 @@
     imageCheck.alpha = 0.0;
     [configView addSubview:imageCheck];
     
-//    if ([UAQJobStatusInfo sharedJobInstance].comboSelect) {
-//        NSLog("%@",[UAQJobStatusInfo sharedJobInstance].comboSelect);
-//    }
-/*
-    GMGridView *gmGridView = [[GMGridView alloc] initWithFrame:self.view.bounds];
-    gmGridView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    gmGridView.backgroundColor = [UIColor clearColor];
-    //[self.view addSubview:gmGridView];
-    _gmGridView = gmGridView;
+    labelCheck = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 14, 18)];
+    labelCheck.text = @"√";
+    labelCheck.textColor = [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
+    labelCheck.backgroundColor = [UIColor clearColor];
+    labelCheck.alpha = 0.0;
     
-    _gmGridView.style = GMGridViewStyleSwap;
-    _gmGridView.itemSpacing = spacing;
-    _gmGridView.minEdgeInsets = UIEdgeInsetsMake(spacing, spacing, spacing, spacing);
-    _gmGridView.centerGrid = YES;
-    _gmGridView.actionDelegate = self;
-    _gmGridView.sortingDelegate = self;
-    _gmGridView.transformDelegate = self;
-    _gmGridView.dataSource = self;
-    _gmGridView.minimumPressDuration = 1000;
-    [configView addSubview:_gmGridView];
-    [gmGridView release];
-
-    */
+    [configView addSubview:labelCheck];
+    
     
     UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
     infoButton.frame = CGRectMake(self.view.bounds.size.width - 40,
@@ -179,8 +164,10 @@
         case 1:
         {
             CGPoint pointOne=CGPointMake(140, 97);
-            imageCheck.alpha = 1.0;
-            imageCheck.center = pointOne;
+            //imageCheck.alpha = 1.0;
+            //imageCheck.center = pointOne;
+            labelCheck.alpha = 1.0;
+            labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -188,8 +175,8 @@
         case 2:
         {
             CGPoint pointOne=CGPointMake(290, 97);
-            imageCheck.alpha = 1.0;
-            imageCheck.center = pointOne;
+            labelCheck.alpha = 1.0;
+            labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -197,8 +184,8 @@
         case 3:
         {
             CGPoint pointOne=CGPointMake(140, 230);
-            imageCheck.alpha = 1.0;
-            imageCheck.center = pointOne;
+            labelCheck.alpha = 1.0;
+            labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -207,8 +194,8 @@
         case 4:
         {
             CGPoint pointOne=CGPointMake(290, 230);
-            imageCheck.alpha = 1.0;
-            imageCheck.center = pointOne;
+            labelCheck.alpha = 1.0;
+            labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -440,7 +427,7 @@
                 [cell addSubview:btnCombo4];
                 
                 
-                UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake((cell.contentView.bounds.size.width/2), 0, 1, cell.contentView.bounds.size.height)] autorelease];
+                UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake((cell.contentView.bounds.size.width/2), -1, 1, cell.contentView.bounds.size.height)] autorelease];
                 lineView.backgroundColor = [UIColor colorWithRed:209.0/255 green:209.0/255 blue:209.9/255 alpha:1];
                 lineView.autoresizingMask = 0x3f;
                 [cell addSubview:lineView];
@@ -493,8 +480,8 @@
 {
     NSLog(@"combo 1");
     CGPoint pointOne=CGPointMake(140, 97);
-    imageCheck.alpha = 1.0;
-    imageCheck.center = pointOne;
+    labelCheck.alpha = 1.0;
+    labelCheck.center = pointOne;
     _lastComboSelect = 1;
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -504,8 +491,8 @@
 {
     NSLog(@"combo 2");
     CGPoint pointOne=CGPointMake(290, 97);
-    imageCheck.alpha = 1.0;
-    imageCheck.center = pointOne;
+    labelCheck.alpha = 1.0;
+    labelCheck.center = pointOne;
     _lastComboSelect = 2;
     [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -517,8 +504,8 @@
 {
     NSLog(@"combo 3");
     CGPoint pointOne=CGPointMake(140, 230);
-    imageCheck.alpha = 1.0;
-    imageCheck.center = pointOne;
+    labelCheck.alpha = 1.0;
+    labelCheck.center = pointOne;
     _lastComboSelect = 3;
     [[NSUserDefaults standardUserDefaults] setInteger:3 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -529,8 +516,8 @@
 {
     NSLog(@"combo 4");
     CGPoint pointOne=CGPointMake(290, 230);
-    imageCheck.alpha = 1.0;
-    imageCheck.center = pointOne;
+    labelCheck.alpha = 1.0;
+    labelCheck.center = pointOne;
     _lastComboSelect = 4;
     [[NSUserDefaults standardUserDefaults] setInteger:4 forKey:keyComboSelect];
     startButton.enabled = YES;

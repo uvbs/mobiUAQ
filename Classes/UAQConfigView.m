@@ -39,13 +39,14 @@
         headTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
         headTitle.text = @"username";
         
-        labelJobStatus = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 300, 30)];
+        labelJobStatus = [[UILabel alloc]initWithFrame:CGRectMake(10, 3, 300, 30)];
         
         labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，消耗流量%.3fM", 0,0.0];
         labelJobStatus.font = [UIFont boldSystemFontOfSize:12];
         labelJobStatus.textColor = [UIColor grayColor];
         labelJobStatus.textAlignment = UITextAlignmentCenter;
         labelJobStatus.backgroundColor = [UIColor clearColor];
+        labelJobStatus.numberOfLines = 2;
         [self addSubview:labelJobStatus];
 //        startButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //        UIImage *btn_image = [UIImage imageNamed:@"login_button.png"];
@@ -60,9 +61,15 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *jobsCompleted = [defaults objectForKey:kBZJobsCompletedToday];
     NSNumber *bytesUpload =  [defaults objectForKey:kBZBytesUploaded];
+    NSNumber *bytesUpload3G =  [defaults objectForKey:kBZBytesUploaded3G];
+
     NSNumber *bytesDownload = [defaults objectForKey:kBZBytesDownloaded];
+    NSNumber *bytesDownload3G = [defaults objectForKey:kBZBytesDownloaded3G];
+
     double bytesTotalInMB = ([bytesUpload doubleValue] + [bytesDownload doubleValue]) / 1024.0 / 1024.0;
-    labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，消耗流量%.3fM", [jobsCompleted integerValue],bytesTotalInMB];
+    double bytesTotalInMB3G = ([bytesUpload3G doubleValue] + [bytesDownload3G doubleValue]) / 1024.0 / 1024.0;
+    NSLog(@"traffic %f,%f",bytesTotalInMB,bytesTotalInMB3G);
+    labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，共消耗流量%.3fM，\n2G/3G流量%.3fM", [jobsCompleted integerValue],bytesTotalInMB+bytesTotalInMB3G,bytesTotalInMB3G];
 }
 
 /*

@@ -48,12 +48,9 @@
 	//Create the base with: Version of Har, Creator and Browser info.
 	return [NSMutableDictionary dictionaryWithObjectsAndKeys:
 														@"1.5", @"version",
+														[NSDictionary dictionaryWithObjectsAndKeys:	@"MobiUAQ", @"name",@"1.6", @"version", nil], @"creator",
 			
-														[NSDictionary dictionaryWithObjectsAndKeys:	@"MobiUAQ", @"name",
-																									@"1.6", @"version", nil], @"creator",
-			
-														[NSDictionary dictionaryWithObjectsAndKeys: @"iOS - WebKit/Safari", @"name",
-																									[[UIDevice currentDevice] systemVersion], @"version", nil], @"browser",
+														[NSDictionary dictionaryWithObjectsAndKeys: @"iOS - WebKit/Safari", @"name",[[UIDevice currentDevice] systemVersion], @"version", nil], @"browser",
 			
 														nil];
 }
@@ -72,8 +69,14 @@
 			[entriesArray addObject:[resource dictionaryFromResource:urlToLen]];
 		}
 	}
+    NSMutableDictionary *customDict = [self customDictionary];
+    /*TODO*/
 	[root setObject:pagesArray forKey:@"pages"];
 	[root setObject:entriesArray forKey:@"entries"];
+    [root addEntriesFromDictionary:customDict];
+
+
+
 	
 	return [NSMutableDictionary dictionaryWithObjectsAndKeys:root, @"log", nil];
 }

@@ -83,6 +83,9 @@ extern const NSString *BZPasswordKey;
 #define kBZJobsCompletedToday @"bz-jobs-compeleted"
 #define kBZBytesUploaded @"bz-bytes-uploaded"
 #define kBZBytesDownloaded @"bz-bytes-downloaded"
+#define kBZBytesUploaded3G @"bz-bytes-uploaded-3g"
+#define kBZBytesDownloaded3G @"bz-bytes-downloaded-3g"
+
 #define kBZMaxBytesPerMonth @"bz-max-bytes-per-month"
 #define kBZUserPressedStart @"bz-user-pressed-start"
 
@@ -130,3 +133,6 @@ extern const NSString *BZPasswordKey;
 //Other constants
 #define kBZJobsErrorKey @"bz-error-key"
 #define kUAQButtonStatus @"uaq-btn-status"
+
+#define keyComboSelect @"_uaqComboSelect"
+#define keyUAQLoginName @"mobiUAQLoginName"
