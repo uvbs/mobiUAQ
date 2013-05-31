@@ -364,11 +364,10 @@
 - (void)pollForJobs:(BOOL) fromAuto
 {
     NSLog(@"now completed: %d busy %d",statusInfo.jobsCompletedToday,busy);
-    if (!busy && isEnabled && isBackground)
+    if (!busy )
     {
-        
-//        [idleView showPolling:@"监测中"];公公公愚
         NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
+        NSLog(@"now ctid %d",ctid);
 
         if (ctid == 0)
         {
@@ -388,7 +387,7 @@
    //         if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
                 // Switch to the next valid server
                 [self switchActiveUrl];
-                [idleView showPolling:@"监测中"];
+                //[idleView showPolling:@"监测中"];
                 [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
  //           }else{
  //               [idleView showError:@"已达到最大流量限制"];
@@ -537,7 +536,9 @@
 		
 		//Now poll for the next one if there are none in the queue.  Make sure that this is sequential so that the upload does not affect the next job.  We could theoretically download at the same time though.
 		BZJobManager *jobManager = [BZJobManager sharedInstance];
-		if ([jobManager hasJobs] && isEnabled && isBackground) {
+        isBackground = [[[NSUserDefaults standardUserDefaults] objectForKey:keyUAQAppDidEnterBackground] boolValue];
+        NSLog(@"isBackground %d",isBackground);
+		if ([jobManager hasJobs] && isBackground) {
 			busy = YES;
 			
 			//Enforce the timeout
@@ -567,7 +568,7 @@
 
 - (void)applicationEnterBackground:(BOOL)entered
 {
-    NSLog(@"isBackground %@",entered?@"YES":@"NO");
+    NSLog(@"enter Background %@ ",entered?@"YES":@"NO");
     if (entered) {
 		isBackground = YES;
 		//[idleView showEnabled:@"Polling enabled"];
@@ -578,7 +579,13 @@
 		isBackground = NO;
 		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
-	}}
+	}
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterBackground];
+    [defaults synchronize];
+    NSLog(@"isBackground %d",isBackground);
+
+}
 
 - (void)startButtonStatusChanged:(NSNotification *)notification
 {
@@ -610,9 +617,9 @@
 #if BZ_DEBUG_JOB
 	NSLog(@"Job list updated!");
 #endif
-	[idleView showPolling:@"Processing new job"];
+	//[idleView showPolling:@"Processing new job"];
 	
-	[self processNextJob:YES];// JK original NO
+	[self processNextJob:NO];// JK original NO
 }
 
 - (void)failedToGetJobs:(NSNotification*)notification
@@ -653,7 +660,8 @@
 #if BZ_DEBUG_JOB
 	NSLog(@"Job uploaded");
 #endif
-    
+    NSLog(@"Job uploaded");
+
     [self restartIfRequired];
     
 	[self processNextJob:YES];
@@ -665,8 +673,10 @@
 	NSLog(@"Failed to upload job");
 #endif
 	busy = NO;
+    NSLog(@"Failed to upload job");
+
 	
-	[idleView showError:@"Failed to upload"];
+	//[idleView showError:@"Failed to upload"];
     
     [self restartIfRequired];
 
@@ -698,7 +708,6 @@
     NSNumber *downloadSize = [defaults objectForKey:kBZBytesDownloaded];
     NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
     
-    //if (ctid == 0)
     if (ctid == 1) {
         downloadSize = [defaults objectForKey:kBZBytesDownloaded3G];
     }
@@ -950,11 +959,12 @@
 #if BZ_DEBUG_JOB
 	NSLog(@"Job was cancelled: %@", job);
 #endif
-	
+    NSLog(@"Job was cancelled: %@", job);
+
 	[self dismissModalViewControllerAnimated:NO];
 	
 	//Do not process the next job
-	[idleView showError:@"Last Job Interrupted!"];
+	//[idleView showError:@"Last Job Interrupted!"];
 }
 
 #pragma mark -

@@ -16,6 +16,8 @@
 //Additions
 #import "BZModel+ZIP.h"
 
+#import "UAQJobManager.h"
+
 static BZJobManager *sharedInstance;
 
 @interface BZJobManager ()
@@ -191,23 +193,18 @@ static BZJobManager *sharedInstance;
     #if BZ_DEBUG_REQUESTS
         NSLog(@"Posting zip");
     #endif
-        Reachability *reachability = [Reachability reachabilityForInternetConnection];
-        //[reachability startNotifier];
-        
-        NetworkStatus status = [reachability currentReachabilityStatus];
-       
-
+        NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
         NSData *zipData = [result zipResultData];
         // JK save uploaded data size
         if (zipData )
         {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             NSUInteger dataSize ;
-            if ( status == ReachableViaWWAN) {
+            if ( 1 == ctid) {
                 dataSize = [[defaults objectForKey:kBZBytesUploaded3G] integerValue];
                 NSLog(@"datasize 3G %d",dataSize);
 
-            }else if (status == ReachableViaWiFi)
+            }else if (0 == ctid)
             {
                 dataSize = [[defaults objectForKey:kBZBytesUploaded] integerValue];
                 NSLog(@"datasize WiFi %d",dataSize);
@@ -215,12 +212,12 @@ static BZJobManager *sharedInstance;
             }
 
             dataSize = [[NSNumber numberWithInt: zipData.length + dataSize] integerValue];
-            if ( status == ReachableViaWWAN) {
+            if ( 1 == ctid) {
                 [defaults setObject:[NSNumber numberWithInt:dataSize] forKey:kBZBytesUploaded3G];
                 //dataSize = [[defaults objectForKey:kBZBytesUploaded3G] integerValue];
                 NSLog(@"datasize 3G %d",dataSize);
 
-            }else if (status == ReachableViaWiFi)
+            }else if (0 == ctid)
             {
                 [defaults setObject:[NSNumber numberWithInt:dataSize] forKey:kBZBytesUploaded];
                 NSLog(@"datasize WiFi %d",dataSize);

@@ -11,7 +11,7 @@
 #import "BZJob.h"
 #import "BZResult.h"
 //JK
-#import <Reachability.h>
+#import "Reachability.h"
 
 //URL Connections
 #import "BZHTTPURLConnection.h"

@@ -60,6 +60,8 @@
     
 }
 @property (nonatomic, assign) NSDictionary *uaqCombosDictionary;
+@property (nonatomic, retain) Reachability *hostReach;
+
 
 
 + (UAQJobManager*)sharedInstance;

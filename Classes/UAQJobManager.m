@@ -106,20 +106,35 @@ static UAQJobManager *sharedInstance;
 {
     NetworkStatus status = [curReach currentReachabilityStatus];
     //由其他环境变为wifi环境
-    NSLog(@"net changed");
+    //NSLog(@"net changed");
     if (status == ReachableViaWiFi)
     {
-        NSLog(@"切换到WIFi环境");
+        //NSLog(@"切换到WIFi环境");
         connetTypeId = 0;
     }else if( status == ReachableViaWWAN)
     {
-        NSLog(@"3G env");
+        //NSLog(@"3G env");
         connetTypeId = 1;
     }
 }
 
 - (NSInteger)connectType
 {
+    //NetworkStatus status = [hostReach currentReachabilityStatus];
+   // ;
+    
+   // NSLog(@"connet status %@",status==ReachableViaWWAN?@"3g":@"wifi");
+
+    if ([hostReach isReachableViaWiFi])
+    {
+        //NSLog(@"切换到WIFi环境");
+        connetTypeId = 0;
+    }else if([hostReach isReachableViaWWAN])
+    {
+        //NSLog(@"3G env");
+        connetTypeId = 1;
+    }
+
     return connetTypeId;
 }
 

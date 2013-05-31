@@ -168,6 +168,7 @@ void restartAndKill();
     }
     
     NSLog(@"ctid %d",ctid);
+        
 
     
     NSLog(@"add observers");
