@@ -10,6 +10,16 @@
 #import "CJSONSerializer.h"
 #import "CJSONDeserializer.h"
 #import "ASIFormDataRequest.h"
+#include "getMacAddress.h"
+#import "BZConstants.h"
+#import "BZJobManager.h"
+#import "NSData+Base64.h"
+
+#define UAQMQTTRootTopic @"mobiuaq/iphone/#"
+#define UAQMQTTTaskTopic @"mobiuaq/iphone/"
+#define UAQMQTUpdateTopic @"mobiuaq/iphone/updateNow"
+
+
 
 @implementation UAQUpdate
 
@@ -36,9 +46,10 @@
 
 static UAQJobManager *sharedInstance;
 
-@interface UAQJobManager ()
+@interface UAQJobManager ()<MosquittoClientDelegate>
 {
     NSInteger *connetTypeId;
+    NSString *clientId;
 
 }
 //@property (nonatomic, retain) BZHTTPURLConnection *activeRequest;
@@ -48,6 +59,8 @@ static UAQJobManager *sharedInstance;
 @implementation UAQJobManager
 
 @synthesize uaqCombosDictionary;
+@synthesize mosquittoClient;
+@synthesize hostReach;
 
 + (void)initialize
 {
@@ -75,9 +88,22 @@ static UAQJobManager *sharedInstance;
         hostReach = [[Reachability reachabilityWithHostName:@"www.baidu.com"] retain];
         
         [hostReach startNotifier];
-        NetworkStatus status = [hostReach currentReachabilityStatus];
+        //NetworkStatus status = [hostReach currentReachabilityStatus];
         
-        NSLog(@"net status %@",status==ReachableViaWWAN?@"3g":@"wifi");
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *username = [defaults objectForKey:keyUAQLoginName];
+        NSLog(@"username: %@", username);
+
+        clientId = [NSString stringWithFormat:@"%@_uaq-iphone%@",[[username dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString], getMacAddress()];
+        NSLog(@"Client ID: %@", clientId);
+        // connect to broker
+        mosquittoClient = [[MosquittoClient alloc] initWithClientId:clientId];
+        [mosquittoClient setHost: @"220.181.57.54"];
+        [mosquittoClient connect];
+        // FIXME: only if compiled in debug mode?
+        //[mosquittoClient setLogPriorities:MOSQ_LOG_ALL destinations:MOSQ_LOG_STDERR];
+        [mosquittoClient setDelegate: self];
 
 
 	}
@@ -120,11 +146,6 @@ static UAQJobManager *sharedInstance;
 
 - (NSInteger)connectType
 {
-    //NetworkStatus status = [hostReach currentReachabilityStatus];
-   // ;
-    
-   // NSLog(@"connet status %@",status==ReachableViaWWAN?@"3g":@"wifi");
-
     if ([hostReach isReachableViaWiFi])
     {
         //NSLog(@"切换到WIFi环境");
@@ -241,6 +262,45 @@ static UAQJobManager *sharedInstance;
     //    NSLog(@"%@",dict);
     return uaqUp;
 }
+
+#pragma mqtt
+- (void) didConnect:(NSUInteger)code {
+    NSLog(@"connect successfully");
+    [mosquittoClient subscribe:UAQMQTTRootTopic];
+    //[mosquittoClient subscribe:@"uaqmon/#"];
+
+}
+
+- (void) didDisconnect {
+	//[[self connectButton] setTitle:@"Connect" forState:UIControlStateNormal];
+    sleep(6);
+    [NSThread sleepForTimeInterval:5];
+    [mosquittoClient reconnect];
+}
+
+- (void) didReceiveMessage:(MosquittoMessage*) mosq_msg {
+    
+ //   NSLog(@"%@ => %@", mosq_msg.topic, mosq_msg.payload);
+    
+//	if ([mosq_msg.topic isEqualToString:[UAQMQTTTaskTopic stringByAppendingString:clientId]]) {
+		// parse the task and put it in jobQueue
+        NSLog(@"job received");
+        [[BZJobManager sharedInstance] jobsFromMQTT:mosq_msg.payload];
+/*
+	} else if ([mosq_msg.topic isEqualToString:UAQMQTUpdateTopic]) {
+		//sw = greenLedSwitch;
+	} else {
+		return;
+	}
+ */
+}
+
+- (void) didPublish: (NSUInteger)messageId {}
+- (void) didSubscribe: (NSUInteger)messageId grantedQos:(NSArray*)qos {}
+- (void) didUnsubscribe: (NSUInteger)messageId {}
+
+
+
 
 
 @end

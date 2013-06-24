@@ -546,7 +546,7 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"监测已开始";
         hud.margin = 10.f;
-        hud.yOffset = 150.f;
+        hud.yOffset = 100.f;
         hud.removeFromSuperViewOnHide = YES;
         
         [hud hide:YES afterDelay:3];
@@ -566,7 +566,7 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"监测已停止";
         hud.margin = 10.f;
-        hud.yOffset = 150.f;
+        hud.yOffset = 100.f;
         hud.removeFromSuperViewOnHide = YES;
         
         [hud hide:YES afterDelay:3];

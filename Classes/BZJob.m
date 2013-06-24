@@ -127,6 +127,22 @@
 
 #pragma mark -
 #pragma mark Parsing
+/* // job looks like below
+ Test ID=988-2013-06-03-19_1012_CN_310000_310100_10
+ fvonly=0
+ ignoreSSl=0
+ Basic Auth=0
+ Capture Video=1
+ tcpdump=1
+ cached=0
+ browser=pagetest.exe
+ wifiSwitch=SSID_2
+ updateWifiInfo=0
+ alwaysWifi=1
+ url=http://m.soso.com/index.jsp?sid=Ae25eX6vyu7rfXmpR-X19CkG&g_ut=3
+
+ */
+
 
 + (BZJob*)jobFromString:(NSString*)jobData
 {	

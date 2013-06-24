@@ -77,81 +77,10 @@ void restartAndKill();
     /////
     // debug below
     ////
-#ifdef DEBUG
-    
-    idleController = [[BZAgentController alloc] init];
-    [idleController applicationEnterBackground:NO];
-    idleViewNavigationController = [[UINavigationController alloc] initWithRootViewController:idleController];
-    idleViewNavigationController.navigationBar.topItem.title = @"用户名";
-    [idleViewNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    //giftController = [[UAQGiftViewController alloc] init ];//]initWithNibName:@"UAQGiftView" bundle:nil];
-    UAQGiftWebViewController *giftWebViewController = [[UAQGiftWebViewController alloc] init ];//]initWithNibName:@"UAQGiftView" bundle:nil];
-    giftViewNavigationController = [[UINavigationController alloc] initWithRootViewController:giftWebViewController];
-
-   // giftViewNavigationController = [[UINavigationController alloc] initWithRootViewController:giftController];
-    giftViewNavigationController.navigationBar.topItem.title = @"用户名";
-    [giftViewNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-    configController = [[UAQConfigViewController alloc] init];
-    configNavigationController = [[UINavigationController alloc] initWithRootViewController:configController];
-    configNavigationController.navigationBar.topItem.title = @"用户名";
-    [configNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-    settingsController = [[UAQSettingsViewController alloc] init];
-
-    settingsNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsController];
-    settingsNavigationController.navigationBar.topItem.title = @"设置";
-    [settingsNavigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-//    NSArray *controllerArray = [[NSArray alloc] initWithObjects:configNavigationController,idleViewNavigationController,giftController,nil];
-    NSArray *controllerArray = [[NSArray alloc] initWithObjects:configNavigationController,idleViewNavigationController,giftViewNavigationController,settingsNavigationController,nil];
-  
-    tabBarController = [[UITabBarController alloc] init];
-    tabBarController.delegate = self;
-    tabBarController.viewControllers = controllerArray;
-    tabBarController.selectedIndex = 0;
-    [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
-
-//     UIView *mview = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 48.0)];
-//     [mview setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bar_background.png"]]];
-//     [tabBarController.tabBar insertSubview:mview atIndex:1];
-//     mview.alpha = 0.8;
-     
-    //tabBarController.t
-    //[idleController.view setBackgroundColor:[UIColor blueColor]];
-    //[configController.tabBarItem initWithTitle:@"配置" image:[UIImage imageNamed:@"light.png"] tag:4];
-    //[idleViewNavigationController.tabBarItem initWithTitle:@"状态" image:[UIImage imageNamed:@"light.png"] tag:1];
-    //UIImage *image = [[UIImage alloc]init];
-    [idleViewNavigationController.tabBarItem initWithTitle: @"" image:[UIImage imageNamed:@"tab_status.png"] tag:1];
-    //[idleViewNavigationController.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -10)];// = @"zhuangtai";
-    [giftViewNavigationController.tabBarItem initWithTitle:@"" image:[UIImage imageNamed:@"tab_gift.png"] tag:2];
-    
-    [configNavigationController.tabBarItem initWithTitle:@"" image:[UIImage imageNamed:@"tab_config.png"] tag:4];
-    [settingsNavigationController.tabBarItem initWithTitle:@"设置" image:[UIImage imageNamed:@"light.png"] tag:3];
-    
-    //        UIViewController *activeController = tabBarController.selectedViewController;
-    homeViewController = [[UAQHomeViewController alloc] init];
-    UINavigationController *homeNavController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
-    homeNavController.navigationBar.topItem.title = @"主页";
-    [homeNavController.navigationBar setTintColor:[UIColor colorWithRed:39.0/255 green:103.0/255 blue:213.0/255 alpha:1]];
-    [homeNavController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-
-    [self.window addSubview:homeNavController.view];
-    self.window.rootViewController = homeNavController;
-    [homeNavController release];
-
-    //[self.window addSubview:tabBarController.view];
-    //self.window.rootViewController = tabBarController;
-    [self.window makeKeyAndVisible];
-    
-    return YES;
-#endif
     ///////
     // debug above
     ///////
     
-    NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:keyUAQLoginName];
@@ -167,6 +96,8 @@ void restartAndKill();
         [self.window makeKeyAndVisible];
     }
     
+    NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
+
     NSLog(@"ctid %d",ctid);
         
 
@@ -234,6 +165,7 @@ void restartAndKill();
 }
 
 //JK
+
 
 - (void) applicationWillTerminate:(UIApplication *)application
 {
@@ -422,16 +354,34 @@ void restartAndKill();
         [defaults setObject:[NSNumber numberWithInt:10] forKey:kBZMaxBytesPerMonth ];
     }
     
+    [defaults setBool:NO forKey:@"firstLaunch"];
+
+    if (YES != [[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"])  {
+        [defaults setBool:YES forKey:@"everLaunched"];
+        [defaults setBool:YES forKey:@"firstLaunch"];
+    }
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+  //      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZJobsCompletedToday];
+        
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded];
+        
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded ];
+        
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded3G];
+        
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded3G ];
+        
+    }
     [defaults synchronize];
+
 
 }
 
 - (void)alreadyLogin:(NSString*)uname
 {
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"])  {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"firstLaunch"];
-    }
+
     
     //Start our application off in the IdleController.  This controller will display a simple screen stating the current state of the
     //application.  This is useful for both debugging and getting some visual information on whether or not the agent is actually working.

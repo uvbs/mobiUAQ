@@ -74,7 +74,7 @@
  
     [idleVC.tabBarItem initWithTitle: @"统计" image:nil tag:1];
     [giftVC.tabBarItem initWithTitle: @"礼品" image:nil tag:2];
-    [configVC.tabBarItem initWithTitle: @"配置" image:nil tag:3];
+    [configVC.tabBarItem initWithTitle: @"套餐" image:nil tag:3];
     [ticketVC.tabBarItem initWithTitle:@"统计" image:nil tag:4];
 
     idleVC.tabBarItem.titlePositionAdjustment = UIOffsetMake(0, tabBarTitleOffset);

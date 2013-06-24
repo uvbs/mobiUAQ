@@ -13,6 +13,8 @@
 #import "BZHTTPURLConnection.h"
 
 #import "Reachability.h"
+#import "MosquittoClient.h"
+
 
 
 @interface UAQUpdate : NSObject
@@ -57,10 +59,12 @@
 //	BZHTTPURLConnection *activeRequest;
     NSDictionary *uaqCombosDictionary;
     Reachability *hostReach;
-    
+    MosquittoClient *mosquittoClient;
+
 }
 @property (nonatomic, assign) NSDictionary *uaqCombosDictionary;
 @property (nonatomic, retain) Reachability *hostReach;
+@property (readonly) MosquittoClient *mosquittoClient;
 
 
 

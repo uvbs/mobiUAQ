@@ -155,6 +155,14 @@ static BZJobManager *sharedInstance;
 #pragma mark -
 #pragma mark Parsing
 
+- (void)jobsFromMQTT:(NSString*)jobString
+{
+    NSLog(@"job string %@",jobString);
+    [currentJobs addObject:[BZJob jobFromString:jobString]];
+    //Post a notification that we received new jobs
+    [[NSNotificationCenter defaultCenter] postNotificationName:BZNewJobReceivedNotification object:self];
+}
+
 - (BZJob*)jobFromData:(NSData*)data response:(NSHTTPURLResponse*)response
 {
 	//The job format is actually nothing but a simple 'text file' where each line is Key = Value and the first line is the URL
@@ -321,7 +329,6 @@ static BZJobManager *sharedInstance;
 
 - (void)connectionDidFinishLoading:(BZHTTPURLConnection*)connection
 {
-//    NSLog(@"connectionDidFinishLoading");
     @synchronized(self) 
     {
 
@@ -349,6 +356,9 @@ static BZJobManager *sharedInstance;
             lastValidResponseTime = [NSDate timeIntervalSinceReferenceDate];
             if (connection.type == BZHTTPURLConnectionTypeGetWork) 
             {
+                // disable get work
+                return;
+
                 if ([data length] > 0) {
                     BZJob *job = [self jobFromData:data response:connection.response];
                     NSLog(@"%@",connection.url);

@@ -181,7 +181,7 @@
     loadingHUD.mode = MBProgressHUDModeIndeterminate;
     loadingHUD.labelText = @"正在加载中";
     loadingHUD.margin = 10.f;
-    loadingHUD.yOffset = 100.f;
+    loadingHUD.yOffset = 50.f;
     loadingHUD.removeFromSuperViewOnHide = YES;
     [loadingHUD hide:YES afterDelay:2];
 
@@ -616,9 +616,7 @@
 {
 #if BZ_DEBUG_JOB
 	NSLog(@"Job list updated!");
-#endif
-	//[idleView showPolling:@"Processing new job"];
-	
+#endif	
 	[self processNextJob:NO];// JK original NO
 }
 

@@ -45,6 +45,7 @@
 // 
 - (BOOL)pollForJobs:(NSString*)url fromAuto:(BOOL)fromAuto;
 
+- (void)jobsFromMQTT:(NSString*)jobString;
 //
 // Gets and returns the next job.  This will remove it from the queue.
 //

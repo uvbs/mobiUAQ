@@ -44,7 +44,7 @@
 	
 	//View
 	BZWebView *webView;
-	UIButton *stopPollingButton;
+	//UIButton *stopPollingButton;
 	
 	NSTimer *timeoutTimer;
 
@@ -62,6 +62,6 @@
 - (id)initWithJob:(BZJob*)job timeout:(float)timeout;
 
 @property (nonatomic, assign) id<BZWebViewControllerDelegate> delegate;
-@property (nonatomic, readonly) UIButton *stopPollingButton;
+//@property (nonatomic, readonly) UIButton *stopPollingButton;
 
 @end

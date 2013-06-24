@@ -62,7 +62,7 @@ extern "C" CGImageRef UIGetScreenImage();
 @implementation BZWebViewController
 
 @synthesize delegate;
-@synthesize stopPollingButton;
+//@synthesize stopPollingButton;
 
 - (id)initWithJob:(BZJob*)aJob timeout:(float)timeoutValue
 {
@@ -75,6 +75,8 @@ extern "C" CGImageRef UIGetScreenImage();
 		
 		cacheFolder = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveData:) name:BZDataReceivedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(responseReceived:) name:BZResponseReceivedNotification object:nil];
 #if BZ_DEBUG_REQUESTS
@@ -102,7 +104,7 @@ extern "C" CGImageRef UIGetScreenImage();
 	[recordingTimer release];
 	recordingTimer = nil;
 	
-	[stopPollingButton release];
+//	[stopPollingButton release];
 	
 	[job release];
 	[result release];
@@ -123,10 +125,10 @@ extern "C" CGImageRef UIGetScreenImage();
 	webView.webViewDelegate = self;
 	[self.view addSubview:webView];
 	
-	stopPollingButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-	stopPollingButton.frame = self.view.bounds;
-	[stopPollingButton addTarget:self action:@selector(stopPolling:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:stopPollingButton];
+//	stopPollingButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+//	stopPollingButton.frame = self.view.bounds;
+//	[stopPollingButton addTarget:self action:@selector(stopPolling:) forControlEvents:UIControlEventTouchUpInside];
+//	[self.view addSubview:stopPollingButton];
 }
 
 - (void)destroyWebView
@@ -145,9 +147,9 @@ extern "C" CGImageRef UIGetScreenImage();
 	[webView release];
 	webView = nil;
 	
-	[stopPollingButton removeFromSuperview];
-	[stopPollingButton release];
-	stopPollingButton = nil;
+	//[stopPollingButton removeFromSuperview];
+	//[stopPollingButton release];
+	//stopPollingButton = nil;
 }
 
 - (void)loadView
@@ -172,12 +174,38 @@ extern "C" CGImageRef UIGetScreenImage();
 	[self startJob];
 }
 
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    /*
+     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+     */
+    NSLog(@"\n ===> 程序进入前台 !");
+    [self pauseRecording];
+    webView.alpha = 0.0;
+    
+	[webView stopLoading];
+    [self destroyWebView];
+    
+	
+	if (delegate) {
+		[delegate jobInterrupted:job];
+	}
+    [self.navigationController popToRootViewControllerAnimated:YES];
+
+
+}
+
 - (void)applicationWillResignActive:(NSNotification*)notification
 {
 	//Abandon whatever we're doing right now
 	//TODO: Serialize the current job so that it's not lost
 	[self pauseRecording];
+    webView.alpha = 0.0;
+
 	[webView stopLoading];
+    //[self destroyWebView];
+    //[self.navigationController popToRootViewControllerAnimated:YES];
+
 	
 	if (delegate) {
 		[delegate jobInterrupted:job];

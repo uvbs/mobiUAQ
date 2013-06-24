@@ -99,7 +99,7 @@
     loadingHUD.mode = MBProgressHUDModeIndeterminate;
     loadingHUD.labelText = @"正在加载中";
     loadingHUD.margin = 10.f;
-    loadingHUD.yOffset = 100.f;
+    loadingHUD.yOffset = 50.f;
     loadingHUD.removeFromSuperViewOnHide = YES;
     
     [loadingHUD hide:YES afterDelay:2];
