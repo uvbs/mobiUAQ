@@ -75,6 +75,7 @@
 - (UAQUpdate *)checkUpdate;
 - (UAQUpdate *)checkLatestNews;
 - (NSInteger)connectType;
+- (BOOL) checkIn;
 
 @end
 

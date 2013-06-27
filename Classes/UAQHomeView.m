@@ -45,44 +45,38 @@
         //latestNewsButton.frame = latestNoticeImage.frame;
  //       [scrollPanel addSubview:latestNewsButton];
         
-        checkInButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [checkInButton setBackgroundImage:[UIImage imageNamed:@"checkin"] forState:UIControlStateNormal];
-        checkInButton.frame = CGRectMake(265, 365, 40, 58);
-        [scrollPanel addSubview:checkInButton];
         
-        [self addSubview:scrollPanel];
         //_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, 320, 400)];
-        tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 480) style:UITableViewStyleGrouped];
-//tableView.backgroundColor = [UIColor whiteColor];
+        tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 265, 460) style:UITableViewStyleGrouped];
         [tableView setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin ];
         tableView.allowsSelection = YES;
         tableView.scrollEnabled = NO;
-tableView.backgroundColor = [UIColor clearColor];
+        tableView.backgroundColor = [UIColor clearColor];
         tableView.backgroundView = [[UIView alloc] initWithFrame:self.frame];
         tableView.separatorColor = [UIColor clearColor];
         tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
         [scrollPanel addSubview:tableView];
         
+        checkInButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [checkInButton setBackgroundImage:[UIImage imageNamed:@"checkin"] forState:UIControlStateNormal];
+        checkInButton.frame = CGRectMake(265, 365, 40, 58);//CGRectMake(265, 365, 40, 58);
+        [checkInButton setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+        [scrollPanel addSubview:checkInButton];
+        [self bringSubviewToFront:checkInButton];
+
+        
+        [self addSubview:scrollPanel];
 
     }
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
-
 - (void)layoutSubviews
 {
     CGRect bounds = self.bounds;
     scrollPanel.frame = CGRectMake(0, 0, scrollPanel.frame.size.width, scrollPanel.frame.size.height);
-    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y+kUAQHomeLastestNoticeHeight, tableView.frame.size.width, self.window.frame.size.height);
+    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y+kUAQHomeLastestNoticeHeight, tableView.frame.size.width, tableView.frame.size.height);
     
     
 }

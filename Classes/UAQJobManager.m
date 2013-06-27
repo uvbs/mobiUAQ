@@ -304,7 +304,28 @@ static UAQJobManager *sharedInstance;
 - (void) didSubscribe: (NSUInteger)messageId grantedQos:(NSArray*)qos {}
 - (void) didUnsubscribe: (NSUInteger)messageId {}
 
+- (BOOL) checkIn
+{
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://202.108.23.123/getandroidregisterinfo.php?username_base64=%@",@"ceshi"]];
+    //NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+    NSString *ret = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    //[ret
+    NSArray *lines = [ret componentsSeparatedByString:@"\n"];
 
+    if ([lines count] > 0) {
+        for (NSString *line in lines) {
+			if ([line length] > 0) {
+                NSArray *retSplit = [line componentsSeparatedByString:@"="];
+                NSLog(@"%@",[retSplit  objectAtIndex:1]);
+                if ([retSplit count] > 1 && [[retSplit objectAtIndex:1] integerValue] == 1) {
+                    return YES;
+                }
+            }
+        }
+    }
+
+    return NO;
+}
 
 
 

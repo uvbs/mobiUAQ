@@ -34,20 +34,20 @@
 //#import "UAQGiftViewController.h"
 //#import "UAQGuideViewController.h"
 #import "UAQSettingsViewController.h"
-#import "UAQConfigViewController.h"
+//#import "UAQConfigViewController.h"
 #import "UAQGiftWebViewController.h"
 //#import "BZConstants.h"
 #import "UAQAccountCenterViewController.h"
 #import "UAQTicketWebViewController.h"
 #import "UAQTrafficWebViewController.h"
-
+#import "UAQJobManager.h"
 //#import "MBProgressHUD.h"
 
 
 
 static BZAgentController *sharedInstance;
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,MBProgressHUDDelegate,UIWebViewDelegate,UAQHomeViewDelegate>
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,MBProgressHUDDelegate,UIWebViewDelegate,UAQHomeViewDelegate>
 
 @property (nonatomic, copy) NSString *activeURL;
 @property (nonatomic, assign) MBProgressHUD *loadingHUD;
@@ -169,7 +169,7 @@ static BZAgentController *sharedInstance;
     homeView.tableView.dataSource = self;
     [self.view addSubview:homeView];
     
-    [homeView.latestNewsButton addTarget:self action:@selector(latestNewsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [homeView.checkInButton addTarget:self action:@selector(checkInButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     
     self.navigationController.navigationBarHidden = YES;
         
@@ -305,6 +305,43 @@ static BZAgentController *sharedInstance;
 }
 
 #pragma button action
+- (void)checkInButtonAction:(id)sender
+{
+    UAQJobManager *jobManager = [UAQJobManager sharedInstance];
+    loadingHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    loadingHUD.delegate = self;
+    
+    loadingHUD.mode = MBProgressHUDModeIndeterminate;
+    loadingHUD.labelText = @"正在签到中";
+    loadingHUD.margin = 10.f;
+    loadingHUD.yOffset = 50.f;
+    loadingHUD.removeFromSuperViewOnHide = YES;
+
+    if ([jobManager checkIn])
+    {
+        loadingHUD.labelText = @"签到成功";
+
+        [loadingHUD hide:YES afterDelay:1];
+/*
+        NSLog(@"success");
+        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"签到成功"
+                                                         message:@""
+                                                        delegate:self
+                                               cancelButtonTitle:@"确定"
+                                               otherButtonTitles:nil] autorelease];
+        [alert show];
+        */
+
+    }else{
+        loadingHUD.labelText = @"已经签到过了";
+        
+        [loadingHUD hide:YES afterDelay:1];
+
+        NSLog(@"already checked in");
+
+    }
+    
+}
 /*
 - (void)trafficInfoButtonAction
 {
