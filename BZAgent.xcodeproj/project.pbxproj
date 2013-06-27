@@ -237,6 +237,7 @@
 		047663011738F66800DD3ABA /* VerifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047662901738F66700DD3ABA /* VerifyViewController.m */; };
 		047663021738F66800DD3ABA /* XmlDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 047662921738F66700DD3ABA /* XmlDictionary.m */; };
 		0476630A1738F93000DD3ABA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 047663091738F93000DD3ABA /* Security.framework */; };
+		047B6062177C27C40070E856 /* UAQTrafficWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047B6061177C27C40070E856 /* UAQTrafficWebViewController.m */; };
 		0487856F1681C13C00B33854 /* BZLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0487856E1681C13C00B33854 /* BZLoginView.m */; };
 		048785721681C1A700B33854 /* BZLoginController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 048785711681C1A700B33854 /* BZLoginController.mm */; };
 		048876B3169AD8AE000C0496 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048876B2169AD8AE000C0496 /* MapKit.framework */; };
@@ -714,6 +715,8 @@
 		047662911738F66700DD3ABA /* XmlDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlDictionary.h; sourceTree = "<group>"; };
 		047662921738F66700DD3ABA /* XmlDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XmlDictionary.m; sourceTree = "<group>"; };
 		047663091738F93000DD3ABA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		047B6060177C27C40070E856 /* UAQTrafficWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQTrafficWebViewController.h; sourceTree = "<group>"; };
+		047B6061177C27C40070E856 /* UAQTrafficWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UAQTrafficWebViewController.m; sourceTree = "<group>"; };
 		0487856D1681C13C00B33854 /* BZLoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BZLoginView.h; sourceTree = "<group>"; };
 		0487856E1681C13C00B33854 /* BZLoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BZLoginView.m; sourceTree = "<group>"; };
 		048785701681C1A700B33854 /* BZLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BZLoginController.h; sourceTree = "<group>"; };
@@ -1556,6 +1559,8 @@
 				04CD0D9F174DF7770087BBEE /* UAQAccountCenterViewController.m */,
 				0461FFA9175334CE00DE7A30 /* UAQTicketWebViewController.h */,
 				0461FFAA175334CE00DE7A30 /* UAQTicketWebViewController.m */,
+				047B6060177C27C40070E856 /* UAQTrafficWebViewController.h */,
+				047B6061177C27C40070E856 /* UAQTrafficWebViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2253,6 +2258,7 @@
 				04686EC41758A8ED007D63D4 /* getMacAddress.m in Sources */,
 				04686EC51758A8ED007D63D4 /* MosquittoClient.m in Sources */,
 				04686EC61758A8ED007D63D4 /* MosquittoMessage.m in Sources */,
+				047B6062177C27C40070E856 /* UAQTrafficWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

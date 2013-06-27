@@ -11,6 +11,9 @@
 #import "BZIdleView.h"
 #import "BZSettingsViewController.h"
 #import "UAQConfigViewController.h"
+#import "UAQHomeView.h"
+
+
 @class BZAgentController;
 @class UAQConfigViewController;
 
@@ -33,9 +36,11 @@
  */
 @interface BZAgentController : UIViewController {
 @private
-	BZIdleView *idleView;
+	//BZIdleView *idleView;
     BZSettingsViewController *settingsViewController;
 	
+    UAQHomeView *homeView;
+
 	NSTimer *pollTimer;
 	NSString *activeURL;
 	NSInteger activeURLInd;
@@ -54,19 +59,21 @@
 //    NSInteger bytesDownloaded;
 //    NSInteger maxBytesAllowed;
     JobStatusInfo *statusInfo;
-    MIMBarGraph *myBarChart;
+//    MIMBarGraph *myBarChart;
     
     
     NSArray *yValuesArray;
     NSArray *xTitlesArray;
 }
 
-@property (nonatomic, assign) MIMBarGraph *myBarChart;
+//@property (nonatomic, assign) MIMBarGraph *myBarChart;
+@property (nonatomic, assign) UAQHomeView *homeView;
+
 //@property (nonatomic, assign) NSString *activeURL;
 
 
 - (void)saveStatusInfo;
--(void)updateStatusInfo;
+- (void)updateStatusInfo;
 - (void)applicationEnterBackground:(BOOL)entered;
 + (BZAgentController*)sharedInstance;
 

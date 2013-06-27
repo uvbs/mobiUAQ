@@ -29,11 +29,33 @@
 #import "MBProgressHUD.h"
 #import "BZAgentAppDelegate.h"
 
+//#import "BZAgentController.h"
+//#import "UAQHomeViewController.h"
+//#import "UAQGiftViewController.h"
+//#import "UAQGuideViewController.h"
+#import "UAQSettingsViewController.h"
+#import "UAQConfigViewController.h"
+#import "UAQGiftWebViewController.h"
+//#import "BZConstants.h"
+#import "UAQAccountCenterViewController.h"
+#import "UAQTicketWebViewController.h"
+#import "UAQTrafficWebViewController.h"
+
+//#import "MBProgressHUD.h"
+
+
+
 static BZAgentController *sharedInstance;
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UAQConfigViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate,MBProgressHUDDelegate,UIWebViewDelegate>
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,MBProgressHUDDelegate,UIWebViewDelegate,UAQHomeViewDelegate>
+
 @property (nonatomic, copy) NSString *activeURL;
 @property (nonatomic, assign) MBProgressHUD *loadingHUD;
+@property (nonatomic,assign) UAQConfigViewController *configVC;
+@property (nonatomic,assign) UAQGiftWebViewController *giftVC;
+@property (nonatomic,assign) UAQTrafficWebViewController *trafficVC;
+@property (nonatomic,assign) UAQTicketWebViewController *ticketVC;
+//@property (nonatomic,retain) UITabBarController *tabBarController;
 
 
 - (void)registerForKeyboardNotifications;
@@ -56,8 +78,14 @@ static BZAgentController *sharedInstance;
 @implementation BZAgentController
 
 @synthesize activeURL;
-@synthesize myBarChart;
+///@synthesize myBarChart;
 @synthesize loadingHUD;
+@synthesize configVC;
+@synthesize giftVC;
+@synthesize trafficVC;
+@synthesize ticketVC;
+@synthesize homeView;
+//@synthesize tabBarController;
 
 - (id)init
 {
@@ -71,6 +99,7 @@ static BZAgentController *sharedInstance;
 		keyboardVisible = NO;
 		busy = NO;
         isBackground = NO;
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:keyUAQAppDidEnterBackground];
         //statusInfo = [[JobStatusInfo alloc] init];
  
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -96,16 +125,16 @@ static BZAgentController *sharedInstance;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startButtonStatusChanged:) name:UAQConfigStartButtonNotification object:nil];
         
 		NSNumber *shouldAutoPoll = [[NSUserDefaults standardUserDefaults] objectForKey:kBZAutoPollSettingsKey];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterBackgroundNow:) name:UIApplicationWillResignActiveNotification object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterBackgroundNow:) name:UIApplicationWillResignActiveNotification object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForegroundNow:) name:UIApplicationWillEnterForegroundNotification object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForegroundNow:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
 
 
 		if (shouldAutoPoll && [shouldAutoPoll boolValue])
         {
             isEnabled = YES;
-			[idleView showEnabled:@"Auto Polling enabled"];
+///			[idleView showEnabled:@"Auto Polling enabled"];
 			[self startPolling];
 		}
    //     [self pollForJobs:true];
@@ -133,16 +162,38 @@ static BZAgentController *sharedInstance;
 {
 	[super loadView];
 	NSLog(@"agent loadview");
-	idleView = [[BZIdleView alloc] initWithFrame:self.view.bounds];
+    self.view.frame = CGRectMake(0, 0, 320 ,480);
+    homeView = [[UAQHomeView alloc] initWithFrame:self.view.frame];
+    homeView.delegate = self;
+    homeView.tableView.delegate = self;
+    homeView.tableView.dataSource = self;
+    [self.view addSubview:homeView];
+    
+    [homeView.latestNewsButton addTarget:self action:@selector(latestNewsButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationController.navigationBarHidden = YES;
+        
+    configVC = [[UAQConfigViewController alloc] init];
+    giftVC = [[UAQGiftWebViewController alloc] init];
+    //idleVC = [BZAgentController sharedInstance];
+    trafficVC = [[UAQTrafficWebViewController alloc] init];
+    ticketVC = [[UAQTicketWebViewController alloc] init];
+//    tabBarController = [[[UITabBarController alloc] init] autorelease];
+//    tabBarController.delegate = self;
+    
+//    tabBarController.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
+
+///	idleView = [[BZIdleView alloc] initWithFrame:self.view.bounds];
 //	[idleView.pollNowButton addTarget:self action:@selector(pollNowPressed:) forControlEvents:UIControlEventTouchUpInside];
-	[idleView.enabledSwitch addTarget:self action:@selector(enabledToggleValueChanged:) forControlEvents:UIControlEventValueChanged];
+///	[idleView.enabledSwitch addTarget:self action:@selector(enabledToggleValueChanged:) forControlEvents:UIControlEventValueChanged];
 //    [idleView.settingsButton addTarget:self action:@selector(settingsButtonEntered) forControlEvents:UIControlEventTouchUpInside];
 
-	[idleView.trafficInfoButton addTarget:self action:@selector(trafficInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
+///	[idleView.trafficInfoButton addTarget:self action:@selector(trafficInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
     
-    [idleView.giftInfoButton addTarget:self action:@selector(giftInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
+///    [idleView.giftInfoButton addTarget:self action:@selector(giftInfoButtonAction) forControlEvents:UIControlEventTouchUpInside];
 	
 //	idleView.apiURLField.text = activeURL;
+    /*
     idleView.delegate = self;
     idleView.barChartTableView.backgroundColor = [UIColor clearColor];
     idleView.barChartTableView.dataSource = self;
@@ -155,7 +206,7 @@ static BZAgentController *sharedInstance;
     idleView.currentPage = 0;
     idleView.pageControl.numberOfPages = 2;
     idleView.pageControl.currentPage = 0;
-
+*/
     // disable idleView and use webview
  //   [self.view addSubview:idleView];
     
@@ -175,9 +226,9 @@ static BZAgentController *sharedInstance;
         NSString *encodedString = [[uname dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
         url = [NSURL URLWithString:[@"http://220.181.7.18/appstat/stat.php?username=" stringByAppendingString:encodedString]];
     }
-    NSLog(@"url is %@",url);
+   // NSLog(@"url is %@",url);
     
-    UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 375)];
+    UIWebView *awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 420)]; //375
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url ];
     //[self.view addSubview:webView];
@@ -219,33 +270,25 @@ static BZAgentController *sharedInstance;
    // [loadingHUD hide:YES];
 }
 
-- (void) viewWillAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
- //   [idleView updateStatusInfo:statusInfo withJobFinished:NO];
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [self loadingWebView];
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBarHidden = NO;
 }
 
 -(void) viewDidLoad
 {
-//    idleView.enabledSwitch.on = YES;
-//    [idleView showEnabled:@"自动监测任务"];
-//    isEnabled = YES;
-//    [self startPolling];
-    [idleView updateStatusInfo:statusInfo withJobFinished:false];
- //   [self loadingWebView];
-
+    [super viewDidLoad];
 }
 
 - (void)viewDidUnload
 {
-	[idleView removeFromSuperview];
-	[idleView release];
-	idleView = nil;
-	
 	[super viewDidUnload];
 }
 
@@ -254,7 +297,7 @@ static BZAgentController *sharedInstance;
 	[self unregisterForKeyboardNotifications];
 	
 	[pollTimer release];
-	[idleView release];
+///	[idleView release];
 	[activeURL release];
     [loadingHUD release];
 	
@@ -262,6 +305,7 @@ static BZAgentController *sharedInstance;
 }
 
 #pragma button action
+/*
 - (void)trafficInfoButtonAction
 {
     [idleView.trafficInfoButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1] forState:UIControlStateNormal];
@@ -288,6 +332,7 @@ static BZAgentController *sharedInstance;
     [idleView.scrollPanel setContentOffset:CGPointMake(320*1, 0)];
     [UIView commitAnimations];
 }
+ 
 
 // At the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -315,6 +360,8 @@ static BZAgentController *sharedInstance;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     //暂不处理 - 其实左右滑动还有包含开始等等操作，这里不做介绍
 }
+
+*/
 
 #pragma mark -
 #pragma mark Polling
@@ -458,12 +505,12 @@ static BZAgentController *sharedInstance;
 	if ([toggle isOn]) {
 		isEnabled = YES;
 		//[idleView showEnabled:@"Polling enabled"];
-        [idleView showEnabled:@"自动监测任务"];
+///        [idleView showEnabled:@"自动监测任务"];
 		[self startPolling];
 	}
 	else {
 		isEnabled = NO;
-		[idleView showDisabled:@"手动监测任务"];
+///		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
 	}
 	//[self resetScreenSaverTimer];
@@ -488,12 +535,12 @@ static BZAgentController *sharedInstance;
     if (shouldStart) {
 		isEnabled = YES;
 		//[idleView showEnabled:@"Polling enabled"];
-        [idleView showEnabled:@"自动监测任务"];
+///        [idleView showEnabled:@"自动监测任务"];
 		[self startPolling];
 	}
 	else {
 		isEnabled = NO;
-		[idleView showDisabled:@"手动监测任务"];
+///		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
 	}
 	//[self resetScreenSaverTimer];
@@ -528,7 +575,7 @@ static BZAgentController *sharedInstance;
 	[self stopPolling];
 	
 	isEnabled = NO;
-	[idleView.enabledSwitch setOn:NO animated:NO];
+///	[idleView.enabledSwitch setOn:NO animated:NO];
 	//[self resetScreenSaverTimer];
 }
 
@@ -589,51 +636,6 @@ static BZAgentController *sharedInstance;
 	}
 }
 
-- (void)applicationWillEnterForegroundNow:(NSNotification *)notification
-{
-    isBackground = NO;
-    busy = NO;
-    [self startPolling];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterForeground];
-    [defaults synchronize];
-    NSLog(@"notification isBackground %d",isBackground);
-    
-}
-
-- (void)applicationWillEnterBackgroundNow:(NSNotification *)notification
-{
-    isBackground = YES;
-    [self startPolling];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterBackground];
-    [defaults synchronize];
-    NSLog(@"notification isBackground %d",isBackground);
-    
-}
-/*
-- (void)applicationEnterBackground:(BOOL)entered
-{
-    NSLog(@"enter Background %@ ",entered?@"YES":@"NO");
-    if (entered) {
-		isBackground = YES;
-		//[idleView showEnabled:@"Polling enabled"];
-        [idleView showEnabled:@"自动监测任务"];
-		[self startPolling];
-	}
-	else {
-		isBackground = NO;
-		[idleView showDisabled:@"手动监测任务"];
-		[self stopPolling];
-	}
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterBackground];
-    [defaults synchronize];
-    NSLog(@"isBackground %d",isBackground);
-
-}
- */
-
 - (void)startButtonStatusChanged:(NSNotification *)notification
 {
     NSDictionary *userInfo = [notification userInfo];
@@ -645,18 +647,12 @@ static BZAgentController *sharedInstance;
     
     if (buttonStatus) {
 		isEnabled = YES;
-		//[idleView showEnabled:@"Polling enabled"];
-        [idleView showEnabled:@"自动监测任务"];
 		[self startPolling];
 	}
 	else {
 		isEnabled = NO;
-		[idleView showDisabled:@"手动监测任务"];
 		[self stopPolling];
 	}
-	//[self resetScreenSaverTimer];
-
-    
 }
 
 - (void)jobListUpdated:(NSNotification*)notification
@@ -671,7 +667,7 @@ static BZAgentController *sharedInstance;
 {
 	NSDictionary *userInfo = [notification userInfo];
 	NSString *reason = [userInfo objectForKey:kBZJobsErrorKey];
-	[idleView showError:reason ? reason : @"Could not poll: unknown Error"];
+///	[idleView showError:reason ? reason : @"Could not poll: unknown Error"];
 }
 
 - (void)noJobs:(NSNotification*)notification
@@ -743,7 +739,7 @@ static BZAgentController *sharedInstance;
 
  //   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         //[idleView showUploading:@"Publishing Results"];
-        [idleView showUploading:@"任务上传中"];
+///        [idleView showUploading:@"任务上传中"];
         [[BZJobManager sharedInstance] publishResults:result url:activeURL];
         
   
@@ -772,7 +768,7 @@ static BZAgentController *sharedInstance;
         //statusInfo.jobsCompletedToday += 1;
         statusInfo.bytesDownloaded = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZBytesDownloaded] integerValue];// need to get from results
         statusInfo.bytesUploaded = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZBytesUploaded] integerValue]; // need to get from webview, maybe
-        [idleView updateStatusInfo:statusInfo withJobFinished: YES];
+///        [idleView updateStatusInfo:statusInfo withJobFinished: YES];
 
  //   });
     
@@ -781,7 +777,203 @@ static BZAgentController *sharedInstance;
     [self saveStatusInfo];
     
 }
+
+#pragma tableview
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return kUAQHomeCellSpacing;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kUAQHomeCellHeight;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 3;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"UAQHomeCell";
+    
+    
+    
+    UITableViewCell *cell;// = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    //    if(cell == nil)
+    {
+        if (indexPath.row == 0)
+        {
+            
+            cell.backgroundColor = [UIColor blackColor];
+            
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            cell.backgroundColor = [UIColor clearColor];
+            // cell.te
+            
+            UIButton *btnCombo1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo1.frame = CGRectMake(kUAQHomeCellLeftMargin, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"menuitem1a.png"] forState:UIControlStateNormal];
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            /*       UILabel *lableCombo1 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
+             lableCombo1.text = @"套餐";
+             lableCombo1.font = [UIFont boldSystemFontOfSize:24];
+             lableCombo1.textColor =  [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
+             lableCombo1.textAlignment = UITextAlignmentCenter;
+             lableCombo1.backgroundColor = [UIColor clearColor];
+             [btnCombo1 addSubview:lableCombo1];
+             */
+            //[btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+            //[btnCombo1 setTitle:@"粉丝" forState:UIControlStateNormal];
+            [btnCombo1 addTarget:self action:@selector(onClickCombo1:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo1];
+            
+            
+            UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem2a.png"] forState:UIControlStateNormal];
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            /*       UILabel *lableCombo2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
+             lableCombo2.text = @"流量";
+             lableCombo2.font = [UIFont boldSystemFontOfSize:24];
+             lableCombo2.textColor =  [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
+             lableCombo2.textAlignment = UITextAlignmentCenter;
+             lableCombo2.backgroundColor = [UIColor clearColor];
+             [btnCombo2 addSubview:lableCombo2];
+             */
+            
+            //[btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg.png"] forState:UIControlStateNormal];
+            
+            
+            [btnCombo2 addTarget:self action:@selector(onClickCombo2:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo2];
+        }else if (indexPath.row == 1)
+        {
+            
+            cell.backgroundColor = [UIColor whiteColor];
+            
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            cell.backgroundColor = [UIColor clearColor];
+            // cell.te
+            
+            UIButton *btnCombo1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo1.frame = CGRectMake(kUAQHomeCellLeftMargin, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"menuitem3a.png"] forState:UIControlStateNormal];
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            
+            [btnCombo1 addTarget:self action:@selector(onClickCombo3:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo1];
+            
+            
+            UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem4a.png"] forState:UIControlStateNormal];
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            
+            
+            [btnCombo2 addTarget:self action:@selector(onClickCombo4:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo2];
+        }else if (indexPath.row == 2)
+        {
+            
+            cell.backgroundColor = [UIColor blackColor];
+            
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            cell.backgroundColor = [UIColor clearColor];
+            // cell.te
+            
+            UIButton *btnCombo1 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo1.frame = CGRectMake(kUAQHomeCellLeftMargin, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"menuitem5a.png"] forState:UIControlStateNormal];
+            [btnCombo1 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            
+            [btnCombo1 addTarget:self action:@selector(onClickCombo5:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo1];
+            
+            
+            UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem6a.png"] forState:UIControlStateNormal];
+            [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
+            
+            
+            [btnCombo2 addTarget:self action:@selector(onClickCombo6:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:btnCombo2];
+        }
+    }
+    return cell;
+    
+}
+
+- (IBAction)onClickCombo1:(id)sender
+{
+//    tabBarController.selectedIndex = 0;
+//    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,nil];
+   // configVC.hidesBottomBarWhenPushed = YES;
+   // tabBarController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:configVC animated:YES];
+}
+
+- (IBAction)onClickCombo2:(id)sender
+{
+    //tabBarController.selectedIndex = 0;
+   // tabBarController.viewControllers = [[NSArray alloc] initWithObjects:idleVC,nil];
+    
+    [self.navigationController pushViewController:trafficVC animated:YES];
+}
+
+- (IBAction)onClickCombo3:(id)sender
+{
+    //tabBarController.selectedIndex = 0;
+    //tabBarController.viewControllers = [[NSArray alloc] initWithObjects:ticketVC,nil];
+    
+    [self.navigationController pushViewController:ticketVC animated:YES];
+}
+
+- (IBAction)onClickCombo4:(id)sender
+{
+  //  tabBarController.selectedIndex = 0;
+  //  tabBarController.viewControllers = [[NSArray alloc] initWithObjects:giftVC,nil];
+    //UAQGiftWebViewController *agiftVC = [[UAQGiftWebViewController alloc] init];
+    
+    //agiftVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:giftVC animated:YES];
+    //[agiftVC release];
+}
+
+- (IBAction)onClickCombo5:(id)sender
+{
+    UAQAccountCenterViewController *accountVC = [[UAQAccountCenterViewController alloc] init];
+    accountVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:accountVC animated:YES];
+    [accountVC release];
+}
+
+- (IBAction)onClickCombo6:(id)sender
+{
+    UAQSettingsViewController *settingsVC = [[UAQSettingsViewController alloc] init];
+    settingsVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:settingsVC animated:YES];
+    [settingsVC release];
+}
+
+
+
 #pragma mark draw mychartView
+/*
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == idleView.barChartTableView) {
@@ -805,12 +997,7 @@ static BZAgentController *sharedInstance;
 {
     return  1;
 }
-/*
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return @"Bar Charts";
-}
- */
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -928,25 +1115,11 @@ static BZAgentController *sharedInstance;
         return [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:BAR_ANIMATION_VGROW_STYLE],[NSNumber numberWithFloat:1.0], nil] forKeys:[NSArray arrayWithObjects:@"type",@"animationDuration" ,nil] ];
     return nil;
 }
-/*
--(NSDictionary *)horizontalLinesProperties:(id)graph
-{
-    if([(MIMBarGraph *)graph tag]==10)
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"4,1",@"dotted", nil];
-
-    return nil;
-}
- */
 -(NSDictionary *)xAxisProperties:(id)graph
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
 }
-/*
--(NSDictionary *)yAxisProperties:(id)graph
-{
-    return [NSDictionary dictionaryWithObjectsAndKeys:@"0,0,0,1",@"color", nil];
-}
- */
+
 -(UILabel *)createLabelWithText:(NSString *)text
 {
     UILabel *a=[[UILabel alloc]initWithFrame:CGRectMake(5, idleView.barChartTableView.frame.size.width * 0.5 + 20, 310, 20)];
@@ -960,6 +1133,8 @@ static BZAgentController *sharedInstance;
     return a;
     
 }
+
+*/
 
 
 #pragma mark - end draw myBarChartView
@@ -983,7 +1158,7 @@ static BZAgentController *sharedInstance;
 
 -(void)updateStatusInfo
 {
-    [idleView updateStatusInfo:statusInfo withJobFinished: YES];
+///    [idleView updateStatusInfo:statusInfo withJobFinished: YES];
 }
 
 - (void)saveStatusInfo
@@ -1011,7 +1186,7 @@ static BZAgentController *sharedInstance;
 
 #pragma mark -
 #pragma mark Handling of Keyboard Appearing/Disappearing
-
+/*
 - (void)registerForKeyboardNotifications
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -1107,7 +1282,7 @@ static BZAgentController *sharedInstance;
 	
 	[UIView commitAnimations];
 }
- 
+ */
 #pragma mark -
 #pragma mark Helper Methods
  
@@ -1157,7 +1332,7 @@ static BZAgentController *sharedInstance;
 
 - (void)stopScreenSaverTimer
 {
-	[idleView setScreensaverEnabled:NO];
+///	[idleView setScreensaverEnabled:NO];
 	
 	if (screenSaverTimer) {
 		[screenSaverTimer invalidate];
@@ -1175,7 +1350,7 @@ static BZAgentController *sharedInstance;
 - (void)screenSaverTick:(NSTimer*)timer
 {
 	//Determine if we need to launch a screen saver
-	[idleView setScreensaverEnabled:YES];
+///	[idleView setScreensaverEnabled:YES];
 }
 
 - (void)idleViewTouched:(BZIdleView*)view

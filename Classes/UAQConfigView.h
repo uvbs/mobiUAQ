@@ -21,23 +21,19 @@
     
     id<UAQConfigViewDelegate> delegate;
     UITableView *tableView;
-    UIImageView *headView ;
-    UILabel *headTitle;
-//    GMGridView *gmGridView;
-    UIButton *infoButton;
     UIButton *startButton;
     UILabel *labelJobStatus;
+    UILabel *labelCheck;
+
 }
 
 @property (nonatomic, assign) id<UAQConfigViewDelegate> delegate;
 @property (nonatomic, readonly) UITableView *tableView;
-@property (nonatomic, readonly) UIImageView *headView ;
-//@property (nonatomic, readonly) GMGridView *gmGridView;
-@property (nonatomic, readonly) UIButton *infoButton;
 @property (nonatomic, readonly) UIButton *startButton;
 
-@property (nonatomic, readonly) UILabel *headTitle;
 @property (nonatomic, readonly) UILabel *labelJobStatus;
+@property (nonatomic, assign) UILabel *labelCheck;
+
 
 - (void)updateJobStatus;
 

@@ -15,8 +15,9 @@
 @synthesize tableView;
 @synthesize delegate;
 @synthesize startButton;
-@synthesize headTitle;
 @synthesize labelJobStatus;
+@synthesize labelCheck;
+
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -36,8 +37,6 @@
         [self addSubview:tableView];
         //headView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"head_background.png"]];
         //[self addSubview:headView];
-        headTitle = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 30)];
-        headTitle.text = @"username";
         
         labelJobStatus = [[UILabel alloc]initWithFrame:CGRectMake(10, 3, 300, 30)];
         
@@ -48,6 +47,22 @@
         labelJobStatus.backgroundColor = [UIColor clearColor];
         labelJobStatus.numberOfLines = 2;
         [self addSubview:labelJobStatus];
+        
+        labelCheck = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 14, 18)];
+        labelCheck.text = @"√";
+        labelCheck.textColor = [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
+        labelCheck.backgroundColor = [UIColor clearColor];
+        labelCheck.alpha = 0.0;
+        
+        [self addSubview:labelCheck];
+
+ /*
+        UIImageView *blankView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]];
+        
+        blankView.frame = CGRectMake(0, 375,320,200);
+        [self addSubview:blankView];
+        [blankView release];
+        */
 //        startButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //        UIImage *btn_image = [UIImage imageNamed:@"login_button.png"];
 //        [startButton setBackgroundImage:btn_image forState:UIControlStateNormal];
@@ -72,20 +87,11 @@
     labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，共消耗流量%.3fM，\n2G/3G流量%.3fM", [jobsCompleted integerValue],bytesTotalInMB+bytesTotalInMB3G,bytesTotalInMB3G];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
-
 - (void)dealloc
 {
     [tableView release];
-    [headView release];
     [startButton release];
+    [labelCheck release];
     [super dealloc];
 }
 
@@ -93,8 +99,6 @@
 {
     CGRect bounds = self.bounds;
     NSLog(@"%f",bounds.size.height);
-   // headView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 20, headView.frame.size.width, headView.frame.size.height);
-   // headTitle.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 20, headView.frame.size.width, headView.frame.size.height);
     tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 18, tableView.frame.size.width, self.window.frame.size.height- 48);
     startButton.frame = CGRectMake(bounds.origin.x, bounds.origin.y + 200, 128, 128);
     

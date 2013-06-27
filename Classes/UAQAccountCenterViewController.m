@@ -44,6 +44,13 @@
     
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
+
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *title = @"";

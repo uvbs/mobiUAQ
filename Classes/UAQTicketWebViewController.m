@@ -35,10 +35,7 @@
 {
     if ((self = [super init])) {
         //
-        NSLog(@"init ticket webview ");
     }
-    NSLog(@"init ticket webview a2");
-
     return self;
 }
 
@@ -47,6 +44,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
 }
 
 - (void)loadView
@@ -59,7 +57,7 @@
     //loadingHUD.labelText = @"Loading";
     
     //giftWebView = [[UAQGiftWebView alloc] initWithFrame:self.view.bounds];
-    awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 375)];
+    awebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 420)];//375
     [self.view addSubview:awebView];
     
     //[loadingHUD showWhileExecuting:@selector(loadingWebView) onTarget:self withObject:nil animated:YES];

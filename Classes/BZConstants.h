@@ -140,5 +140,4 @@ extern const NSString *BZPasswordKey;
 
 
 #define keyUAQAppDidEnterBackground @"UAQAppDidEnterBackground"
-#define keyUAQAppDidEnterForeground @"UAQAppDidEnterForeground"
 

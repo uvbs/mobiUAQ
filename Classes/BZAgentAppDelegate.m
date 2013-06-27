@@ -182,7 +182,10 @@ void restartAndKill();
     //    [self alreadyLogin:username];
     }
    // window.rootViewController = homeNavController;
-
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:NO] forKey:keyUAQAppDidEnterBackground];
+    [defaults synchronize];
+    NSLog(@"keyUAQAppDidEnterBackground NO");
 }
 
 //- (void)applicationWillResignActive:(UIApplication *)application
@@ -200,10 +203,13 @@ void restartAndKill();
     }else{
         NSLog(@"backgrounding not accepted");
     }
-    [self.window.rootViewController.navigationController pushViewController:idleController animated:NO];
-    //idleController;
-   // [idleController applicationEnterBackground:YES];
+    //[self.window.rootViewController.navigationController pushViewController:idleController animated:NO];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:YES] forKey:keyUAQAppDidEnterBackground];
+    [defaults synchronize];   // [idleController applicationEnterBackground:YES];
     [self backgroundHandler];
+    NSLog(@"keyUAQAppDidEnterBackground YES");
+
 }
 
 - (void)backgroundHandler
@@ -386,7 +392,7 @@ void restartAndKill();
         [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded3G];
         
         [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded3G ];
-        
+        NSLog(@"clear for first launch");
     }
     [defaults synchronize];
 
@@ -433,12 +439,13 @@ void restartAndKill();
     tabBarController.selectedIndex = 0;
     [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
 */
-    homeViewController = [[UAQHomeViewController alloc] init];
-    homeNavController = [[[UINavigationController alloc] initWithRootViewController:homeViewController] autorelease];
+    idleController = [[BZAgentController sharedInstance] autorelease];
+
+    ///homeViewController = [[UAQHomeViewController alloc] init];
+    homeNavController = [[[UINavigationController alloc] initWithRootViewController:idleController] autorelease];
     homeNavController.navigationBar.topItem.title = @"主页";
     [homeNavController.navigationBar setTintColor:[UIColor colorWithRed:39.0/255 green:103.0/255 blue:213.0/255 alpha:1]];
     [homeNavController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    idleController = [[BZAgentController sharedInstance] autorelease];
 
     //[self.window addSubview:idleController.view];
     [self.window addSubview:homeNavController.view];
@@ -448,14 +455,15 @@ void restartAndKill();
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *lastname = [defaults objectForKey:keyUAQLastLoginName];
     if ([lastname length] > 0 && ![lastname isEqualToString:uname]) {
-        
-    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZJobsCompletedToday];
-    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded];
-    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded ];
-    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded3G];
-    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded3G ];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZJobsCompletedToday];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded ];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded3G];
+        [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded3G ];
 
-    [defaults synchronize];
+        NSLog(@"clear for diff username,%@ and %@",lastname,uname);
+        [defaults setObject:uname forKey:keyUAQLastLoginName];
+        [defaults synchronize];
     }
 
     [self.window makeKeyAndVisible];

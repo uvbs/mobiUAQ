@@ -10,9 +10,14 @@
 #import "UAQConfigView.h"
 #import "UAQJobManager.h"
 
-@protocol UAQConfigViewControllerDelegate;
+//@protocol UAQConfigViewControllerDelegate;
+/*
+@protocol UAQConfigViewControllerDelegate <NSObject>
 
+- (void)startButtonStatusDidChanged:(BOOL)shouldStart;
 
+@end
+ */
 
 //@interface BZSettingsViewController : UIViewController<UAQConfigViewControllerDelegate>{
 //@private
@@ -21,26 +26,41 @@
 
 @protocol UAQConfigViewDelegate;
 
-@interface UAQConfigViewController : UIViewController<UAQConfigViewDelegate,UAQConfigViewControllerDelegate>
-{
-    CGPoint dragStartPt;
-    bool dragging;
-    
+@interface UAQConfigViewController : UIViewController<UAQConfigViewDelegate>
+{    
     @private
-        id <UAQConfigViewControllerDelegate> delegate;
+       // id <UAQConfigViewControllerDelegate> delegate;
 
         //id <UAQConfigViewDelegate> delegate;
         
         UAQConfigView *configView;
-    }
+    UILabel *labelCheck;
+    UIButton *startButton;
+    NSInteger lastComboSelect;
     
-    @property (nonatomic, assign) id<UAQConfigViewControllerDelegate> delegate;
+    
+    UIButton *btnCombo1;
+    UIButton *btnCombo2;
+    UIButton *btnCombo3;
+    UIButton *btnCombo4;
+
+}
+
+@property (nonatomic, readonly) UAQConfigView *configView;
+@property (nonatomic, assign) UIButton *startButton;
+@property (nonatomic, assign) NSInteger lastComboSelect;
+
+
+@property (nonatomic, readonly) UIButton *btnCombo1;
+@property (nonatomic, readonly) UIButton *btnCombo2;
+@property (nonatomic, readonly) UIButton *btnCombo3;
+@property (nonatomic, readonly) UIButton *btnCombo4;
+
+
+
+ //   @property (nonatomic, assign) id<UAQConfigViewControllerDelegate> delegate;
 
 @end
 
-@protocol UAQConfigViewControllerDelegate <NSObject>
 
-- (void)startButtonStatusDidChanged:(BOOL)shouldStart;
-
-@end
 

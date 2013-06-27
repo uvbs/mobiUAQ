@@ -24,36 +24,7 @@
 
 
 
-@interface UAQConfigViewController ()<GMGridViewDataSource,GMGridViewSortingDelegate,GMGridViewTransformationDelegate,GMGridViewActionDelegate,UAQConfigViewDelegate,UITableViewDataSource,UITableViewDelegate>
-{
-    GMGridView *_gmGridView;
-
-    NSMutableArray *_data;
-    NSMutableArray *_currentData;
-    NSMutableArray *_comboImages;
-    NSInteger _lastDeleteItemIndexAsked;
-    
-    UIImageView *imageCheck;
-    UILabel *labelCheck;
-    UIButton *startButton;
-    NSInteger _lastComboSelect;
-   
-    
-    UIButton *btnCombo1;
-    UIButton *btnCombo2;
-    UIButton *btnCombo3;
-    UIButton *btnCombo4;
-
-}
-
-//- (void)addMoreItem;
-//- (void)removeItem;
-- (void)refreshItem;
-- (void)presentInfo;
-- (void)presentOptions:(UIBarButtonItem *)barButton;
-- (void)optionsDoneAction;
-- (void)dataSetChange:(UISegmentedControl *)control;
-
+@interface UAQConfigViewController ()<UAQConfigViewDelegate,UITableViewDataSource,UITableViewDelegate>
 
 @end
 
@@ -65,7 +36,14 @@
 
 @implementation UAQConfigViewController
 
-@synthesize delegate;
+//@synthesize delegate;
+@synthesize configView;
+@synthesize btnCombo1;
+@synthesize btnCombo2;
+@synthesize btnCombo3;
+@synthesize btnCombo4;
+@synthesize startButton;
+@synthesize lastComboSelect = _lastComboSelect;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -80,21 +58,10 @@
 {
     if ((self = [super init])) {
   //      self.title = @"Demo";
-        _data = [[NSMutableArray alloc] init];
         _lastComboSelect = [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect] integerValue];
         if (!_lastComboSelect) {
             _lastComboSelect = 0;
         }
-        _comboImages = [[NSMutableArray alloc] init];
-        
-        for (int i = 0; i < 5; i ++)
-        {
-            [_data addObject:[NSString stringWithFormat:@"套餐 %d", i]];
-            [_comboImages addObject:[NSString stringWithFormat:@"combo%d.png",i]];
-
-        }
-        _currentData = _data;
-
     }
     return self;
 }
@@ -107,54 +74,21 @@
     [super loadView];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    NSInteger spacing = INTERFACE_IS_PHONE ? 4 : 6;
+    //NSInteger spacing = INTERFACE_IS_PHONE ? 4 : 6;
     
     configView = [[UAQConfigView alloc] initWithFrame:self.view.frame];
+    configView.delegate = self;
     configView.tableView.dataSource = self;
     configView.tableView.delegate = self;
     
-
+    
     [self.view addSubview:configView];
     
-    imageCheck = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"checked.png"]];
-    imageCheck.alpha = 0.0;
-    [configView addSubview:imageCheck];
-    
-    labelCheck = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 14, 18)];
-    labelCheck.text = @"√";
-    labelCheck.textColor = [UIColor colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
-    labelCheck.backgroundColor = [UIColor clearColor];
-    labelCheck.alpha = 0.0;
-    
-    [configView addSubview:labelCheck];
-    
-    
-    UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-    infoButton.frame = CGRectMake(self.view.bounds.size.width - 40,
-                                  self.view.bounds.size.height - 40,
-                                  40,
-                                  40);
-    infoButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
-    [infoButton addTarget:self action:@selector(presentInfo) forControlEvents:UIControlEventTouchUpInside];
-    //[self.view addSubview:infoButton];
-    [configView addSubview:infoButton];
-}
-
-- (void)presentInfo
-{
-    NSString *info = @"Long-press an item and its color will change; letting you know that you can now move it around. \n\nUsing two fingers, pinch/drag/rotate an item; zoom it enough and you will enter the fullsize mode";
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Info"
-                                                        message:info
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    
-    [alertView show];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [configView updateJobStatus];
     
     NSNumber *comboSelect = [[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect];
@@ -166,8 +100,8 @@
             CGPoint pointOne=CGPointMake(140, 97);
             //imageCheck.alpha = 1.0;
             //imageCheck.center = pointOne;
-            labelCheck.alpha = 1.0;
-            labelCheck.center = pointOne;
+            configView.labelCheck.alpha = 1.0;
+            configView.labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -175,8 +109,8 @@
         case 2:
         {
             CGPoint pointOne=CGPointMake(290, 97);
-            labelCheck.alpha = 1.0;
-            labelCheck.center = pointOne;
+            configView.labelCheck.alpha = 1.0;
+            configView.labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -184,8 +118,8 @@
         case 3:
         {
             CGPoint pointOne=CGPointMake(140, 230);
-            labelCheck.alpha = 1.0;
-            labelCheck.center = pointOne;
+            configView.labelCheck.alpha = 1.0;
+            configView.labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -194,8 +128,8 @@
         case 4:
         {
             CGPoint pointOne=CGPointMake(290, 230);
-            labelCheck.alpha = 1.0;
-            labelCheck.center = pointOne;
+            configView.labelCheck.alpha = 1.0;
+            configView.labelCheck.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -212,24 +146,22 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     //[UAQJobStatusInfo sharedJobInstance];
+    [configView updateJobStatus];
+
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [configView updateJobStatus];
     //configView
     if (_lastComboSelect == 0) {
         [self onClickCombo1:@""];
     }
-    UINavigationBar *bar = [self.navigationController navigationBar];
-    [bar setTintColor:[UIColor colorWithRed:39.0/255 green:103.0/255 blue:213.0/255 alpha:1]];
-    //self.navigationItem.title = @"ceshi";
-    [bar release];
     
-
+    self.navigationItem.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
 }
 
 
@@ -480,8 +412,8 @@
 {
     NSLog(@"combo 1");
     CGPoint pointOne=CGPointMake(140, 97);
-    labelCheck.alpha = 1.0;
-    labelCheck.center = pointOne;
+    configView.labelCheck.alpha = 1.0;
+    configView.labelCheck.center = pointOne;
     _lastComboSelect = 1;
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -491,8 +423,8 @@
 {
     NSLog(@"combo 2");
     CGPoint pointOne=CGPointMake(290, 97);
-    labelCheck.alpha = 1.0;
-    labelCheck.center = pointOne;
+    configView.labelCheck.alpha = 1.0;
+    configView.labelCheck.center = pointOne;
     _lastComboSelect = 2;
     [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -504,8 +436,8 @@
 {
     NSLog(@"combo 3");
     CGPoint pointOne=CGPointMake(140, 230);
-    labelCheck.alpha = 1.0;
-    labelCheck.center = pointOne;
+    configView.labelCheck.alpha = 1.0;
+    configView.labelCheck.center = pointOne;
     _lastComboSelect = 3;
     [[NSUserDefaults standardUserDefaults] setInteger:3 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -516,8 +448,8 @@
 {
     NSLog(@"combo 4");
     CGPoint pointOne=CGPointMake(290, 230);
-    labelCheck.alpha = 1.0;
-    labelCheck.center = pointOne;
+    configView.labelCheck.alpha = 1.0;
+    configView.labelCheck.center = pointOne;
     _lastComboSelect = 4;
     [[NSUserDefaults standardUserDefaults] setInteger:4 forKey:keyComboSelect];
     startButton.enabled = YES;
@@ -579,209 +511,11 @@
     }
     [defaults synchronize];
     
-    [delegate startButtonStatusDidChanged:button.selected];
+//    [delegate startButtonStatusDidChanged:button.selected];
     NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:button.selected] forKey:kUAQButtonStatus];
     [[NSNotificationCenter defaultCenter] postNotificationName:UAQConfigStartButtonNotification object:self userInfo:dict];
     
 }
-
-
-/*
-//////////////////////////////////////////////////////////////
-#pragma mark GMGridViewDataSource
-//////////////////////////////////////////////////////////////
-
-- (NSInteger)numberOfItemsInGMGridView:(GMGridView *)gridView
-{
-    return [_currentData count];
-}
-
-- (CGSize)GMGridView:(GMGridView *)gridView sizeForItemsInInterfaceOrientation:(UIInterfaceOrientation)orientation
-{
-    if (INTERFACE_IS_PHONE)
-    {
-        if (UIInterfaceOrientationIsLandscape(orientation))
-        {
-            return CGSizeMake(170, 135);
-        }
-        else
-        {
-            return CGSizeMake(140, 110);
-        }
-    }
-    else
-    {
-        if (UIInterfaceOrientationIsLandscape(orientation))
-        {
-            return CGSizeMake(285, 205);
-        }
-        else
-        {
-            return CGSizeMake(230, 175);
-        }
-    }
-}
-
-- (GMGridViewCell *)GMGridView:(GMGridView *)gridView cellForItemAtIndex:(NSInteger)index
-{
-    //NSLog(@"Creating view indx %d", index);
-    
-    CGSize size = [self GMGridView:gridView sizeForItemsInInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
-    
-    GMGridViewCell *cell = [gridView dequeueReusableCell];
-    
-    
-    
-    if (!cell)
-    {
-        cell = [[GMGridViewCell alloc] init];
-        cell.deleteButtonIcon = [UIImage imageNamed:@"close_x.png"];
-        cell.deleteButtonOffset = CGPointMake(-15, -15);
-        
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
-        view.backgroundColor = [UIColor clearColor];
-        view.layer.masksToBounds = NO;
-        view.layer.cornerRadius = 8;
-        
-        cell.contentView = view;
-    }
-    
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    if (index==4) {
-        size = CGSizeMake(280, 40);
-        
-        UIImageView  *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"btn_nor.png"]];
-         [cell.contentView addSubview:imageView];
-        return cell;
-    }
-
-    
-    
-    UIImageView  *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:(NSString *)[_comboImages objectAtIndex:index]]];
-    //imageView.frame = cell.contentView.frame;
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [cell.contentView addSubview:imageView];
-    
-    NSLog(@"%@",(NSString *)[_comboImages objectAtIndex:index]);
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:cell.contentView.bounds];
-    label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    label.text = (NSString *)[_currentData objectAtIndex:index];
-    label.textAlignment = UITextAlignmentCenter;
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor blackColor];
-    label.highlightedTextColor = [UIColor whiteColor];
-    label.font = [UIFont boldSystemFontOfSize:20];
-    [cell.contentView addSubview:label];
-    
-    cell.contentView.alpha = cellADeactive;
-    
-    return cell;
-}
-
-- (BOOL)GMGridView:(GMGridView *)gridView canDeleteItemAtIndex:(NSInteger)index
-{
-    return YES; //index % 2 == 0;
-}
-
-//////////////////////////////////////////////////////////////
-#pragma mark GMGridViewActionDelegate
-//////////////////////////////////////////////////////////////
-
-- (void)GMGridView:(GMGridView *)gridView didTapOnItemAtIndex:(NSInteger)position
-{
-    NSLog(@"Did tap at index %d", position);
-    //[gridView ]
-    GMGridViewCell *cell = [gridView cellForItemAtIndex:position];
-    cell.contentView.alpha = cellAAcitve;
-
-    for (NSInteger i=0; i<[_data count]; i++) {
-        if (i == position) {
-            //cell
-        }else
-        {
-            cell = [gridView cellForItemAtIndex:i];
-            cell.contentView.alpha = cellADeactive;
-
-        }
-    }
-    //GMGridViewCell *cell = [gridView cellForItemAtIndex:position];
-    //cell.contentView.alpha = cellAAcitve;
-    //
-    
-}
-
-- (void)GMGridViewDidTapOnEmptySpace:(GMGridView *)gridView
-{
-    NSLog(@"Tap on empty space");
-}
-
-- (void)GMGridView:(GMGridView *)gridView processDeleteActionForItemAtIndex:(NSInteger)index
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm" message:@"Are you sure you want to delete this item?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
-    
-    [alert show];
-    
-    _lastDeleteItemIndexAsked = index;
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1)
-    {
-        [_currentData removeObjectAtIndex:_lastDeleteItemIndexAsked];
-        [_gmGridView removeObjectAtIndex:_lastDeleteItemIndexAsked withAnimation:GMGridViewItemAnimationFade];
-    }
-}
-
-//////////////////////////////////////////////////////////////
-#pragma mark GMGridViewSortingDelegate
-//////////////////////////////////////////////////////////////
-
-- (void)GMGridView:(GMGridView *)gridView didStartMovingCell:(GMGridViewCell *)cell
-{
-    [UIView animateWithDuration:0.3
-                          delay:0
-                        options:UIViewAnimationOptionAllowUserInteraction
-                     animations:^{
-                         cell.contentView.backgroundColor = [UIColor orangeColor];
-                         cell.contentView.layer.shadowOpacity = 0.7;
-                     }
-                     completion:nil
-     ];
-}
-- (void)GMGridView:(GMGridView *)gridView didEndMovingCell:(GMGridViewCell *)cell
-{
-    [UIView animateWithDuration:0.3
-                          delay:0
-                        options:UIViewAnimationOptionAllowUserInteraction
-                     animations:^{
-                         cell.contentView.backgroundColor = [UIColor redColor];
-                         cell.contentView.layer.shadowOpacity = 0;
-                     }
-                     completion:nil
-     ];
-}
-
-- (BOOL)GMGridView:(GMGridView *)gridView shouldAllowShakingBehaviorWhenMovingCell:(GMGridViewCell *)cell atIndex:(NSInteger)index
-{
-    return YES;
-}
-
-- (void)GMGridView:(GMGridView *)gridView moveItemAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
-{
-    NSObject *object = [_currentData objectAtIndex:oldIndex];
-    [_currentData removeObject:object];
-    [_currentData insertObject:object atIndex:newIndex];
-}
-
-- (void)GMGridView:(GMGridView *)gridView exchangeItemAtIndex:(NSInteger)index1 withItemAtIndex:(NSInteger)index2
-{
-    [_currentData exchangeObjectAtIndex:index1 withObjectAtIndex:index2];
-}
-
-*/
 
 
 @end

@@ -71,7 +71,7 @@
     giftVC = [[UAQGiftWebViewController alloc] init];
     idleVC = [BZAgentController sharedInstance];
     ticketVC = [[UAQTicketWebViewController alloc] init];
- 
+ /*
     [idleVC.tabBarItem initWithTitle: @"统计" image:nil tag:1];
     [giftVC.tabBarItem initWithTitle: @"礼品" image:nil tag:2];
     [configVC.tabBarItem initWithTitle: @"套餐" image:nil tag:3];
@@ -107,13 +107,13 @@
     [configVC.tabBarItem setTitleTextAttributes:attrs_highlight forState:UIControlStateHighlighted];
     [ticketVC.tabBarItem setTitleTextAttributes:attrs_highlight forState:UIControlStateHighlighted];
 
-    
+    */
    
     tabBarController.delegate = self;
     tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,idleVC,giftVC,ticketVC,nil];
     tabBarController.selectedIndex = 0;
-    [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
-    [tabBarController.tabBarItem initWithTitle: @"" image:[UIImage imageNamed:@"tab_config.png"] tag:1];
+    //[tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@""]];
+    //[tabBarController.tabBarItem initWithTitle: @"" image:[UIImage imageNamed:@"tab_config.png"] tag:1];
     
     tabBarController.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
 
