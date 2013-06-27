@@ -229,7 +229,10 @@
             BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
             
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *lastname = [defaults objectForKey:keyUAQLoginName];
             [defaults setObject:@"" forKey:keyUAQLoginName];
+            [defaults setObject:lastname forKey:keyUAQLastLoginName];
+
             [defaults synchronize];
             
             [self.navigationController presentModalViewController:app.viewController animated:YES];

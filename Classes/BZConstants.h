@@ -136,5 +136,9 @@ extern const NSString *BZPasswordKey;
 
 #define keyComboSelect @"_uaqComboSelect"
 #define keyUAQLoginName @"mobiUAQLoginName"
+#define keyUAQLastLoginName @"mobiUAQLastLoginName"
+
 
 #define keyUAQAppDidEnterBackground @"UAQAppDidEnterBackground"
+#define keyUAQAppDidEnterForeground @"UAQAppDidEnterForeground"
+

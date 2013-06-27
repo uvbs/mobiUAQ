@@ -25,7 +25,7 @@
 @interface UAQHomeViewController ()<UAQHomeViewDelegate,UITableViewDataSource,UITableViewDelegate,UITabBarControllerDelegate>
 {
 }
-@property (nonatomic,assign) UITabBarController *tabBarController;
+@property (nonatomic,retain) UITabBarController *tabBarController;
 @property (nonatomic,assign) UAQConfigViewController *configVC;
 @property (nonatomic,assign) UAQGiftWebViewController *giftVC;
 @property (nonatomic,assign) BZAgentController *idleVC;
@@ -69,7 +69,7 @@
     
     configVC = [[UAQConfigViewController alloc] init];
     giftVC = [[UAQGiftWebViewController alloc] init];
-    idleVC = [[BZAgentController alloc] init];
+    idleVC = [BZAgentController sharedInstance];
     ticketVC = [[UAQTicketWebViewController alloc] init];
  
     [idleVC.tabBarItem initWithTitle: @"统计" image:nil tag:1];
@@ -114,18 +114,9 @@
     tabBarController.selectedIndex = 0;
     [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
     [tabBarController.tabBarItem initWithTitle: @"" image:[UIImage imageNamed:@"tab_config.png"] tag:1];
-  //  LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
     
     tabBarController.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
-    //tabBarController.tabBarItem.title = @"永恒";
-    //NSLog(@"login name %@",tabBarController.title);
 
-    
-    //[tabBarController.navigationItem setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-
-    
- //[self presentModalViewController:navController animated:NO];
 
 
 }
@@ -151,8 +142,14 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
+}
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBarHidden = NO;
 }
 
 - (void)latestNewsButtonAction:(id)sender
@@ -269,7 +266,7 @@
         
         
         UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
-        btnCombo2.frame = CGRectMake(320-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+        btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
         [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem2a.png"] forState:UIControlStateNormal];
         [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
  /*       UILabel *lableCombo2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, 150, 30)];
@@ -307,7 +304,7 @@
             
             
             UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
-            btnCombo2.frame = CGRectMake(320-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
             [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem4a.png"] forState:UIControlStateNormal];
             [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
 
@@ -335,7 +332,7 @@
             
             
             UIButton *btnCombo2 = [UIButton buttonWithType:UIButtonTypeCustom];
-            btnCombo2.frame = CGRectMake(320-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
+            btnCombo2.frame = CGRectMake(kUAQHomeCellWidth-kUAQHomeCellLeftMargin-kUAQHomeCellButtonWidth, 0.0f, kUAQHomeCellButtonWidth, kUAQHomeCellButtonHeight);
             [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"menuitem6a.png"] forState:UIControlStateNormal];
             [btnCombo2 setBackgroundImage:[UIImage imageNamed:@"combo_bg_highlight.png"] forState:UIControlStateHighlighted];
 
@@ -350,63 +347,54 @@
 
 - (IBAction)onClickCombo1:(id)sender
 {
-    //[self.parentViewController.
-    self.navigationController.navigationBarHidden = NO;
     tabBarController.selectedIndex = 0;
-    
-    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,idleVC,giftVC,nil];
-
+    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,nil];
+    configVC.hidesBottomBarWhenPushed = YES;
+    tabBarController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:tabBarController animated:YES];
-    //[self presentModalViewController:navController animated:NO];
 }
 
 - (IBAction)onClickCombo2:(id)sender
 {
-    //[self.parentViewController.
-    self.navigationController.navigationBarHidden = NO;
-    tabBarController.selectedIndex = 1;
-    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,idleVC,giftVC,nil];
+    tabBarController.selectedIndex = 0;
+    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:idleVC,nil];
 
-    [self.navigationController pushViewController:tabBarController animated:YES];
-    //[self presentModalViewController:navController animated:NO];
+    [self.navigationController pushViewController:idleVC animated:YES];
 }
 
 - (IBAction)onClickCombo3:(id)sender
 {
-    //[self.parentViewController.
-    self.navigationController.navigationBarHidden = NO;
-    tabBarController.selectedIndex = 1;
-    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,ticketVC,giftVC,nil];
+    tabBarController.selectedIndex = 0;
+    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:ticketVC,nil];
 
-    [self.navigationController pushViewController:tabBarController animated:YES];
-    //[self presentModalViewController:navController animated:NO];
+    [self.navigationController pushViewController:ticketVC animated:YES];
 }
 
 - (IBAction)onClickCombo4:(id)sender
 {
-    //[self.parentViewController.
-    self.navigationController.navigationBarHidden = NO;
-    tabBarController.selectedIndex = 2;
-    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:configVC,ticketVC,giftVC,nil];
+    tabBarController.selectedIndex = 0;
+    tabBarController.viewControllers = [[NSArray alloc] initWithObjects:giftVC,nil];
+    //UAQGiftWebViewController *agiftVC = [[UAQGiftWebViewController alloc] init];
 
-    [self.navigationController pushViewController:tabBarController animated:YES];
-    //[self presentModalViewController:navController animated:NO];
+    //agiftVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:giftVC animated:YES];
+    //[agiftVC release];
 }
 
 - (IBAction)onClickCombo5:(id)sender
 {
-    
-    self.navigationController.navigationBarHidden = NO;
     UAQAccountCenterViewController *accountVC = [[UAQAccountCenterViewController alloc] init];
+    accountVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:accountVC animated:YES];
-    
+    [accountVC release];
 }
 
 - (IBAction)onClickCombo6:(id)sender
 {
-    self.navigationController.navigationBarHidden = NO;
     UAQSettingsViewController *settingsVC = [[UAQSettingsViewController alloc] init];
+    settingsVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:settingsVC animated:YES];
+    [settingsVC release];
 }
 
 @end

@@ -33,9 +33,9 @@
 {
     if ((self = [super init])) {
         //
-        NSLog(@"init giftwebview ");
+       // NSLog(@"init giftwebview ");
        }
-    NSLog(@"init giftwebview thht ");
+   // NSLog(@"init giftwebview thht ");
 
     return self;
 }

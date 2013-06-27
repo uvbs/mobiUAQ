@@ -68,5 +68,7 @@
 - (void)saveStatusInfo;
 -(void)updateStatusInfo;
 - (void)applicationEnterBackground:(BOOL)entered;
++ (BZAgentController*)sharedInstance;
+
 
 @end

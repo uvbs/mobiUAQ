@@ -14,6 +14,7 @@
 @synthesize delegate;
 @synthesize scrollPanel;
 @synthesize latestNewsButton;
+@synthesize checkInButton;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -32,7 +33,7 @@
         scrollPanel.contentSize = self.frame.size;
         
         UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo.png"]];
-        logoImage.frame = CGRectMake(20, 10, 147, 41);
+        logoImage.frame = CGRectMake(kUAQHomeCellLeftMargin, 10, 147, 41);
         [scrollPanel addSubview:logoImage];
         [logoImage release];
         
@@ -42,21 +43,12 @@
         [latestNewsButton setBackgroundImage:[UIImage imageNamed:@"information1.png"] forState:UIControlStateNormal];
         latestNewsButton.frame = CGRectMake(260, 0, kUAQHomeLastestNoticeWidth, kUAQHomeLastestNoticeHeight);
         //latestNewsButton.frame = latestNoticeImage.frame;
-        [scrollPanel addSubview:latestNewsButton];
+ //       [scrollPanel addSubview:latestNewsButton];
         
-        UIImageView *welcomeImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"prompt1.png"]];
-        welcomeImage.frame = CGRectMake(20, kUAQHomeLastestNoticeHeight, kUAQWelComeImageWidth, kUAQWelComeImageHeight);
-        [scrollPanel addSubview:welcomeImage];
-        [welcomeImage release];
-        
-        UILabel *welcomeLable = [[UILabel alloc] initWithFrame:CGRectMake(50, kUAQHomeLastestNoticeHeight, kUAQWelComeImageWidth-45, kUAQWelComeImageHeight)];
-        welcomeLable.text = @"欢迎您使用云监测客户端";
-        welcomeLable.textColor = [UIColor grayColor];
-        welcomeLable.textAlignment = UITextAlignmentLeft;
-        welcomeLable.backgroundColor = [UIColor clearColor];
-        [scrollPanel addSubview:welcomeLable];
-        [welcomeLable release];
-
+        checkInButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [checkInButton setBackgroundImage:[UIImage imageNamed:@"checkin"] forState:UIControlStateNormal];
+        checkInButton.frame = CGRectMake(265, 365, 40, 58);
+        [scrollPanel addSubview:checkInButton];
         
         [self addSubview:scrollPanel];
         //_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 50, 320, 400)];
@@ -90,7 +82,7 @@ tableView.backgroundColor = [UIColor clearColor];
 {
     CGRect bounds = self.bounds;
     scrollPanel.frame = CGRectMake(0, 0, scrollPanel.frame.size.width, scrollPanel.frame.size.height);
-    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y+kUAQHomeLastestNoticeHeight+kUAQWelComeImageHeight, tableView.frame.size.width, self.window.frame.size.height);
+    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y+kUAQHomeLastestNoticeHeight, tableView.frame.size.width, self.window.frame.size.height);
     
     
 }

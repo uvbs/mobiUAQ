@@ -210,12 +210,12 @@ static BZJobManager *sharedInstance;
             NSUInteger dataSize ;
             if ( 1 == ctid) {
                 dataSize = [[defaults objectForKey:kBZBytesUploaded3G] integerValue];
-                NSLog(@"datasize 3G %d",dataSize);
+                NSLog(@"old datasize 3G %d",dataSize);
 
             }else if (0 == ctid)
             {
                 dataSize = [[defaults objectForKey:kBZBytesUploaded] integerValue];
-                NSLog(@"datasize WiFi %d",dataSize);
+                NSLog(@"old datasize WiFi %d",dataSize);
 
             }
 
@@ -266,10 +266,10 @@ static BZJobManager *sharedInstance;
     url=@"http://202.108.23.123";
 	NSString *pattern;
 	if ([url characterAtIndex:[url length] - 1] == '/') {
-		pattern = @"work/workdone.php?har=1&done=1&location=%@&key=%@&id=%@&flattenZippedHar=1";
+		pattern = @"work/workdone.php?har=1&done=1&location=%@&key=%@&id=UAQ_%@&flattenZippedHar=1";
 	}
 	else {
-		pattern = @"/work/workdone.php?har=1&done=1&location=%@&key=%@&id=%@&flattenZippedHar=1";
+		pattern = @"/work/workdone.php?har=1&done=1&location=%@&key=%@&id=UAQ_%@&flattenZippedHar=1";
 	}
 	
 	url = [url stringByAppendingFormat:pattern, [[NSUserDefaults standardUserDefaults] objectForKey:kBZJobsLocationSettingsKey], [[NSUserDefaults standardUserDefaults] objectForKey:kBZJobsLocationKeySettingsKey], result.jobId, nil];

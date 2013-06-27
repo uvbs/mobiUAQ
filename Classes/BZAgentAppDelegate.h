@@ -42,13 +42,18 @@
     
     UITabBarController *tabBarController;
     
+    UINavigationController *homeNavController;
+    
 }
 
 
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) LoginViewController *viewController;
-@property (strong ,nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) UINavigationController *homeNavController;
+@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) BZAgentController *idleController;
+
 
 @end
 

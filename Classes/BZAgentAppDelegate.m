@@ -41,6 +41,8 @@ void restartAndKill();
 @synthesize viewController = _viewController;
 //@ bgTask;
 @synthesize tabBarController = _tabBarController;
+@synthesize homeNavController = _homeNavController;
+@synthesize idleController = _dileController;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -169,16 +171,25 @@ void restartAndKill();
 
 - (void) applicationWillTerminate:(UIApplication *)application
 {
-    [idleController saveStatusInfo];
+    //[idleController saveStatusInfo];
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)application
 {
-    //[idleController];
-    [idleController updateStatusInfo];
-    [idleController applicationEnterBackground:NO];
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
+    
+    if ([username length] > 1) {
+    //    [self alreadyLogin:username];
+    }
+   // window.rootViewController = homeNavController;
 
 }
+
+//- (void)applicationWillResignActive:(UIApplication *)application
+//{
+//    self.window.rootViewController = homeNavController;
+    
+//}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
@@ -189,7 +200,9 @@ void restartAndKill();
     }else{
         NSLog(@"backgrounding not accepted");
     }
-    [idleController applicationEnterBackground:YES];
+    [self.window.rootViewController.navigationController pushViewController:idleController animated:NO];
+    //idleController;
+   // [idleController applicationEnterBackground:YES];
     [self backgroundHandler];
 }
 
@@ -215,7 +228,8 @@ void restartAndKill();
 
 - (void)dealloc
 {
-	[idleController release];
+	//[idleController release];
+    //[homeNavController release];
     [window release];
     [super dealloc];
 }
@@ -387,8 +401,8 @@ void restartAndKill();
     //application.  This is useful for both debugging and getting some visual information on whether or not the agent is actually working.
 #ifndef DEBUG
     
-    idleController = [[BZAgentController alloc] init];
-    [idleController applicationEnterBackground:NO];
+   // [idleController applicationEnterBackground:NO];
+/*
     //giftController = [[UAQGiftViewController alloc] init];
     idleViewNavigationController = [[UINavigationController alloc] initWithRootViewController:idleController];
     idleViewNavigationController.navigationBar.topItem.title = uname;//@"用户名";
@@ -418,19 +432,32 @@ void restartAndKill();
     tabBarController.viewControllers = controllerArray;
     tabBarController.selectedIndex = 0;
     [tabBarController.tabBar setBackgroundImage:[UIImage imageNamed:@"bar_background.png"]];
-
+*/
     homeViewController = [[UAQHomeViewController alloc] init];
-    UINavigationController *homeNavController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    homeNavController = [[[UINavigationController alloc] initWithRootViewController:homeViewController] autorelease];
     homeNavController.navigationBar.topItem.title = @"主页";
     [homeNavController.navigationBar setTintColor:[UIColor colorWithRed:39.0/255 green:103.0/255 blue:213.0/255 alpha:1]];
     [homeNavController.navigationBar setBackgroundImage:[UIImage imageNamed:@"head_background.png"] forBarMetrics:UIBarMetricsDefault];
-    
-    
+    idleController = [[BZAgentController sharedInstance] autorelease];
+
+    //[self.window addSubview:idleController.view];
     [self.window addSubview:homeNavController.view];
     self.window.rootViewController = homeNavController;
-    [homeNavController release];
     
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *lastname = [defaults objectForKey:keyUAQLastLoginName];
+    if ([lastname length] > 0 && ![lastname isEqualToString:uname]) {
+        
+    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZJobsCompletedToday];
+    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded];
+    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded ];
+    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesUploaded3G];
+    [defaults setObject:[NSNumber numberWithInt:0] forKey:kBZBytesDownloaded3G ];
+
+    [defaults synchronize];
+    }
+
     [self.window makeKeyAndVisible];
 #endif
 

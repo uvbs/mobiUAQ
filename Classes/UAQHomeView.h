@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#define kUAQHomeCellHeight 100.0f
-#define kUAQHomeCellWidth 300.0f
-#define kUAQHomeCellButtonWidth 120.0f
-#define kUAQHomeCellButtonHeight 90.0f
-#define kUAQHomeCellLeftMargin 32.0f
-#define kUAQHomeCellSpacing 15.0f
+#define kUAQHomeCellHeight 120.0f
+#define kUAQHomeCellWidth 280.0f
+#define kUAQHomeCellButtonWidth 110.0f
+#define kUAQHomeCellButtonHeight 110.0f
+#define kUAQHomeCellLeftMargin 25.0f
+#define kUAQHomeCellSpacing 10.0f
 
 #define kUAQHomeLastestNoticeWidth 45.0f
 
-#define kUAQHomeLastestNoticeHeight 80.0f
+#define kUAQHomeLastestNoticeHeight 60.0f
 
 #define kUAQWelComeImageWidth 280.0f
 #define kUAQWelComeImageHeight 30.0f
@@ -33,12 +33,14 @@
     UITableView *tableView;
     UIScrollView *scrollPanel;
     UIButton *latestNewsButton;
+    UIButton *checkInButton;
 }
 
 @property (nonatomic, assign)       id<UAQHomeViewDelegate> delegate;
 @property (nonatomic, assign)       UITableView *tableView;
 @property (nonatomic, assign)       UIScrollView *scrollPanel;
 @property (nonatomic, assign)       UIButton *latestNewsButton;
+@property (nonatomic, assign)       UIButton *checkInButton;
 
 
 @end

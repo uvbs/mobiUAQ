@@ -250,6 +250,7 @@
 		04CC902C172D797400162D95 /* UAQGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CC902B172D797400162D95 /* UAQGuideViewController.m */; };
 		04CD0DA0174DF7770087BBEE /* UAQAccountCenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CD0D9F174DF7770087BBEE /* UAQAccountCenterViewController.m */; };
 		04CD0DA6174DF7A50087BBEE /* UAQAccountCenterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CD0DA5174DF7A50087BBEE /* UAQAccountCenterView.m */; };
+		04CDB35B177ADA18006AA5DE /* checkin.png in Resources */ = {isa = PBXBuildFile; fileRef = 04CDB35A177ADA18006AA5DE /* checkin.png */; };
 		04CE26FE173B587200D1CFF3 /* UAQConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CE26FD173B587200D1CFF3 /* UAQConfigViewController.m */; };
 		04CE2701173B58B300D1CFF3 /* UAQConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CE2700173B58B300D1CFF3 /* UAQConfigView.m */; };
 		04D11B1F1734E4A4000D4074 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 04D11B0F1734E4A4000D4074 /* 1.png */; };
@@ -733,6 +734,7 @@
 		04CD0D9F174DF7770087BBEE /* UAQAccountCenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UAQAccountCenterViewController.m; sourceTree = "<group>"; };
 		04CD0DA4174DF7A50087BBEE /* UAQAccountCenterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQAccountCenterView.h; sourceTree = "<group>"; };
 		04CD0DA5174DF7A50087BBEE /* UAQAccountCenterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UAQAccountCenterView.m; sourceTree = "<group>"; };
+		04CDB35A177ADA18006AA5DE /* checkin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkin.png; sourceTree = "<group>"; };
 		04CE26FC173B587200D1CFF3 /* UAQConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQConfigViewController.h; sourceTree = "<group>"; };
 		04CE26FD173B587200D1CFF3 /* UAQConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UAQConfigViewController.m; sourceTree = "<group>"; };
 		04CE26FF173B58B300D1CFF3 /* UAQConfigView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UAQConfigView.h; sourceTree = "<group>"; };
@@ -1738,6 +1740,7 @@
 		F7AB4C7F129DA53800CE4684 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				04CDB35A177ADA18006AA5DE /* checkin.png */,
 				042C10B2174B885B003043E2 /* backgroundmainbaidu.png */,
 				042C10B0174B84EE003043E2 /* prompt1.png */,
 				042C10AC174B7BAB003043E2 /* information1.png */,
@@ -2081,6 +2084,7 @@
 				042C10AF174B7BAB003043E2 /* logo.png in Resources */,
 				042C10B1174B84EE003043E2 /* prompt1.png in Resources */,
 				042C10B3174B885B003043E2 /* backgroundmainbaidu.png in Resources */,
+				04CDB35B177ADA18006AA5DE /* checkin.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

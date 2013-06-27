@@ -27,6 +27,9 @@
 #import "Reachability.h"
 
 #import "MBProgressHUD.h"
+#import "BZAgentAppDelegate.h"
+
+static BZAgentController *sharedInstance;
 
 @interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZIdleViewDelegate, BZSettingsViewControllerDelegate,UAQConfigViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,BarGraphDelegate,MBProgressHUDDelegate,UIWebViewDelegate>
 @property (nonatomic, copy) NSString *activeURL;
@@ -93,6 +96,11 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startButtonStatusChanged:) name:UAQConfigStartButtonNotification object:nil];
         
 		NSNumber *shouldAutoPoll = [[NSUserDefaults standardUserDefaults] objectForKey:kBZAutoPollSettingsKey];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterBackgroundNow:) name:UIApplicationWillResignActiveNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForegroundNow:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+
 
 		if (shouldAutoPoll && [shouldAutoPoll boolValue])
         {
@@ -111,10 +119,20 @@
 	return self;
 }
 
+
++ (BZAgentController*)sharedInstance
+{
+    if (!sharedInstance) {
+		sharedInstance = [[BZAgentController alloc] init];
+	}
+
+	return sharedInstance;
+}
+
 - (void)loadView
 {
 	[super loadView];
-	
+	NSLog(@"agent loadview");
 	idleView = [[BZIdleView alloc] initWithFrame:self.view.bounds];
 //	[idleView.pollNowButton addTarget:self action:@selector(pollNowPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[idleView.enabledSwitch addTarget:self action:@selector(enabledToggleValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -364,8 +382,13 @@
 - (void)pollForJobs:(BOOL) fromAuto
 {
     NSLog(@"now completed: %d busy %d",statusInfo.jobsCompletedToday,busy);
+    BZJobManager *jobManager = [BZJobManager sharedInstance];
+    NSLog(@"jobs count %d",[jobManager jobCount]);
     if (!busy )
     {
+        
+        [self processNextJob:NO];
+        return;
         NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
         NSLog(@"now ctid %d",ctid);
 
@@ -538,6 +561,7 @@
 		BZJobManager *jobManager = [BZJobManager sharedInstance];
         isBackground = [[[NSUserDefaults standardUserDefaults] objectForKey:keyUAQAppDidEnterBackground] boolValue];
         NSLog(@"isBackground %d",isBackground);
+        //isBackground = YES;
 		if ([jobManager hasJobs] && isBackground) {
 			busy = YES;
 			
@@ -549,23 +573,45 @@
 
 			BZWebViewController *webController = [[[BZWebViewController alloc] initWithJob:[jobManager nextJob] timeout:timeout] autorelease];
 			webController.delegate = self;
-			[self presentModalViewController:webController animated:NO];
-            NSLog(@"start bzwebview");
+            //UIWindow *window = [[[UIApplicaton shareApplication] delegate] window];
+            BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
+            //UIWindow* keyWindow = [[UIApplication sharedApplication] keyWindow];
+            //UIView* topView = [[keyWindow subviews] objectAtIndex:[[keyWindow subviews] count] - 1];
+			//[app.window.rootViewController presentModalViewController:webController animated:NO];
+            
+            [self presentModalViewController:webController animated:NO];
+            //app.window.rootViewController = app.homeNavController;
+            //NSLog(@"start bzwebview");
 		}
 		else if (isEnabled && shouldPoll) {
 			[self pollForJobs:false];
 		}
-		else if (isEnabled) {
-			//[idleView showEnabled:@"Polling enabled"];
-            [idleView showEnabled:@"自动监测任务"];
-		}
-		else {
-			//[idleView showDisabled:@"Polling stopped"];
-            [idleView showDisabled:@"停止监测任务"];
-		}
 	}
 }
 
+- (void)applicationWillEnterForegroundNow:(NSNotification *)notification
+{
+    isBackground = NO;
+    busy = NO;
+    [self startPolling];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterForeground];
+    [defaults synchronize];
+    NSLog(@"notification isBackground %d",isBackground);
+    
+}
+
+- (void)applicationWillEnterBackgroundNow:(NSNotification *)notification
+{
+    isBackground = YES;
+    [self startPolling];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:isBackground] forKey:keyUAQAppDidEnterBackground];
+    [defaults synchronize];
+    NSLog(@"notification isBackground %d",isBackground);
+    
+}
+/*
 - (void)applicationEnterBackground:(BOOL)entered
 {
     NSLog(@"enter Background %@ ",entered?@"YES":@"NO");
@@ -586,6 +632,7 @@
     NSLog(@"isBackground %d",isBackground);
 
 }
+ */
 
 - (void)startButtonStatusChanged:(NSNotification *)notification
 {
@@ -658,8 +705,6 @@
 #if BZ_DEBUG_JOB
 	NSLog(@"Job uploaded");
 #endif
-    NSLog(@"Job uploaded");
-
     [self restartIfRequired];
     
 	[self processNextJob:YES];
@@ -733,7 +778,7 @@
     
     
     NSLog(@"JK Job completed: %@", job);
-
+    [self saveStatusInfo];
     
 }
 #pragma mark draw mychartView
@@ -957,7 +1002,6 @@
 #if BZ_DEBUG_JOB
 	NSLog(@"Job was cancelled: %@", job);
 #endif
-    NSLog(@"Job was cancelled: %@", job);
 
 	[self dismissModalViewControllerAnimated:NO];
 	

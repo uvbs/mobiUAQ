@@ -266,7 +266,12 @@ static UAQJobManager *sharedInstance;
 #pragma mqtt
 - (void) didConnect:(NSUInteger)code {
     NSLog(@"connect successfully");
-    [mosquittoClient subscribe:UAQMQTTRootTopic];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *username = [defaults objectForKey:keyUAQLoginName];
+    NSLog(@"username: %@", username);
+    
+    clientId = [NSString stringWithFormat:@"%@_uaq-iphone%@",[[username dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString], getMacAddress()];
+    [mosquittoClient subscribe:[NSString stringWithFormat:@"mobiuaq/iphone/%@",clientId]];
     //[mosquittoClient subscribe:@"uaqmon/#"];
 
 }

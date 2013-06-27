@@ -84,6 +84,7 @@ extern "C" CGImageRef UIGetScreenImage();
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getWebViewPrivate:) name:BZPassWebViewPrivateNotification object:nil];
 #endif        
         userAgent = [[NSUserDefaults standardUserDefaults] objectForKey:kBZUserAgentSettingsKey];
+        NSLog(@"BZWebViewController initWithJob");
 
 	}
 	return self;
@@ -155,7 +156,7 @@ extern "C" CGImageRef UIGetScreenImage();
 - (void)loadView
 {
 	[super loadView];
-
+    NSLog(@"bzagent loadview");
 	[self createWebView];
 }
 
@@ -510,7 +511,10 @@ extern "C" CGImageRef UIGetScreenImage();
 }
 
 - (void)captureScreen:(NSString*)identifier important:(BOOL)important
-{    
+{
+    ///~~ disable screen capture
+    return;
+    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     UIImage *image = Nil;
@@ -525,7 +529,7 @@ extern "C" CGImageRef UIGetScreenImage();
         UIGraphicsBeginImageContext(webView.frame.size);
         [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
         image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();        
+        UIGraphicsEndImageContext();
     }
 
 	if (image) {

@@ -567,8 +567,8 @@
     NSLog(@"%@", jobId);
     NSArray *jobSplit = [jobId componentsSeparatedByString:@"-"];
     NSString *uname_base64 = [[[[NSUserDefaults standardUserDefaults]objectForKey:keyUAQLoginName ] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
-    NSString *jobDate = [NSString stringWithFormat: @"%@-%@-%@", [jobSplit objectAtIndex:1],[jobSplit objectAtIndex:1],[jobSplit objectAtIndex:2]];
-    NSString *md5Seed = [[[jobSplit objectAtIndex:0] stringByAppendingString:uname_base64] stringByAppendingString:jobDate];
+    NSString *jobDate = [NSString stringWithFormat: @"%@-%@-%@", [jobSplit objectAtIndex:1],[jobSplit objectAtIndex:2],[jobSplit objectAtIndex:3]];
+    NSString *md5Seed = [NSString stringWithFormat: @"%@%@%@",[jobSplit objectAtIndex:0],uname_base64,jobDate];
     const char *cStr = [md5Seed UTF8String];
     unsigned char result[16];
     CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
