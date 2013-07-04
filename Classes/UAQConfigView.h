@@ -24,7 +24,7 @@
     UIButton *startButton;
     UILabel *labelJobStatus;
     UILabel *labelCheck;
-
+    UILabel *labelCheckWiFi;
 }
 
 @property (nonatomic, assign) id<UAQConfigViewDelegate> delegate;
@@ -33,6 +33,8 @@
 
 @property (nonatomic, readonly) UILabel *labelJobStatus;
 @property (nonatomic, assign) UILabel *labelCheck;
+@property (nonatomic, assign) UILabel *labelCheckWiFi;
+
 
 
 - (void)updateJobStatus;

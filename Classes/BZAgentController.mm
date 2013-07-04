@@ -19,7 +19,7 @@
 //Controllers
 #import "BZWebViewController.h"
 
-#import "BZSettingsViewController.h"
+//#import "BZSettingsViewController.h"
 #import "UAQConfigViewController.h"
 #import "Base64.h"
 #import "LoginShareAssistant.h"
@@ -47,7 +47,7 @@
 
 static BZAgentController *sharedInstance;
 
-@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate, BZSettingsViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,MBProgressHUDDelegate,UIWebViewDelegate,UAQHomeViewDelegate>
+@interface BZAgentController () <UITextFieldDelegate, BZWebViewControllerDelegate,UITableViewDataSource,UITableViewDelegate,MBProgressHUDDelegate,UIWebViewDelegate,UAQHomeViewDelegate>
 
 @property (nonatomic, copy) NSString *activeURL;
 @property (nonatomic, assign) MBProgressHUD *loadingHUD;
@@ -58,8 +58,8 @@ static BZAgentController *sharedInstance;
 //@property (nonatomic,retain) UITabBarController *tabBarController;
 
 
-- (void)registerForKeyboardNotifications;
-- (void)unregisterForKeyboardNotifications;
+//- (void)registerForKeyboardNotifications;
+//- (void)unregisterForKeyboardNotifications;
 
 - (void)startPolling;
 - (void)stopPolling;
@@ -125,7 +125,6 @@ static BZAgentController *sharedInstance;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startButtonStatusChanged:) name:UAQConfigStartButtonNotification object:nil];
         
 		NSNumber *shouldAutoPoll = [[NSUserDefaults standardUserDefaults] objectForKey:kBZAutoPollSettingsKey];
-        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterBackgroundNow:) name:UIApplicationWillResignActiveNotification object:nil];
         
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForegroundNow:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
@@ -214,6 +213,11 @@ static BZAgentController *sharedInstance;
     
 }
 
+- (void)applicationDidBecomeActive:(NSNotification *)notice
+{
+
+}
+
 - (void)loadingWebView
 {
 //    LoginShareAssistant* assistant = [LoginShareAssistant sharedInstanceWithAppid:@"1" andTpl:@"lo"];
@@ -294,7 +298,7 @@ static BZAgentController *sharedInstance;
 
 - (void)dealloc
 {
-	[self unregisterForKeyboardNotifications];
+	//[self unregisterForKeyboardNotifications];
 	
 	[pollTimer release];
 ///	[idleView release];
@@ -413,6 +417,7 @@ static BZAgentController *sharedInstance;
 	[self stopPolling];
 	
 	float pollFrequency = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZJobsFetchTime] floatValue];
+    pollFrequency = 3.0;
 	if (pollFrequency <= 0) {
 		pollFrequency = 30.0; // seconds
 	}
@@ -470,60 +475,8 @@ static BZAgentController *sharedInstance;
     NSLog(@"jobs count %d",[jobManager jobCount]);
     if (!busy )
     {
-        
         [self processNextJob:NO];
-        return;
-        NSInteger ctid = [[UAQJobManager sharedInstance] connectType];
-        NSLog(@"now ctid %d",ctid);
-
-        if (ctid == 0)
-        {
-            //WiFi
-            // no traffic limitation
-            [self switchActiveUrl];
-            [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
-
-        }
-        else if (ctid == 1)
-        {
-            //3G
-            
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            statusInfo.maxBytesAllowed = [[defaults objectForKey:kBZMaxBytesPerMonth] integerValue];
-            
-   //         if ( (statusInfo.bytesDownloaded + statusInfo.bytesUploaded < statusInfo.maxBytesAllowed) ){
-                // Switch to the next valid server
-                [self switchActiveUrl];
-                //[idleView showPolling:@"监测中"];
-                [[BZJobManager sharedInstance] pollForJobs:activeURL fromAuto:fromAuto];
- //           }else{
- //               [idleView showError:@"已达到最大流量限制"];
- //           }
-            
-        }
     }
-    /*
-    NSLog(@"before date df");
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-    
-    NSDate *checkDate = [df dateFromString:@"2013-01-01 13:06:00"];
-    NSDate *now  = [NSDate date];
-    NSDateComponents *checkComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:checkDate];
-    NSLog(@"before date now");
-
-    NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSMinuteCalendarUnit|NSHourCalendarUnit|NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:now];
-    NSLog(@"after date now");
-
-
-    if ([checkComponents day] == [nowComponents day]) {
-        // clear everymonth
-        [self clearStatusInfoEveryMonth];
-    }
-     */
-    [self updateStatusInfo];
-    
-    
     
 }
 
@@ -658,7 +611,7 @@ static BZAgentController *sharedInstance;
 			BZWebViewController *webController = [[[BZWebViewController alloc] initWithJob:[jobManager nextJob] timeout:timeout] autorelease];
 			webController.delegate = self;
             //UIWindow *window = [[[UIApplicaton shareApplication] delegate] window];
-            BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
+//            BZAgentAppDelegate *app = (BZAgentAppDelegate *)[[UIApplication sharedApplication] delegate];
             //UIWindow* keyWindow = [[UIApplication sharedApplication] keyWindow];
             //UIView* topView = [[keyWindow subviews] objectAtIndex:[[keyWindow subviews] count] - 1];
 			//[app.window.rootViewController presentModalViewController:webController animated:NO];
@@ -704,6 +657,7 @@ static BZAgentController *sharedInstance;
 {
 	NSDictionary *userInfo = [notification userInfo];
 	NSString *reason = [userInfo objectForKey:kBZJobsErrorKey];
+    NSLog(@"Could not poll: %@",reason);
 ///	[idleView showError:reason ? reason : @"Could not poll: unknown Error"];
 }
 
@@ -740,7 +694,8 @@ static BZAgentController *sharedInstance;
 #endif
     [self restartIfRequired];
     
-	[self processNextJob:YES];
+	//[self processNextJob:YES];
+    [self processNextJob:NO];
 }
 
 - (void)failedToUploadJob:(NSNotification*)notification

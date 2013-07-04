@@ -188,11 +188,15 @@ void restartAndKill();
     NSLog(@"keyUAQAppDidEnterBackground NO");
 }
 
-//- (void)applicationWillResignActive:(UIApplication *)application
-//{
+- (void)applicationWillResignActive:(UIApplication *)application
+{
 //    self.window.rootViewController = homeNavController;
-    
-//}
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[NSNumber numberWithBool:NO] forKey:keyUAQAppDidEnterBackground];
+    [defaults synchronize];
+    NSLog(@"keyUAQAppDidEnterBackground NO");
+
+}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {

@@ -464,9 +464,11 @@ void Swizzle(Class c, SEL orig, SEL newSelector)
             //NSLog(@"[Request] Got Web View 2 Load call number %d", webViewLoads);
 			
 			[result startRender];
+            NSLog(@"result startRender");
 			if (webViewDelegate) {
                 //NSLog(@"[Request] Got Web View 3 Load call number %d", webViewLoads);
 				[webViewDelegate startRender];
+                NSLog(@"delegate startRender");
 			}
 		}
 	}

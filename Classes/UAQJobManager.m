@@ -20,6 +20,8 @@
 #define UAQMQTUpdateTopic @"mobiuaq/iphone/updateNow"
 
 
+#define VERSION "100"
+
 
 @implementation UAQUpdate
 
@@ -218,7 +220,7 @@ static UAQJobManager *sharedInstance;
 - (UAQUpdate *)checkUpdate
 {
     UAQUpdate * uaqUp = [[UAQUpdate alloc] init];
-    NSURL *url = [[NSURL alloc] initWithString:@"http://220.181.7.18/work/uaq_iphone_update.php?ver=100"];
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://220.181.7.18/work/uaq_iphone_update.php?ver=%s",VERSION]];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     NSHTTPURLResponse *response;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
@@ -268,10 +270,22 @@ static UAQJobManager *sharedInstance;
     NSLog(@"connect successfully");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:keyUAQLoginName];
-    NSLog(@"username: %@", username);
+    //NSLog(@"username: %@", username);
+    NSInteger combo = [[defaults objectForKey:keyComboSelect] integerValue];
     
     clientId = [NSString stringWithFormat:@"%@_uaq-iphone%@",[[username dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString], getMacAddress()];
-    [mosquittoClient subscribe:[NSString stringWithFormat:@"mobiuaq/iphone/%@",clientId]];
+    
+    [mosquittoClient publishString:[NSString stringWithFormat:@"%d",[self connectType]] toTopic:[NSString stringWithFormat:@"lord/%@/network/type",clientId] withQos:1 retain:NO];
+                                                    //]:[NSString stringWithFormat:@"mobiuaq/iphone/%@",clientId]];
+    [mosquittoClient publishString:[NSString stringWithUTF8String: VERSION] toTopic:[NSString stringWithFormat:@"lord/%@/software/version",clientId] withQos:1 retain:NO];
+    [mosquittoClient publishString:[NSString stringWithFormat:@"%d",12*1024*0124*combo] toTopic:[NSString stringWithFormat:@"lord/%@/traffic/max_traffic",clientId] withQos:1 retain:NO];
+//    [mosquittoClient subscribe:[NSString stringWithFormat:@"mobiuaq/iphone/%@",clientId]];
+    NSInteger wifi_enabled = [[defaults objectForKey:keyComboWiFiSelect] integerValue];
+    [mosquittoClient publishString:[NSString stringWithFormat:@"%d",wifi_enabled] toTopic:[NSString stringWithFormat:@"lord/%@/traffic/wifi_enabled",clientId] withQos:1 retain:NO];
+
+
+
+    
     //[mosquittoClient subscribe:@"uaqmon/#"];
 
 }
@@ -306,7 +320,8 @@ static UAQJobManager *sharedInstance;
 
 - (BOOL) checkIn
 {
-    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://202.108.23.123/getandroidregisterinfo.php?username_base64=%@",@"ceshi"]];
+    NSString *username = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://202.108.23.123/getandroidregisterinfo.php?username_base64=%@",[[username dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString] ]];
     //NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
     NSString *ret = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
     //[ret

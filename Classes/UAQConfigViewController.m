@@ -25,7 +25,7 @@
 
 
 @interface UAQConfigViewController ()<UAQConfigViewDelegate,UITableViewDataSource,UITableViewDelegate>
-
+@property (nonatomic,assign) NSInteger comboWiFiSelect;
 @end
 
 //////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@
 
 @implementation UAQConfigViewController
 
+
 //@synthesize delegate;
 @synthesize configView;
 @synthesize btnCombo1;
@@ -44,6 +45,7 @@
 @synthesize btnCombo4;
 @synthesize startButton;
 @synthesize lastComboSelect = _lastComboSelect;
+@synthesize comboWiFiSelect;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -59,8 +61,12 @@
     if ((self = [super init])) {
   //      self.title = @"Demo";
         _lastComboSelect = [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect] integerValue];
+        comboWiFiSelect = [[[NSUserDefaults standardUserDefaults] objectForKey:keyComboWiFiSelect] integerValue];
         if (!_lastComboSelect) {
             _lastComboSelect = 0;
+        }
+        if (!comboWiFiSelect) {
+            comboWiFiSelect = -1;
         }
     }
     return self;
@@ -92,7 +98,8 @@
     [configView updateJobStatus];
     
     NSNumber *comboSelect = [[NSUserDefaults standardUserDefaults] objectForKey:keyComboSelect];
-    NSLog(@"view will appear %d",[comboSelect integerValue]);
+    //NSLog(@"view will appear %d",[comboSelect integerValue]);
+    NSNumber *combo_wifiSelect = [[NSUserDefaults standardUserDefaults] objectForKey:keyComboWiFiSelect];
 
     switch ([comboSelect integerValue]) {
         case 1:
@@ -128,8 +135,8 @@
         case 4:
         {
             CGPoint pointOne=CGPointMake(290, 230);
-            configView.labelCheck.alpha = 1.0;
-            configView.labelCheck.center = pointOne;
+            configView.labelCheckWiFi.alpha = 1.0;
+            configView.labelCheckWiFi.center = pointOne;
             startButton.enabled = YES;
 
             break;
@@ -140,6 +147,13 @@
             startButton.enabled = NO;
 
             break;
+    }
+    
+    if ([combo_wifiSelect integerValue]== 1) {
+        CGPoint pointOne=CGPointMake(290, 230);
+        configView.labelCheckWiFi.alpha = 1.0;
+        configView.labelCheckWiFi.center = pointOne;
+        startButton.enabled = YES;
     }
 
 }
@@ -160,6 +174,9 @@
     if (_lastComboSelect == 0) {
         [self onClickCombo1:@""];
     }
+    if (comboWiFiSelect == -1) {
+        [self onClickCombo4:@""];
+    }
     
     self.navigationItem.title = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];
 }
@@ -169,9 +186,12 @@
 {
     if (indexPath.section == 0) {
         return 133.0;
+    }else if (indexPath.section == 1)
+    {
+        return 50.0;
     }else
     {
-        return 40.0;
+        return 80.0;
     }
 }
 
@@ -344,7 +364,7 @@
                 
                 UILabel *lableCombo2Detail = [[UILabel alloc] initWithFrame:CGRectMake(0, 75, 150, 30)];
                 
-                lableCombo2Detail.text = @"预计消耗流量72M/月\n获得1440个礼券";
+                lableCombo2Detail.text = @"默认WiFi套餐，\n每天最多可得5个礼券";
                 lableCombo2Detail.font = [UIFont boldSystemFontOfSize:configViewFontSizeSmall];
                 lableCombo2Detail.textColor = [UIColor grayColor];
                 lableCombo2Detail.textAlignment = UITextAlignmentCenter;
@@ -374,7 +394,7 @@
             startButton = [UIButton buttonWithType:UIButtonTypeCustom];
             //startButton.selected = YES;
             //if(_lastComboSelect == 0) {startButton.enabled = NO;}else{startButton.enabled = YES;}
-            startButton.frame = CGRectMake(0.0f, 0.0f, cell.frame.size.width, cell.frame.size.height);
+            startButton.frame = CGRectMake(0.0f, 5.0f, cell.frame.size.width, cell.frame.size.height);
             startButton.backgroundColor = [UIColor clearColor];
             //[btnCombo4 setBackgroundImage:[UIImage imageNamed:@"start_button.png"] forState:UIControlStateNormal];
             //[btnCombo4 setTitle:@"" forState:UIControlStateNormal];
@@ -385,7 +405,23 @@
            // startButton.titleLabel.textColor = [UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1];
             startButton.titleLabel.font = [UIFont boldSystemFontOfSize:configViewFontSize];
             startButton.titleLabel.backgroundColor = [UIColor clearColor];
-            [startButton setTitle:@"开始监测" forState:UIControlStateNormal ];//= lableStart;
+            BOOL monitoring = [[[NSUserDefaults standardUserDefaults] objectForKey:kBZUserPressedStart] boolValue];
+            NSLog(@"monitoring %d",monitoring);
+            if ( monitoring != YES)
+            {
+                [startButton setTitle:@"开始监测" forState:UIControlStateNormal ];//= lableStart;
+                startButton.selected = NO;
+            }else
+            {
+                [startButton setTitle:@"停止监测" forState:UIControlStateNormal ];//= lableStart;
+                startButton.selected = YES;
+                
+                btnCombo1.enabled = NO;
+                btnCombo2.enabled = NO;
+                btnCombo3.enabled = NO;
+                btnCombo4.enabled = NO;
+            }
+
             //[startButton setFont:[UIFont boldSystemFontOfSize:24]];
             [startButton setTitleColor:[UIColor  colorWithRed:57.0/255 green:146.0/255 blue:237.0/255 alpha:1] forState:UIControlStateNormal];
             //[startButton setTitle:@"停止监测" forState:UIControlStateHighlighted ];//= lableStart;
@@ -401,6 +437,8 @@
             //NSString *taskNum = [NSUserDefaults standardUserDefaults] objectForKey:
             //UILabel *labelTaskComplete = [[UILabel alloc] initWithFrame:CGRectMake(100, 5, 200, 30)];
             //labelTaskComplete.text = ;
+            configView.labelJobStatus.frame =  CGRectMake(0.0f, 10.0f, cell.frame.size.width, cell.frame.size.height);
+
             
             [cell addSubview:configView.labelJobStatus];
         }
@@ -410,23 +448,19 @@
 
 - (IBAction)onClickCombo1:(id)sender
 {
-    NSLog(@"combo 1");
     CGPoint pointOne=CGPointMake(140, 97);
     configView.labelCheck.alpha = 1.0;
     configView.labelCheck.center = pointOne;
     _lastComboSelect = 1;
-    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:keyComboSelect];
     startButton.enabled = YES;
 }
 
 - (IBAction)onClickCombo2:(id)sender
 {
-    NSLog(@"combo 2");
     CGPoint pointOne=CGPointMake(290, 97);
     configView.labelCheck.alpha = 1.0;
     configView.labelCheck.center = pointOne;
     _lastComboSelect = 2;
-    [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:keyComboSelect];
     startButton.enabled = YES;
 
 }
@@ -434,27 +468,29 @@
 
 - (IBAction)onClickCombo3:(id)sender
 {
-    NSLog(@"combo 3");
     CGPoint pointOne=CGPointMake(140, 230);
     configView.labelCheck.alpha = 1.0;
     configView.labelCheck.center = pointOne;
     _lastComboSelect = 3;
-    [[NSUserDefaults standardUserDefaults] setInteger:3 forKey:keyComboSelect];
     startButton.enabled = YES;
 
 }
 
 - (IBAction)onClickCombo4:(id)sender
 {
-    NSLog(@"combo 4");
     CGPoint pointOne=CGPointMake(290, 230);
-    configView.labelCheck.alpha = 1.0;
-    configView.labelCheck.center = pointOne;
-    _lastComboSelect = 4;
-    [[NSUserDefaults standardUserDefaults] setInteger:4 forKey:keyComboSelect];
+    configView.labelCheckWiFi.center = pointOne;
+    configView.labelCheckWiFi.alpha = 1.0;
+
+    if( comboWiFiSelect == 1)
+    {
+        comboWiFiSelect = 0;
+        configView.labelCheckWiFi.alpha = 0.0;
+    }else{
+        comboWiFiSelect = 1;
+        configView.labelCheckWiFi.alpha = 1.0;
+    }
     startButton.enabled = YES;
-
-
 }
 
 - (IBAction)onClickStartButton:(id)sender
@@ -466,6 +502,8 @@
     NSArray *uaqCombosArray = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:12*1024*1024],[NSNumber numberWithInteger:2*12*1024*1024],[NSNumber numberWithInteger:3*12*1024*1024],[NSNumber numberWithInteger:4*2*12*1024*1024], nil];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[NSNumber numberWithInt:_lastComboSelect] forKey:keyComboSelect];
+    [defaults setObject:[NSNumber numberWithInt:comboWiFiSelect] forKey:keyComboWiFiSelect];
+
     
     NSInteger maxTraffic = [[uaqCombosArray objectAtIndex:_lastComboSelect] integerValue];
     [defaults setObject:[NSNumber numberWithInt:maxTraffic ] forKey:kBZMaxBytesPerMonth];

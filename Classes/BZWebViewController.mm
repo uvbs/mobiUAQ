@@ -74,8 +74,10 @@ extern "C" CGImageRef UIGetScreenImage();
 		currentSubRun = 0;
 		
 		cacheFolder = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationDidBecomeActiveNotification object:nil];
+
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveData:) name:BZDataReceivedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(responseReceived:) name:BZResponseReceivedNotification object:nil];

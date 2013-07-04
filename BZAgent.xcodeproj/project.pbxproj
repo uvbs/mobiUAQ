@@ -241,6 +241,9 @@
 		0487856F1681C13C00B33854 /* BZLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0487856E1681C13C00B33854 /* BZLoginView.m */; };
 		048785721681C1A700B33854 /* BZLoginController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 048785711681C1A700B33854 /* BZLoginController.mm */; };
 		048876B3169AD8AE000C0496 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 048876B2169AD8AE000C0496 /* MapKit.framework */; };
+		049B861E17842CB800D68380 /* ticket.html in Resources */ = {isa = PBXBuildFile; fileRef = 049B861B17842CB800D68380 /* ticket.html */; };
+		049B861F17842CB800D68380 /* stat.html in Resources */ = {isa = PBXBuildFile; fileRef = 049B861C17842CB800D68380 /* stat.html */; };
+		049B862017842CB800D68380 /* canvasjs.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 049B861D17842CB800D68380 /* canvasjs.min.js */; };
 		04A59A321740D69500B14FD1 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A59A311740D69500B14FD1 /* MBProgressHUD.m */; };
 		04BD48CD1743AE8B004ECF02 /* tab_config.png in Resources */ = {isa = PBXBuildFile; fileRef = 04BD48CA1743AE8B004ECF02 /* tab_config.png */; };
 		04BD48CE1743AE8B004ECF02 /* tab_gift.png in Resources */ = {isa = PBXBuildFile; fileRef = 04BD48CB1743AE8B004ECF02 /* tab_gift.png */; };
@@ -722,6 +725,9 @@
 		048785701681C1A700B33854 /* BZLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BZLoginController.h; sourceTree = "<group>"; };
 		048785711681C1A700B33854 /* BZLoginController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BZLoginController.mm; sourceTree = "<group>"; };
 		048876B2169AD8AE000C0496 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		049B861B17842CB800D68380 /* ticket.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ticket.html; sourceTree = "<group>"; };
+		049B861C17842CB800D68380 /* stat.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = stat.html; sourceTree = "<group>"; };
+		049B861D17842CB800D68380 /* canvasjs.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = canvasjs.min.js; sourceTree = "<group>"; };
 		04A59A301740D69500B14FD1 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		04A59A311740D69500B14FD1 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		04BD48CA1743AE8B004ECF02 /* tab_config.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tab_config.png; sourceTree = "<group>"; };
@@ -1439,6 +1445,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				049B861B17842CB800D68380 /* ticket.html */,
+				049B861C17842CB800D68380 /* stat.html */,
+				049B861D17842CB800D68380 /* canvasjs.min.js */,
 				F7C65ED412E0E62C0044F46C /* Button */,
 				F7F97C5412A8703500BADFCA /* Icons and Default Images */,
 				F7AB4C7F129DA53800CE4684 /* Images */,
@@ -1911,6 +1920,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				049B862017842CB800D68380 /* canvasjs.min.js in Resources */,
 				F7AB4C67129D7AC200CE4684 /* Settings.bundle in Resources */,
 				F7AB4C83129DA53800CE4684 /* disabled.png in Resources */,
 				F7AB4C84129DA53800CE4684 /* polling.png in Resources */,
@@ -2090,6 +2100,8 @@
 				042C10B1174B84EE003043E2 /* prompt1.png in Resources */,
 				042C10B3174B885B003043E2 /* backgroundmainbaidu.png in Resources */,
 				04CDB35B177ADA18006AA5DE /* checkin.png in Resources */,
+				049B861E17842CB800D68380 /* ticket.html in Resources */,
+				049B861F17842CB800D68380 /* stat.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

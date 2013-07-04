@@ -74,7 +74,12 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url ];
     //[self.view addSubview:webView];
     awebView.delegate = self;
-    [awebView loadRequest:request];
+    //[awebView loadRequest:request];
+    NSBundle *thisBundle = [NSBundle mainBundle];
+    NSString *path = [thisBundle pathForResource:@"stat" ofType:@"html"];
+    NSURL *baseUrl = [NSURL fileURLWithPath:path];
+    [awebView loadRequest:[NSURLRequest requestWithURL:baseUrl]];
+
     //    [self.view addSubview:awebView];
     //   [awebView release];
     
@@ -92,7 +97,7 @@
     loadingHUD.yOffset = 50.f;
     loadingHUD.removeFromSuperViewOnHide = YES;
     
-    [loadingHUD hide:YES afterDelay:2];
+    [loadingHUD hide:YES afterDelay:0.5];
     
 }
 
@@ -109,6 +114,15 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
     NSLog(@"finished load");
+    NSString *uname = [[NSUserDefaults standardUserDefaults] objectForKey:keyUAQLoginName];;
+    
+    //NSString *uname = @"公公公愚";
+    NSString *encodedString = [[uname dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+    
+    NSString *javascript = [NSString stringWithFormat:@"javascript:fetchData('%@')",encodedString];
+    NSLog(@"%@",javascript);
+    [webView stringByEvaluatingJavaScriptFromString:javascript];
+
     //[loadingHUD hide:YES];
     //[loadingHUD release];
     //loadingHUD = nil;

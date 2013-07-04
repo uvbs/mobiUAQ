@@ -18,8 +18,8 @@
     id <BZSettingsViewControllerDelegate> delegate;
     
     BZSettingsView *settingsView;
-    BZDropDownMenu *dropDown;
-    NSTimer *timer;
+    //BZDropDownMenu *dropDown;
+    //NSTimer *timer;
 
 //    id settingsSaveDelegate;
 }

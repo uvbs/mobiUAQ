@@ -573,7 +573,7 @@
     unsigned char result[16];
     CC_MD5(cStr, (CC_LONG)strlen(cStr), result);
     NSString *md5 = [NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7],result[8], result[9], result[10], result[11],result[12], result[13], result[14], result[15]];
-    
+    md5 = [md5 stringByAppendingString:[NSString stringWithFormat:@"%d",ctid]];
     NSString *deviceType = [[[UIDevice currentDevice] model] stringByAppendingString: [[UIDevice currentDevice] systemVersion]];
     [custcomDict setObject:deviceType forKey:@"deviceType"];
     [custcomDict setObject:uname_base64 forKey:@"userName"];

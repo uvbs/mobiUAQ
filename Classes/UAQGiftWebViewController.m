@@ -67,7 +67,7 @@
     //[self.view addSubview:webView];
     awebView.delegate = self;
     [awebView loadRequest:request];
-//    [self.view addSubview:awebView];
+        //    [self.view addSubview:awebView];
  //   [awebView release];
 
 }
@@ -101,6 +101,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     
     NSLog(@"finished load");
+    //[webView stringByEvaluatingJavaScriptFromString:@"javascript:alert('hi')"];
     //[loadingHUD hide:YES];
     //[loadingHUD release];
     //loadingHUD = nil;

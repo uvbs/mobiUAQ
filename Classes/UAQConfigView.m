@@ -17,6 +17,8 @@
 @synthesize startButton;
 @synthesize labelJobStatus;
 @synthesize labelCheck;
+@synthesize labelCheckWiFi;
+
 
 
 - (id)initWithFrame:(CGRect)frame
@@ -55,6 +57,15 @@
         labelCheck.alpha = 0.0;
         
         [self addSubview:labelCheck];
+        
+        labelCheckWiFi = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 14, 18)];
+        labelCheckWiFi.text = @"√";
+        labelCheckWiFi.textColor = [UIColor redColor];
+        labelCheckWiFi.backgroundColor = [UIColor clearColor];
+        labelCheckWiFi.alpha = 0.0;
+        
+        [self addSubview:labelCheckWiFi];
+
 
  /*
         UIImageView *blankView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]];
@@ -81,10 +92,10 @@
     NSNumber *bytesDownload = [defaults objectForKey:kBZBytesDownloaded];
     NSNumber *bytesDownload3G = [defaults objectForKey:kBZBytesDownloaded3G];
 
-    double bytesTotalInMB = ([bytesUpload doubleValue] + [bytesDownload doubleValue]) / 1024.0 / 1024.0;
+    double bytesTotalInMBWiFi = ([bytesUpload doubleValue] + [bytesDownload doubleValue]) / 1024.0 / 1024.0;
     double bytesTotalInMB3G = ([bytesUpload3G doubleValue] + [bytesDownload3G doubleValue]) / 1024.0 / 1024.0;
-    NSLog(@"traffic %f,%f",bytesTotalInMB,bytesTotalInMB3G);
-    labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，共消耗流量%.3fM，\n2G/3G流量%.3fM", [jobsCompleted integerValue],bytesTotalInMB+bytesTotalInMB3G,bytesTotalInMB3G];
+    NSLog(@"traffic %f,%f",bytesTotalInMBWiFi,bytesTotalInMB3G);
+    labelJobStatus.text = [NSString stringWithFormat:@"本月已完成任务%d个，消耗WiFi流量%.3fM，\n2G/3G流量%.3fM", [jobsCompleted integerValue],bytesTotalInMBWiFi+bytesTotalInMB3G,bytesTotalInMB3G];
 }
 
 - (void)dealloc
@@ -92,6 +103,7 @@
     [tableView release];
     [startButton release];
     [labelCheck release];
+    [labelCheckWiFi release];
     [super dealloc];
 }
 
@@ -99,7 +111,7 @@
 {
     CGRect bounds = self.bounds;
     NSLog(@"%f",bounds.size.height);
-    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 18, tableView.frame.size.width, self.window.frame.size.height- 48);
+    tableView.frame = CGRectMake(bounds.origin.x, bounds.origin.y - 18, tableView.frame.size.width, self.window.frame.size.height);
     startButton.frame = CGRectMake(bounds.origin.x, bounds.origin.y + 200, 128, 128);
     
     

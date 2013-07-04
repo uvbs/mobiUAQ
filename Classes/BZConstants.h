@@ -7,7 +7,7 @@
 
 //Debugging constants
 #define BZ_DEBUG_REQUESTS 0
-#define BZ_DEBUG_JOB 1
+#define BZ_DEBUG_JOB 0
 #define BZ_DEBUG_JOB_PARSING 0
 #define BZ_DEBUG_HAR_PARSING 0
 #define BZ_DEBUG_PRINT_HAR 0
@@ -135,6 +135,7 @@ extern const NSString *BZPasswordKey;
 #define kUAQButtonStatus @"uaq-btn-status"
 
 #define keyComboSelect @"_uaqComboSelect"
+#define keyComboWiFiSelect @"_uaqComboWiFiSelect"
 #define keyUAQLoginName @"mobiUAQLoginName"
 #define keyUAQLastLoginName @"mobiUAQLastLoginName"
 
